@@ -1,0 +1,9 @@
+{
+    "skip_files": [
+        "test/",
+        "lib/newnix_web.ex",
+        "lib/newnix_web/application.ex",
+        "lib/newnix_web/telemetry.ex",
+        "lib/newnix_web/router.ex"
+    ]
+}
