@@ -50,6 +50,15 @@ config :esbuild,
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
   ]
 
+# Auth
+config :ueberauth, Ueberauth,
+  providers: [
+    # <provider name>: { <Strategy Module>, [ <strategy options> ] }
+    # facebook: {Ueberauth.Strategy.Facebook, [opt1: "value", opts2: "value"]},
+    # github: {Ueberauth.Strategy.Github, [opt1: "value", opts2: "value"]}
+    # twitter: {Ueberauth.Strategy.Twitter, [opt1: "value", opts2: "value"]}
+  ]
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
