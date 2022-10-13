@@ -2,123 +2,57 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-/* This file is for your main application CSS */
+@import "./alert.css";
+@import "./form.css";
+@import "./buttons.css";
 
-/* Alerts and form errors used by phx.new */
-.alert {
-  padding: 15px;
-  margin-bottom: 20px;
-  border: 1px solid transparent;
-  border-radius: 4px;
-}
-.alert-info {
-  color: #31708f;
-  background-color: #d9edf7;
-  border-color: #bce8f1;
-}
-.alert-warning {
-  color: #8a6d3b;
-  background-color: #fcf8e3;
-  border-color: #faebcc;
-}
-.alert-danger {
-  color: #a94442;
-  background-color: #f2dede;
-  border-color: #ebccd1;
-}
-.alert p {
-  margin-bottom: 0;
-}
-.alert:empty {
-  display: none;
-}
-.invalid-feedback {
-  color: #a94442;
-  display: block;
-  margin: -1rem 0 2rem;
+body {
+	@apply font-primary;
 }
 
-/* LiveView specific classes for your customization */
-.phx-no-feedback.invalid-feedback,
-.phx-no-feedback .invalid-feedback {
-  display: none;
+/* Menu */
+.menu_item__ .menu_item_icon__ {
+	@apply opacity-0 left-24 hidden;
+}
+.menu_item__:hover .menu_item_icon__ {
+	@apply block transition-all ml-2 left-16 opacity-100 duration-500;
+}
+.menu_item__:hover,
+.menu_item__.active {
+	@apply hover:bg-dark-50 hover:bg-opacity-5;
 }
 
-.phx-click-loading {
-  opacity: 0.5;
-  transition: opacity 1s ease-out;
+/* List drop */
+.list_drop__ {
+	@apply space-y-2 text-gray-500;
 }
 
-.phx-loading{
-  cursor: wait;
+.list_drop__ .list_drop_title__ {
+	@apply uppercase text-sm;
+	@apply flex space-x-2 items-center cursor-pointer;
 }
 
-.phx-modal {
-  opacity: 1!important;
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.4);
+.list_drop__ .list_drop_content__ {
+	@apply space-y-1;
 }
 
-.phx-modal-content {
-  background-color: #fefefe;
-  margin: 15vh auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
+.list_drop__ .list_icon__ > * {
+	@apply hidden;
 }
 
-.phx-modal-close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
+.list_drop__ .list_icon__ .right {
+	@apply block;
 }
 
-.phx-modal-close:hover,
-.phx-modal-close:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
+.list_drop__ .list_drop_content__ {
+	@apply hidden space-y-2;
 }
 
-.fade-in-scale {
-  animation: 0.2s ease-in 0s normal forwards 1 fade-in-scale-keys;
+.list_drop__.active .list_drop_content__,
+.list_drop__.active .list_icon__ .down {
+	@apply block;
 }
 
-.fade-out-scale {
-  animation: 0.2s ease-out 0s normal forwards 1 fade-out-scale-keys;
+.list_drop__.active .list_icon__ .right {
+	@apply hidden;
 }
-
-.fade-in {
-  animation: 0.2s ease-out 0s normal forwards 1 fade-in-keys;
-}
-.fade-out {
-  animation: 0.2s ease-out 0s normal forwards 1 fade-out-keys;
-}
-
-@keyframes fade-in-scale-keys{
-  0% { scale: 0.95; opacity: 0; }
-  100% { scale: 1.0; opacity: 1; }
-}
-
-@keyframes fade-out-scale-keys{
-  0% { scale: 1.0; opacity: 1; }
-  100% { scale: 0.95; opacity: 0; }
-}
-
-@keyframes fade-in-keys{
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-@keyframes fade-out-keys{
-  0% { opacity: 1; }
-  100% { opacity: 0; }
-}
-

@@ -51,6 +51,15 @@ defmodule NewnixWeb do
     end
   end
 
+  def live_dashboard do
+    quote do
+      use Phoenix.LiveView,
+        layout: {NewnixWeb.LayoutView, "dashboard.html"}
+
+      unquote(view_helpers())
+    end
+  end
+
   def live_component do
     quote do
       use Phoenix.LiveComponent

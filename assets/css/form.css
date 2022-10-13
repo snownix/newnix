@@ -1,0 +1,11 @@
+.input_group__ {
+	@apply flex w-full;
+}
+
+.input_group__ input {
+	@apply w-full focus:ring-0;
+}
+
+.input_group__ .icon {
+	@apply m-auto;
+}

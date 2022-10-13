@@ -14,16 +14,18 @@ defmodule NewnixWeb.Router do
     plug :accepts, ["json"]
   end
 
-  live_session :default, on_mount: NewnixWeb.InitAssigns do
-    scope "/", NewnixWeb do
-      pipe_through :browser
+  scope "/", NewnixWeb do
+    pipe_through :browser
 
+    live_session :user, on_mount: {NewnixWeb.InitAssigns, :user} do
       scope "/user", User do
-        live "/", IndexLive
+        live "/", IndexLive, :user
       end
+    end
 
+    live_session :project, on_mount: {NewnixWeb.InitAssigns, :project} do
       scope "/project", Project do
-        live "/", IndexLive
+        live "/", IndexLive, :project
       end
     end
   end
