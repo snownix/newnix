@@ -5,12 +5,18 @@ defmodule NewnixWeb.InitAssigns do
   import Phoenix.LiveView
   import Phoenix.Component
 
-  def on_mount(:user, _params, _session, socket) do
-    # code
-    {:cont,
-     socket
-     |> assign(:sidebar, :user)
-     |> assign(:page_title, "User Dashboard")}
+  alias Newnix.Accounts
+  alias Newnix.Accounts.User
+
+  def on_mount(:user, params, session, socket) do
+    socket =
+      socket
+      |> assign(:sidebar, :user)
+      |> fetch_locale(session)
+      |> set_locale(params)
+      |> assign(:current_user, find_current_user(session))
+
+    {:cont, socket}
   end
 
   def on_mount(:project, _params, _session, socket) do
@@ -19,5 +25,28 @@ defmodule NewnixWeb.InitAssigns do
      socket
      |> assign(:sidebar, :project)
      |> assign(:page_title, "Project Dashboard")}
+  end
+
+  defp find_current_user(session) do
+    with user_token when not is_nil(user_token) <- session["user_token"],
+         %User{} = user <- Accounts.get_user_by_session_token(user_token),
+         do: user
+  end
+
+  def set_locale(socket, %{"locale" => locale}) do
+    Gettext.put_locale(NewnixWeb.Gettext, locale)
+
+    socket
+    |> assign(:locale, locale)
+  end
+
+  def set_locale(socket, _), do: socket
+
+  defp fetch_locale(socket, session) do
+    locale = session["locale"] || Application.get_env(:newnix, NewnixWeb.Gettext)[:default_locale]
+
+    Gettext.put_locale(NewnixWeb.Gettext, locale)
+
+    socket |> assign(:locale, locale)
   end
 end

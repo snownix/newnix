@@ -1,0 +1,333 @@
+## "msgid"s in this file come from POT (.pot) files.
+##
+## Do not add, change, or remove "msgid"s manually here as
+## they're tied to the ones in the corresponding POT file
+## (with the same domain).
+##
+## Use "mix gettext.extract --merge" or "mix gettext.merge"
+## to merge POT files into PO files.
+msgid ""
+msgstr ""
+"Language: en\n"
+"Plural-Forms: nplurals=2\n"
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/auth_live/confirm.html.heex:6
+#: lib/newnix_web/live/auth_live/forgot_password.html.heex:6
+#: lib/newnix_web/live/auth_live/login.ex:11
+#: lib/newnix_web/live/auth_live/login.html.heex:3
+#: lib/newnix_web/live/auth_live/reconfirm.html.heex:6
+#: lib/newnix_web/live/auth_live/register.html.heex:6
+#: lib/newnix_web/live/auth_live/reset_password.html.heex:6
+#: lib/newnix_web/live/shared_live/header_component.html.heex:46
+msgid "Sign in"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/auth_live/login.html.heex:5
+msgid "Don’t have an account?"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/auth_live/login.html.heex:18
+#: lib/newnix_web/live/auth_live/login.html.heex:19
+#: lib/newnix_web/live/auth_live/register.html.heex:22
+#: lib/newnix_web/live/auth_live/register.html.heex:23
+msgid "Password"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/auth_live/reset_password.ex:10
+#: lib/newnix_web/live/auth_live/reset_password.html.heex:24
+msgid "Reset Password"
+msgstr ""
+
+#, elixir-autogen, elixir-format, fuzzy
+#: lib/newnix_web/live/auth_live/login.html.heex:6
+#: lib/newnix_web/live/auth_live/register.ex:10
+#: lib/newnix_web/live/auth_live/register.html.heex:3
+#: lib/newnix_web/live/shared_live/header_component.html.heex:47
+msgid "Sign up"
+msgstr ""
+
+#, elixir-autogen, elixir-format, fuzzy
+#: lib/newnix_web/live/auth_live/login.html.heex:29
+msgid "Forgot password?"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/auth_live/login.html.heex:26
+msgid "Remember me"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/auth_live/register.html.heex:5
+msgid "Already have an account?"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/auth_live/confirm.html.heex:13
+#: lib/newnix_web/live/auth_live/forgot_password.html.heex:14
+#: lib/newnix_web/live/auth_live/login.html.heex:15
+#: lib/newnix_web/live/auth_live/reconfirm.html.heex:13
+#: lib/newnix_web/live/auth_live/register.html.heex:18
+#: lib/newnix_web/live/auth_live/reset_password.html.heex:13
+msgid "Enter Your Email Address"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/index_live/index.ex:9
+#: lib/newnix_web/live/index_live/index.ex:25
+msgid "Home"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/auth_live/register.html.heex:29
+msgid "I agree to the"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/shared_live/user_menu_component.html.heex:29
+msgid "Log out"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/auth_live/register.html.heex:33
+msgid "Register"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/shared_live/user_menu_component.html.heex:24
+msgid "Settings"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/auth_live/register.html.heex:29
+msgid "Terms and conditions"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/auth_live/register.html.heex:12
+#: lib/newnix_web/live/auth_live/register.html.heex:13
+msgid "Username"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/post_live/read.ex:41
+msgid "%{title}"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/account_live/profile.ex:20
+msgid "%{username} Profile"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/index_live/index.ex:26
+#: lib/newnix_web/live/post_live/list.ex:21
+msgid "A Next-level blog application for futuristic people"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/account_live/settings.ex:50
+msgid "Account information updated successfully."
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/post_live/components/form_component.html.heex:36
+msgid "Cancel"
+msgstr ""
+
+#, elixir-autogen, elixir-format, fuzzy
+#: lib/newnix_web/live/auth_live/confirm.ex:10
+msgid "Confirm"
+msgstr ""
+
+#, elixir-autogen, elixir-format, fuzzy
+#: lib/newnix_web/live/auth_live/confirm.html.heex:3
+msgid "Confirm account"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/auth_live/confirm.html.heex:18
+msgid "Confirm my account"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/auth_live/forgot_password.html.heex:5
+#: lib/newnix_web/live/auth_live/reset_password.html.heex:5
+msgid "Did you remember your password?"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/post_live/components/form_component.html.heex:43
+msgid "Draft"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/auth_live/confirm.html.heex:12
+#: lib/newnix_web/live/auth_live/forgot_password.html.heex:13
+#: lib/newnix_web/live/auth_live/login.html.heex:14
+#: lib/newnix_web/live/auth_live/reconfirm.html.heex:12
+#: lib/newnix_web/live/auth_live/register.html.heex:17
+#: lib/newnix_web/live/auth_live/reset_password.html.heex:12
+msgid "Email"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/auth_live/forgot_password.html.heex:10
+msgid "Enter the email address you used to join us and we will send you instructions to reset your password."
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/account_live/settings.ex:107
+msgid "File size is too large, max allowed 2MB."
+msgstr ""
+
+#, elixir-autogen, elixir-format, fuzzy
+#: lib/newnix_web/live/auth_live/forgot_password.ex:10
+msgid "Forgot Password"
+msgstr ""
+
+#, elixir-autogen, elixir-format, fuzzy
+#: lib/newnix_web/live/auth_live/forgot_password.html.heex:3
+msgid "Forgot your password?"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/auth_live/reconfirm.ex:41
+msgid "If your email is in our system and it has not been confirmed yet, you will receive an email with instructions shortly"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/auth_live/forgot_password.ex:41
+msgid "If your email is in our system, you will receive instructions to reset your password shortly."
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/auth_live/login.ex:35
+msgid "Invalid email or password"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/auth_live/login.html.heex:32
+msgid "Login"
+msgstr ""
+
+#, elixir-autogen, elixir-format, fuzzy
+#: lib/newnix_web/live/auth_live/reset_password.html.heex:18
+#: lib/newnix_web/live/auth_live/reset_password.html.heex:19
+msgid "New Password"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/shared_live/user_menu_component.html.heex:3
+msgid "New Post"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/post_live/read.ex:28
+msgid "Only post author can delete this post"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/post_live/read.ex:24
+msgid "Post deleted successfully."
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/post_live/list.ex:20
+msgid "Posts"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/shared_live/user_menu_component.html.heex:20
+msgid "Profile"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/post_live/components/form_component.html.heex:49
+msgid "Publish"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/auth_live/register.ex:35
+msgid "Registration completed successfully. please check your email to verify your account."
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/auth_live/reconfirm.html.heex:18
+msgid "Resend"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/auth_live/reconfirm.ex:10
+msgid "Resend Confirmation Instructions"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/auth_live/reconfirm.html.heex:3
+msgid "Resend confirmation instructions"
+msgstr ""
+
+#, elixir-autogen, elixir-format, fuzzy
+#: lib/newnix_web/live/auth_live/reset_password.html.heex:3
+msgid "Reset password"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/post_live/components/form_component.html.heex:49
+msgid "Save"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/auth_live/forgot_password.html.heex:19
+msgid "Send Reset Instructions"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/post_live/components/form_component.html.heex:56
+#: lib/newnix_web/live/post_live/components/form_component.html.heex:64
+msgid "Short Description"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/post_live/components/form_component.html.heex:26
+msgid "Slug"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/post_live/components/form_component.html.heex:18
+msgid "Title"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/account_live/profile.ex:21
+msgid "User %{username} posts"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/auth_live/login.ex:29
+msgid "Welcome back %{username}!"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/auth_live/reset_password.ex:53
+msgid "Wrong information"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/auth_live/confirm.html.heex:5
+#: lib/newnix_web/live/auth_live/reconfirm.html.heex:5
+msgid "You already confirmed your account?"
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/account_live/settings.ex:111
+msgid "You have selected an unacceptable file type, only images are accepted."
+msgstr ""
+
+#, elixir-autogen, elixir-format
+#: lib/newnix_web/live/account_live/settings.ex:108
+msgid "You have selected too many files."
+msgstr ""

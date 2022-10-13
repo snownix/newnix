@@ -65,6 +65,11 @@ config :newnix, NewnixWeb.Endpoint,
     ]
   ]
 
+# Images storage
+config :waffle,
+  storage: Waffle.Storage.Local,
+  asset_host: "http://localhost:4000/assets/"
+
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
 

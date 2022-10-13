@@ -1,6 +1,8 @@
 defmodule NewnixWeb.Router do
   use NewnixWeb, :router
 
+  import NewnixWeb.UserAuth
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -8,6 +10,8 @@ defmodule NewnixWeb.Router do
     plug :put_root_layout, {NewnixWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+
+    plug :fetch_current_user
   end
 
   pipeline :api do
@@ -17,16 +21,47 @@ defmodule NewnixWeb.Router do
   scope "/", NewnixWeb do
     pipe_through :browser
 
-    live_session :user, on_mount: {NewnixWeb.InitAssigns, :user} do
-      scope "/user", User do
-        live "/", IndexLive, :user
+    scope "/" do
+      pipe_through :require_authenticated_user
+
+      live_session :user, on_mount: {NewnixWeb.InitAssigns, :user} do
+        scope "/user", User do
+          live "/", IndexLive, :user
+        end
+      end
+
+      live_session :project, on_mount: {NewnixWeb.InitAssigns, :project} do
+        scope "/project", Project do
+          live "/", IndexLive, :project
+        end
       end
     end
 
-    live_session :project, on_mount: {NewnixWeb.InitAssigns, :project} do
-      scope "/project", Project do
-        live "/", IndexLive, :project
-      end
+    scope "/account" do
+      live "/confirm", AuthLive.Reconfirm, :reconfirm
+      live "/confirm/:token", AuthLive.Confirm, :confirm
+    end
+
+    scope "/auth" do
+      pipe_through :redirect_if_user_is_authenticated
+
+      live "/login", AuthLive.Login, :login
+      live "/register", AuthLive.Register, :register
+      live "/forgot-password", AuthLive.ForgotPassword, :forgot
+      live "/reset-password/:token", AuthLive.ResetPassword, :reset
+    end
+
+    ## Controllers
+    scope "/auth" do
+      delete "/logout", UserSessionController, :delete
+    end
+
+    scope "/auth" do
+      pipe_through :redirect_if_user_is_authenticated
+      post "/login", UserSessionController, :create
+
+      get "/providers/:provider", ProvidersController, :request
+      get "/providers/:provider/callback", ProvidersController, :callback
     end
   end
 

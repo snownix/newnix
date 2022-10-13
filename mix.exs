@@ -63,6 +63,9 @@ defmodule Newnix.MixProject do
       {:ueberauth_google, "~> 0.10.1"},
       {:ueberauth_github, "~> 0.8.1"},
       {:ueberauth_twitter, "~> 0.4.1"},
+      {:waffle, "~> 1.1"},
+      {:waffle_ecto, "~> 0.0"},
+      {:slugify, "~> 1.3"},
       {:tailwind, "~> 0.1.6", runtime: Mix.env() == :dev}
     ]
   end
