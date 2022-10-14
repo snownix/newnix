@@ -1,65 +1,77 @@
 <section class="auth__form">
-    <div class="auth__content">
+    <div class="space-y-4">
         <h1 class="w-full text-3xl font-bold"><%= gettext "Sign up" %></h1>
         <p class="text-lg text-low mb-2">
-            <%= gettext "Already have an account?" %>  
-            <%= live_patch gettext("Sign in"), to: Routes.auth_login_path(@socket, :login)  %>
+            <%= gettext "Don’t have an account?" %>
+            <%= live_patch gettext("Sign up") , to: Routes.auth_register_path(@socket, :register) %>
         </p>
-        <.live_component module={NewnixWeb.Components.AlertsComponent} flash={@flash} id="register-alerts" />
+        <.live_component module={NewnixWeb.Components.AlertsComponent} flash={@flash} id="alerts" />
 
         <%= if @show_form? do %>
-           <.form let={f} for={@changeset} phx-submit="create" phx-change="validate" class="relative w-full space-y-4">
-                <div class="relative">
-                    <%= label f, :username, gettext("Username") , class: "font-medium text-gray-900" %>
-                    <%= text_input f, :username, placeholder: gettext("Username"), required: true, phx_debounce: "blur" %>
-                    <%= error_tag f, :username, 1 %>
+            <.form let={f} for={@changeset} phx-submit="create" phx-change="validate" class="relative w-full space-y-4" 
+                phx-trigger-action={@trigger_submit} action={Routes.user_session_path(@socket, :create)}>
+                <div class="relative space-y-4">
+                    <%= ui_input assigns, f, :email, title: gettext("Enter Your Email Address"), required: true, phx_debounce: "blur" %>
+                    <%= ui_input assigns, f, :password, title: gettext("Password"), required: true, value: input_value(f, :password), phx_debounce: 1000, type: "password" %>
                 </div>
-                <div class="relative">
-                    <%= label f, :email, gettext("Email") , class: "font-medium text-gray-900" %>
-                    <%= email_input f, :email, placeholder: gettext("Enter Your Email Address"), required: true, phx_debounce: "blur" %>
-                    <%= error_tag f, :email, 1 %>
-                </div>
-                <div class="relative">
-                    <%= label f, :password, gettext("Password") , class: "font-medium text-gray-900" %>
-                    <%= password_input f, :password, placeholder: gettext("Password"), required: true, value: input_value(f, :password), phx_debounce: "blur" %>
-                    <%= error_tag f, :password, 1 %>
-                </div>
-                <div class="checkbox">
-                    <%= checkbox f, :terms , required: true %>
-                    <label for="user_terms" >
-                        <%= gettext "I agree to the" %> <a href="#"><%= gettext("Terms and conditions") %></a>
-                    </label>
+                <div class="flex flex-col md:flex-row justify-between space-y-2 md:space-y-0">
+                    <div class="checkbox">
+                        <%= checkbox f, :remember_me  %>
+                        <label for="user_remember_me" >
+                            <%= gettext "Remember me" %>
+                        </label>
+                    </div>
+                <%= live_patch gettext("Forgot password?") , to: Routes.auth_forgot_password_path(@socket, :forgot), class: "text-sm" %>
                 </div>
                 <div>
-                    <button type="submit" class="btn primary w-full"><%= gettext("Register") %></button>
+                <.ui_button disabled={length(f.errors) > 0} style="dark">
+                    <span><%= render NewnixWeb.IconsView, "box-arrow-in-right" , %{class: "w-5 h-5"} %></span>
+                    <span><%= gettext("Sign up") %></span>
+                </.ui_button>
                 </div>
             </.form>
         <% end %>
+        <div class="w-full flex flex-col space-y-4">
+            <%= if @show_form? do %>
+                <div class="flex items-center space-x-4  after:w-1/2 after:h-1 after:bg-gray-100 before:w-1/2 before:h-1 before:bg-gray-100">
+                    <div class="font-bold px-6">Or</div>
+                </div>
 
-        <div class="w-full py-10 flex flex-col space-y-3">
-            <%= if not @show_form? do %>
-                <button phx-click="show-form" class="btn primary w-full">
-                    <span class="mr-3"><%= render NewnixWeb.IconsView, "email" , %{class: "w-4 h-4"} %></span>
-                    <span class="text-base !mr-2"><%= gettext("Sign up with Email") %></span>
-                </button>              
+                <.ui_button phx-click="toggle-form" type="button" style="simple" class="hover:text-dark-500">
+                    <div class="flex space-x-1">
+                        <svg class="w-7 h-7"><use href={Routes.static_path(@socket, "/icons/social.svg#github")} /></svg>
+                        <svg class="w-7 h-7"><use href={Routes.static_path(@socket, "/icons/social.svg#google")} /></svg>
+                        <svg class="w-7 h-7"><use href={Routes.static_path(@socket, "/icons/social.svg#twitter")} /></svg>
+                    </div>
+                </.ui_button>
+            <% else %>
+                <.ui_button phx-click="toggle-form" type="button" style="dark">
+                    <span><%= render NewnixWeb.IconsView, "email" , %{class: "w-5 h-5"} %></span>
+                    <span><%= gettext("Sign up with Email") %></span>
+                </.ui_button>
+
+                
+                <div class="flex items-center space-x-4  after:w-1/2 after:h-1 after:bg-gray-100 before:w-1/2 before:h-1 before:bg-gray-100">
+                    <div class="font-bold px-6">Or</div>
+                </div>
+                
+                <.ui_button href={Routes.providers_path(@socket, :request, "github", type: "register")} class="w-full border-2 hover:border-gray-600 rounded-md py-3 flex justify-center items-center hover:!no-underline transition-all">
+                    <svg class="w-7 h-7"><use href={Routes.static_path(@socket, "/icons/social.svg#github")} /></svg>
+                    <span class="text-gray-800 font-medium">Sign up with Github</span>
+                </.ui_button>
+
+                <.ui_button href={Routes.providers_path(@socket, :request, "google", type: "register")} class="w-full border-2 hover:border-gray-600 rounded-md py-3 flex justify-center items-center hover:!no-underline transition-all">
+                    <svg class="w-7 h-7"><use href={Routes.static_path(@socket, "/icons/social.svg#google")} /></svg>
+                    <span class="text-gray-800 font-medium">Sign up with Google</span>
+                </.ui_button>
+
+                <.ui_button href={Routes.providers_path(@socket, :request, "twitter", type: "register")} class="w-full border-2 hover:border-gray-600 rounded-md py-3 flex justify-center items-center hover:!no-underline transition-all">
+                    <svg class="w-7 h-7"><use href={Routes.static_path(@socket, "/icons/social.svg#twitter")} /></svg>
+                    <span class="text-gray-800 font-medium">Sign up with Twitter</span>
+                </.ui_button>
             <% end %>
-            <a href={Routes.providers_path(@socket, :request, "github", type: "register")} class="w-full border-2 hover:border-gray-600 rounded-md py-3 flex justify-center items-center hover:!no-underline transition-all">
-                <img class="w-7 h-7 mr-3" src={Routes.static_path(@socket, "/icons/github.svg")} alt="" />
-                <span class="text-gray-800 font-medium">Sign up with Github</span>
-            </a>  
-        
-            <a href={Routes.providers_path(@socket, :request, "google", type: "register")} class="w-full border-2 hover:border-gray-600 rounded-md py-3 flex justify-center items-center hover:!no-underline transition-all">
-                <img class="w-7 h-7 mr-3" src={Routes.static_path(@socket, "/icons/google.svg")} alt="" />
-                <span class="text-gray-800 font-medium">Sign up with Google</span>
-            </a>  
 
-            <a href={Routes.providers_path(@socket, :request, "twitter", type: "register")} class="w-full border-2 hover:border-gray-600 rounded-md py-3 flex justify-center items-center hover:!no-underline transition-all">
-                <img class="w-7 h-7 mr-3" src={Routes.static_path(@socket, "/icons/twitter.svg")} alt="" />
-                <span class="text-gray-800 font-medium">Sign up with Twitter</span>
-            </a>  
         </div>
 
     </div>
 </section>
-
-

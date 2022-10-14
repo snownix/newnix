@@ -1,5 +1,5 @@
 .button {
-	@apply flex items-center justify-center;
+	@apply flex items-center justify-center space-x-2;
 
 	@apply px-1.5 py-3 rounded-md  cursor-pointer;
 	@apply border border-dark-50 border-opacity-20;

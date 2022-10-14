@@ -20,6 +20,10 @@ defmodule NewnixWeb.Plugs.SetLocale do
     |> check_locale
   end
 
+  defp set_locale_to(conn, nil) do
+    set_locale_to(conn, "en")
+  end
+
   defp set_locale_to(conn, locale) do
     NewnixWeb.Gettext |> Gettext.put_locale(locale)
 

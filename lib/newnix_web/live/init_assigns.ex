@@ -34,7 +34,7 @@ defmodule NewnixWeb.InitAssigns do
   end
 
   def set_locale(socket, %{"locale" => locale}) do
-    Gettext.put_locale(NewnixWeb.Gettext, locale)
+    put_locale(locale)
 
     socket
     |> assign(:locale, locale)
@@ -45,8 +45,14 @@ defmodule NewnixWeb.InitAssigns do
   defp fetch_locale(socket, session) do
     locale = session["locale"] || Application.get_env(:newnix, NewnixWeb.Gettext)[:default_locale]
 
-    Gettext.put_locale(NewnixWeb.Gettext, locale)
+    put_locale(locale)
 
     socket |> assign(:locale, locale)
+  end
+
+  defp put_locale(nil), do: nil
+
+  defp put_locale(locale) do
+    Gettext.put_locale(NewnixWeb.Gettext, locale)
   end
 end

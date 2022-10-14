@@ -10,22 +10,34 @@ defmodule NewnixWeb.Live.Components.Helper do
     title = Keyword.get(attrs, :title, nil)
 
     ~H"""
-      <div class="input_group" field-error={tag_has_error(form, name)}>
+      <div class="input_group" field-error={tag_has_error(form, name)}
+        field-fill={is_fill(form, name)}>
         <%= text_input form, name, attrs %>
         <%= label form, name, title %>
       </div>
     """
   end
 
-  attr :style, :string
-  attr :rest, :global
   slot(:inner_block, required: true)
+  attr :rest, :global, include: ~w(form)
+  attr :style, :string, default: "simple"
+  attr :class, :string, default: ""
+  attr :href, :string, default: nil
 
   def ui_button(assigns) do
     ~H"""
-      <button {@rest} class={"button " <> @style}>
-        <%= render_slot(@inner_block) %>
-      </button>
+      <%= if !is_nil(@href) do %>
+        <a class={@class <> " button " <> @style} {@rest} href={@href}>
+          <%= render_slot(@inner_block) %>
+        </a>
+      <% else %>
+        <button class={@class <> " button " <> @style} {@rest} >
+          <%= render_slot(@inner_block) %>
+        </button>
+      <% end %>
     """
   end
+
+  def is_fill(form, name),
+    do: !is_nil(input_value(form, name)) && input_value(form, name) !== ""
 end

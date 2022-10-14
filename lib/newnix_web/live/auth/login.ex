@@ -13,12 +13,12 @@ defmodule NewnixWeb.AuthLive.Login do
       trigger_submit: false,
       changeset: Accounts.user_login_changeset(%Accounts.User{}),
       page_title: gettext("Sign in"),
-      show_form?: true
+      show_form?: false
     )
   end
 
-  def handle_event("show-form", _, socket) do
-    {:noreply, assign(socket, :show_form?, true)}
+  def handle_event("toggle-form", _, socket) do
+    {:noreply, assign(socket, :show_form?, !socket.assigns.show_form?)}
   end
 
   def handle_event("validate", %{"user" => user_params}, socket) do

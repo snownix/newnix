@@ -7,8 +7,17 @@ defmodule NewnixWeb.AuthLive.Register do
     {:ok, put_initial_assigns(socket)}
   end
 
-  def handle_event("show-form", _, socket) do
-    {:noreply, assign(socket, :show_form?, true)}
+  def put_initial_assigns(socket) do
+    socket
+    |> assign(
+      show_form?: false,
+      changeset: Accounts.user_register_changeset(%Accounts.User{}),
+      page_title: gettext("Sign up")
+    )
+  end
+
+  def handle_event("toggle-form", _, socket) do
+    {:noreply, assign(socket, :show_form?, !socket.assigns.show_form?)}
   end
 
   def handle_event("validate", %{"user" => user_params}, socket) do
@@ -44,14 +53,5 @@ defmodule NewnixWeb.AuthLive.Register do
          socket
          |> assign(:changeset, changeset)}
     end
-  end
-
-  def put_initial_assigns(socket) do
-    socket
-    |> assign(
-      show_form?: false,
-      changeset: Accounts.user_register_changeset(%Accounts.User{}),
-      page_title: gettext("Sign up")
-    )
   end
 end
