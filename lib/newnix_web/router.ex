@@ -10,7 +10,6 @@ defmodule NewnixWeb.Router do
     plug :put_root_layout, {NewnixWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-
     plug :fetch_current_user
   end
 
@@ -43,25 +42,27 @@ defmodule NewnixWeb.Router do
     end
 
     scope "/auth" do
-      pipe_through :redirect_if_user_is_authenticated
+      scope "/" do
+        pipe_through :redirect_if_user_is_authenticated
 
-      live "/login", AuthLive.Login, :login
-      live "/register", AuthLive.Register, :register
-      live "/forgot-password", AuthLive.ForgotPassword, :forgot
-      live "/reset-password/:token", AuthLive.ResetPassword, :reset
-    end
+        live "/login", AuthLive.Login, :login
+        live "/register", AuthLive.Register, :register
+        live "/forgot-password", AuthLive.ForgotPassword, :forgot
+        live "/reset-password/:token", AuthLive.ResetPassword, :reset
+      end
 
-    ## Controllers
-    scope "/auth" do
-      delete "/logout", UserSessionController, :delete
-    end
+      ## Controllers
+      scope "/" do
+        delete "/logout", UserSessionController, :delete
+      end
 
-    scope "/auth" do
-      pipe_through :redirect_if_user_is_authenticated
-      post "/login", UserSessionController, :create
+      scope "/" do
+        pipe_through :redirect_if_user_is_authenticated
+        post "/login", UserSessionController, :create
 
-      get "/providers/:provider", ProvidersController, :request
-      get "/providers/:provider/callback", ProvidersController, :callback
+        get "/providers/:provider", ProvidersController, :request
+        get "/providers/:provider/callback", ProvidersController, :callback
+      end
     end
   end
 

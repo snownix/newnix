@@ -1,8 +1,10 @@
 .button {
-	@apply px-1.5 py-1.5 rounded text-gray-500 cursor-pointer;
-	@apply border border-dark-50 border-opacity-20;
+	@apply flex items-center justify-center;
 
-	@apply hover:bg-gray-50;
+	@apply px-1.5 py-3 rounded-md  cursor-pointer;
+	@apply border border-dark-50 border-opacity-20;
+	@apply text-dark-100 font-medium;
+	@apply hover:bg-gray-50 w-full;
 }
 
 .button.primary {
@@ -11,8 +13,4 @@
 
 .button.dark {
 	@apply bg-dark-500 text-white;
-}
-
-.button.simple {
-	@apply border-none p-2;
 }

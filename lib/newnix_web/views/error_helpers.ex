@@ -6,6 +6,15 @@ defmodule NewnixWeb.ErrorHelpers do
   use Phoenix.HTML
 
   @doc """
+  check if form input has errors.
+  """
+  def tag_has_error(form, field) do
+    form.errors
+    |> Keyword.get_values(field)
+    |> Enum.count() > 0
+  end
+
+  @doc """
   Generates tag for inlined form input errors.
   """
   def error_tag(form, field, max \\ nil) do

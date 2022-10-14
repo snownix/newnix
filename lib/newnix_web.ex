@@ -60,6 +60,15 @@ defmodule NewnixWeb do
     end
   end
 
+  def live_auth do
+    quote do
+      use Phoenix.LiveView,
+        layout: {NewnixWeb.LayoutView, "auth.html"}
+
+      unquote(view_helpers())
+    end
+  end
+
   def live_component do
     quote do
       use Phoenix.LiveComponent
@@ -97,6 +106,7 @@ defmodule NewnixWeb do
     quote do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
+      use Phoenix.Component
 
       # Import LiveView and .heex helpers (live_render, live_patch, <.form>, etc)
       import Phoenix.LiveView.Helpers
@@ -106,6 +116,7 @@ defmodule NewnixWeb do
 
       import NewnixWeb.ErrorHelpers
       import NewnixWeb.Gettext
+      import NewnixWeb.Live.Components.Helper
       alias NewnixWeb.Router.Helpers, as: Routes
     end
   end

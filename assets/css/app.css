@@ -10,6 +10,10 @@ body {
 	@apply font-primary;
 }
 
+[data-phx-main] {
+	@apply flex flex-1 h-full min-h-screen;
+}
+
 /* Menu */
 .menu_item__ .menu_item_icon__ {
 	@apply opacity-0 left-24 hidden;

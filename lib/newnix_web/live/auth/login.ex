@@ -1,10 +1,20 @@
 defmodule NewnixWeb.AuthLive.Login do
-  use NewnixWeb, :live_view
+  use NewnixWeb, :live_auth
 
   alias Newnix.Accounts
 
   def mount(_, _, socket) do
     {:ok, put_initial_assigns(socket)}
+  end
+
+  def put_initial_assigns(socket) do
+    socket
+    |> assign(
+      trigger_submit: false,
+      changeset: Accounts.user_login_changeset(%Accounts.User{}),
+      page_title: gettext("Sign in"),
+      show_form?: true
+    )
   end
 
   def handle_event("show-form", _, socket) do
@@ -34,15 +44,5 @@ defmodule NewnixWeb.AuthLive.Login do
        # In order to prevent user enumeration attacks, don't disclose whether the email is registered.
        |> put_flash(:error, gettext("Invalid email or password"))}
     end
-  end
-
-  def put_initial_assigns(socket) do
-    socket
-    |> assign(
-      trigger_submit: false,
-      changeset: Accounts.user_login_changeset(%Accounts.User{}),
-      page_title: gettext("Sign in"),
-      show_form?: false
-    )
   end
 end

@@ -46,9 +46,9 @@ defmodule Newnix.MixProject do
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 3.0"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_view, "~> 0.17.5"},
+      {:phoenix_live_view, "~> 0.18.2"},
       {:floki, ">= 0.30.0", only: :test},
-      {:phoenix_live_dashboard, "~> 0.6"},
+      {:phoenix_live_dashboard, "~> 0.7.1"},
       {:esbuild, "~> 0.4", runtime: Mix.env() == :dev},
       {:swoosh, "~> 1.3"},
       {:telemetry_metrics, "~> 0.6"},
@@ -66,6 +66,7 @@ defmodule Newnix.MixProject do
       {:waffle, "~> 1.1"},
       {:waffle_ecto, "~> 0.0"},
       {:slugify, "~> 1.3"},
+      {:bcrypt_elixir, "~> 2.0"},
       {:tailwind, "~> 0.1.6", runtime: Mix.env() == :dev}
     ]
   end

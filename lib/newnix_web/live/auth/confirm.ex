@@ -1,5 +1,5 @@
 defmodule NewnixWeb.AuthLive.Confirm do
-  use NewnixWeb, :live_view
+  use NewnixWeb, :live_auth
 
   alias Newnix.Accounts
 
