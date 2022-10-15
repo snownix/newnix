@@ -6,6 +6,8 @@
 @import "./form.css";
 @import "./buttons.css";
 
+@import "./pages/auth.css";
+
 body {
 	@apply font-primary;
 }

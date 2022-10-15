@@ -8,12 +8,12 @@ defmodule Newnix.Accounts.User do
   @primary_key {:id, :binary_id, autogenerate: true}
 
   schema "users" do
-    field :fullname, :string
+    field :firstname, :string
+    field :lastname, :string
     field :avatar, Newnix.Uploaders.AvatarUploader.Type
 
     field :phone, :string
 
-    field :username, :string
     field :email, :string
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
@@ -45,28 +45,23 @@ defmodule Newnix.Accounts.User do
   """
   def registration_changeset(user, attrs, opts \\ []) do
     uniq_email? = Keyword.get(opts, :uniq_email, true)
-    uniq_username? = Keyword.get(opts, :uniq_username, true)
 
     changeset =
       user
-      |> cast(attrs, [:email, :password, :username])
+      |> cast(attrs, [:email, :password, :firstname, :lastname])
       |> validate_password(opts)
 
-    changeset =
-      if uniq_email?,
-        do: validate_email(changeset, attrs),
-        else: changeset |> validate_email_changeset(attrs)
-
-    if uniq_username?, do: validate_username(changeset), else: changeset
+    if uniq_email?,
+      do: validate_email(changeset, attrs),
+      else: changeset |> validate_email_changeset(attrs)
   end
 
   def provider_registration_changeset(user, attrs) do
     user
-    |> cast(attrs, [:email, :username, :fullname])
+    |> cast(attrs, [:email, :firstname, :lastname])
     |> cast_assoc(:identities, with: &Identity.changeset/2, required: true)
-    |> validate_required([:email, :username])
+    |> validate_required([:email])
     |> validate_email(attrs)
-    |> validate_username()
   end
 
   def login_changeset(user, attrs, opts \\ []) do
@@ -78,9 +73,9 @@ defmodule Newnix.Accounts.User do
 
   def user_changeset(user, attrs) do
     user
-    |> cast(attrs, [:fullname, :phone, :username])
-    |> validate_length(:fullname, max: 50)
-    |> validate_username()
+    |> cast(attrs, [:firstname, :lastname, :phone])
+    |> validate_length(:firstname, max: 100)
+    |> validate_length(:lastname, max: 100)
   end
 
   def avatar_changeset(user, attrs) do
@@ -101,15 +96,6 @@ defmodule Newnix.Accounts.User do
     |> validate_required([:email])
     |> validate_format(:email, ~r/^[^\s]+@[^\s]+$/, message: "must have the @ sign and no spaces")
     |> validate_length(:email, max: 160)
-  end
-
-  defp validate_username(changeset) do
-    changeset
-    |> validate_required([:username])
-    |> validate_format(:username, ~r/^[a-zA-Z0-9-_]+$/, message: "username must be alphanumeric")
-    |> unsafe_validate_unique(:username, Newnix.Repo)
-    |> validate_length(:username, max: 40)
-    |> unique_constraint(:username)
   end
 
   defp validate_password(changeset, opts) do

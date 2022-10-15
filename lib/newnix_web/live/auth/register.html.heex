@@ -2,8 +2,8 @@
     <div class="space-y-4">
         <h1 class="w-full text-3xl font-bold"><%= gettext "Sign up" %></h1>
         <p class="text-lg text-low mb-2">
-            <%= gettext "Don’t have an account?" %>
-            <%= live_patch gettext("Sign up") , to: Routes.auth_register_path(@socket, :register) %>
+            <%= gettext "Already have an account?" %>
+            <%= live_patch gettext("Sign in") , to: Routes.auth_login_path(@socket, :login) %>
         </p>
         <.live_component module={NewnixWeb.Components.AlertsComponent} flash={@flash} id="alerts" />
 
@@ -11,17 +11,25 @@
             <.form let={f} for={@changeset} phx-submit="create" phx-change="validate" class="relative w-full space-y-4" 
                 phx-trigger-action={@trigger_submit} action={Routes.user_session_path(@socket, :create)}>
                 <div class="relative space-y-4">
+                    <div class="flex flex-col space-y-2 md:flex-row md:space-x-2 md:space-y-0">
+                        <%= ui_input assigns, f, :firstname, title: gettext("First name"), required: true, phx_debounce: "blur" %>
+                        <%= error_tag f, :firstname %>
+                        <%= ui_input assigns, f, :lastname, title: gettext("Last name"), required: true, phx_debounce: "blur" %>
+                        <%= error_tag f, :lastname %>
+                    </div>
                     <%= ui_input assigns, f, :email, title: gettext("Enter Your Email Address"), required: true, phx_debounce: "blur" %>
+                    <%= error_tag f, :email %>
                     <%= ui_input assigns, f, :password, title: gettext("Password"), required: true, value: input_value(f, :password), phx_debounce: 1000, type: "password" %>
+                    <%= error_tag f, :password %>
                 </div>
                 <div class="flex flex-col md:flex-row justify-between space-y-2 md:space-y-0">
                     <div class="checkbox">
-                        <%= checkbox f, :remember_me  %>
-                        <label for="user_remember_me" >
-                            <%= gettext "Remember me" %>
+                        <%= checkbox f, :agree  %>
+                        <label for="user_agree" >
+                            <%= gettext "Agree our Terms" %>
                         </label>
                     </div>
-                <%= live_patch gettext("Forgot password?") , to: Routes.auth_forgot_password_path(@socket, :forgot), class: "text-sm" %>
+                <%= live_patch gettext("Resend confirmation?") , to: Routes.auth_reconfirm_path(@socket, :reconfirm), class: "text-sm" %>
                 </div>
                 <div>
                 <.ui_button disabled={length(f.errors) > 0} style="dark">

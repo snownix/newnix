@@ -36,7 +36,7 @@ defmodule NewnixWeb.AuthLive.Login do
     if user = Accounts.get_user_by_email_and_password(email, password) do
       {:noreply,
        socket
-       |> put_flash(:info, gettext("Welcome back %{username}!", username: user.username))
+       |> put_flash(:info, gettext("Welcome back %{firstname}!", firstname: user.firstname))
        |> assign(:trigger_submit, true)}
     else
       {:noreply,

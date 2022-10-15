@@ -7,13 +7,14 @@ defmodule Newnix.Repo.Migrations.CreateUsersAuthTables do
     create table(:users, primary_key: false) do
       add :id, :uuid, primary_key: true
 
-      add :username, :citext, null: false
       add :email, :citext, null: false
       add :hashed_password, :string
 
       add :admin, :bool, default: false
 
-      add :fullname, :string
+      add :gender, :string, size: 20
+      add :firstname, :string, size: 100
+      add :lastname, :string, size: 100
       add :phone, :string, size: 20
 
       # url

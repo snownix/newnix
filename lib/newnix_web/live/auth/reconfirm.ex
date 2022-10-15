@@ -15,6 +15,10 @@ defmodule NewnixWeb.AuthLive.Reconfirm do
     }
   end
 
+  def handle_params(_, _, socket) do
+    {:noreply, socket}
+  end
+
   def handle_event("validate", %{"user" => user_params}, socket) do
     changeset =
       %Accounts.User{}

@@ -23,22 +23,6 @@ defmodule Newnix.Accounts do
   ## Database getters
 
   @doc """
-  Gets a user by username.
-
-  ## Examples
-
-      iex> get_user_by_username!("foo@example.com")
-      %User{}
-
-      iex> get_user_by_username!("unknown@example.com")
-      nil
-
-  """
-  def get_user_by_username!(username) when is_binary(username) do
-    Repo.get_by!(User, username: username)
-  end
-
-  @doc """
   Gets a user by email.
 
   ## Examples
@@ -152,8 +136,8 @@ defmodule Newnix.Accounts do
     attrs = %{
       identities: [identity],
       email: info.email,
-      username: info.nickname,
-      fullname: info.name
+      firstname: info.first_name,
+      lastname: info.last_name
     }
 
     %User{}
@@ -182,26 +166,12 @@ defmodule Newnix.Accounts do
     path
   end
 
-  def generate_username(name) do
-    username = Slug.slugify(name)
-
-    query =
-      from u in User,
-        where: u.username == ^username
-
-    if Repo.exists?(query) do
-      username <> "#{:rand.uniform(100_000)}"
-    else
-      username
-    end
-  end
-
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking user changes.
 
   ## Examples
 
-      iex> user_register_changeset(user, %{username: ...}, %{hash_password: ...})
+      iex> user_register_changeset(user, %{hash_password: ...})
       %Ecto.Changeset{data: %User{}}
 
   """
@@ -233,10 +203,10 @@ defmodule Newnix.Accounts do
 
   ## Examples
 
-      iex> user_changeset(user, %{fullname: ...})
+      iex> user_changeset(user, %{firstname: ...})
       {:ok, %User{}}
 
-      iex> user_changeset(user, %{fullname: ...})
+      iex> user_changeset(user, %{firstname: ...})
       {:error, %Ecto.Changeset{}}
 
   """
@@ -392,10 +362,10 @@ defmodule Newnix.Accounts do
 
   ## Examples
 
-      iex> update_user(user, "valid password", %{fullname: ...})
+      iex> update_user(user, "valid password", %{firstname: ...})
       {:ok, %User{}}
 
-      iex> update_user(user, "invalid password", %{fullname: ...})
+      iex> update_user(user, "invalid password", %{firstname: ...})
       {:error, %Ecto.Changeset{}}
 
   """

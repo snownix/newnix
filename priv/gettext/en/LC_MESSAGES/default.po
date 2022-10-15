@@ -106,38 +106,6 @@ msgstr ""
 msgid "Terms and conditions"
 msgstr ""
 
-#, elixir-autogen, elixir-format
-#: lib/newnix_web/live/auth_live/register.html.heex:12
-#: lib/newnix_web/live/auth_live/register.html.heex:13
-msgid "Username"
-msgstr ""
-
-#, elixir-autogen, elixir-format
-#: lib/newnix_web/live/post_live/read.ex:41
-msgid "%{title}"
-msgstr ""
-
-#, elixir-autogen, elixir-format
-#: lib/newnix_web/live/account_live/profile.ex:20
-msgid "%{username} Profile"
-msgstr ""
-
-#, elixir-autogen, elixir-format
-#: lib/newnix_web/live/index_live/index.ex:26
-#: lib/newnix_web/live/post_live/list.ex:21
-msgid "A Next-level blog application for futuristic people"
-msgstr ""
-
-#, elixir-autogen, elixir-format
-#: lib/newnix_web/live/account_live/settings.ex:50
-msgid "Account information updated successfully."
-msgstr ""
-
-#, elixir-autogen, elixir-format
-#: lib/newnix_web/live/post_live/components/form_component.html.heex:36
-msgid "Cancel"
-msgstr ""
-
 #, elixir-autogen, elixir-format, fuzzy
 #: lib/newnix_web/live/auth_live/confirm.ex:10
 msgid "Confirm"
@@ -157,11 +125,6 @@ msgstr ""
 #: lib/newnix_web/live/auth_live/forgot_password.html.heex:5
 #: lib/newnix_web/live/auth_live/reset_password.html.heex:5
 msgid "Did you remember your password?"
-msgstr ""
-
-#, elixir-autogen, elixir-format
-#: lib/newnix_web/live/post_live/components/form_component.html.heex:43
-msgid "Draft"
 msgstr ""
 
 #, elixir-autogen, elixir-format
@@ -220,34 +183,10 @@ msgstr ""
 msgid "New Password"
 msgstr ""
 
-#, elixir-autogen, elixir-format
-#: lib/newnix_web/live/shared_live/user_menu_component.html.heex:3
-msgid "New Post"
-msgstr ""
-
-#, elixir-autogen, elixir-format
-#: lib/newnix_web/live/post_live/read.ex:28
-msgid "Only post author can delete this post"
-msgstr ""
-
-#, elixir-autogen, elixir-format
-#: lib/newnix_web/live/post_live/read.ex:24
-msgid "Post deleted successfully."
-msgstr ""
-
-#, elixir-autogen, elixir-format
-#: lib/newnix_web/live/post_live/list.ex:20
-msgid "Posts"
-msgstr ""
 
 #, elixir-autogen, elixir-format
 #: lib/newnix_web/live/shared_live/user_menu_component.html.heex:20
 msgid "Profile"
-msgstr ""
-
-#, elixir-autogen, elixir-format
-#: lib/newnix_web/live/post_live/components/form_component.html.heex:49
-msgid "Publish"
 msgstr ""
 
 #, elixir-autogen, elixir-format
@@ -276,40 +215,10 @@ msgid "Reset password"
 msgstr ""
 
 #, elixir-autogen, elixir-format
-#: lib/newnix_web/live/post_live/components/form_component.html.heex:49
-msgid "Save"
-msgstr ""
-
-#, elixir-autogen, elixir-format
 #: lib/newnix_web/live/auth_live/forgot_password.html.heex:19
 msgid "Send Reset Instructions"
 msgstr ""
 
-#, elixir-autogen, elixir-format
-#: lib/newnix_web/live/post_live/components/form_component.html.heex:56
-#: lib/newnix_web/live/post_live/components/form_component.html.heex:64
-msgid "Short Description"
-msgstr ""
-
-#, elixir-autogen, elixir-format
-#: lib/newnix_web/live/post_live/components/form_component.html.heex:26
-msgid "Slug"
-msgstr ""
-
-#, elixir-autogen, elixir-format
-#: lib/newnix_web/live/post_live/components/form_component.html.heex:18
-msgid "Title"
-msgstr ""
-
-#, elixir-autogen, elixir-format
-#: lib/newnix_web/live/account_live/profile.ex:21
-msgid "User %{username} posts"
-msgstr ""
-
-#, elixir-autogen, elixir-format
-#: lib/newnix_web/live/auth_live/login.ex:29
-msgid "Welcome back %{username}!"
-msgstr ""
 
 #, elixir-autogen, elixir-format
 #: lib/newnix_web/live/auth_live/reset_password.ex:53
