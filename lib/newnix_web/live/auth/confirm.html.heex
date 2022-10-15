@@ -3,7 +3,9 @@
         <h1 class="w-full text-3xl font-bold"><%= gettext "Confirm account" %></h1>
         <p class="text-lg text-low mb-2">
             <%= gettext("You already confirmed your account?") %>
-            <%= live_patch gettext("Sign in"), to: Routes.auth_login_path(@socket, :login), class: "text-primary underline"  %>
+            <.link navigate={Routes.auth_login_path(@socket, :login)} class="text-primary underline">
+                <%= gettext("Sign in") %>
+            </.link>
         </p>
         <.live_component module={NewnixWeb.Components.AlertsComponent} flash={@flash} id="confirm-alerts" />
 

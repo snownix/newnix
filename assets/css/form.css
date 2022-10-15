@@ -1,6 +1,6 @@
 .input_group {
 	@apply relative;
-	@apply flex flex-col w-full px-2 pt-4 pb-2 rounded-md;
+	@apply flex flex-col w-full px-2 pt-4 pb-1.5 rounded-md;
 	@apply bg-gray-100;
 }
 

@@ -10,11 +10,15 @@ defmodule NewnixWeb.AuthLive.Register do
   def put_initial_assigns(socket) do
     socket
     |> assign(
-      trigger_submit: false,
-      show_form?: false,
       changeset: Accounts.user_register_changeset(%Accounts.User{}),
-      page_title: gettext("Sign up")
+      page_title: gettext("Sign up"),
+      trigger_submit?: false,
+      show_form?: false
     )
+  end
+
+  def handle_params(params, _uri, socket) do
+    {:noreply, assign(socket, show_form?: params["form"] == "true")}
   end
 
   def handle_event("toggle-form", _, socket) do
@@ -47,7 +51,7 @@ defmodule NewnixWeb.AuthLive.Register do
              "Registration completed successfully. please check your email to verify your account."
            )
          )
-         |> assign(:trigger_submit, true)
+         |> assign(:trigger_submit?, true)
          |> redirect(to: Routes.auth_login_path(socket, :login))}
 
       {:error, changeset} ->

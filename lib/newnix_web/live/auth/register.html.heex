@@ -3,13 +3,15 @@
         <h1 class="w-full text-3xl font-bold"><%= gettext "Sign up" %></h1>
         <p class="text-lg text-low mb-2">
             <%= gettext "Already have an account?" %>
-            <%= live_patch gettext("Sign in") , to: Routes.auth_login_path(@socket, :login) %>
+            <.link navigate={Routes.auth_login_path(@socket, :login) <> "?form=#{@show_form?}"} class="text-primary underline">
+                <%= gettext("Sign in") %>
+            </.link>
         </p>
         <.live_component module={NewnixWeb.Components.AlertsComponent} flash={@flash} id="alerts" />
 
         <%= if @show_form? do %>
             <.form let={f} for={@changeset} phx-submit="create" phx-change="validate" class="relative w-full space-y-4" 
-                phx-trigger-action={@trigger_submit} action={Routes.user_session_path(@socket, :create)}>
+                phx-trigger-action={@trigger_submit?} action={Routes.user_session_path(@socket, :create)}>
                 <div class="relative space-y-4">
                     <div class="flex flex-col space-y-2 md:flex-row md:space-x-2 md:space-y-0">
                         <%= ui_input assigns, f, :firstname, title: gettext("First name"), required: true, phx_debounce: "blur" %>
@@ -29,7 +31,9 @@
                             <%= gettext "Agree our Terms" %>
                         </label>
                     </div>
-                <%= live_patch gettext("Resend confirmation?") , to: Routes.auth_reconfirm_path(@socket, :reconfirm), class: "text-sm" %>
+                <.link navigate={Routes.auth_reconfirm_path(@socket, :reconfirm)} class="text-sm underline">
+                    <%= gettext("Resend confirmation") %>
+                </.link>
                 </div>
                 <div>
                 <.ui_button disabled={length(f.errors) > 0} theme="dark">

@@ -10,11 +10,15 @@ defmodule NewnixWeb.AuthLive.Login do
   def put_initial_assigns(socket) do
     socket
     |> assign(
-      trigger_submit: false,
       changeset: Accounts.user_login_changeset(%Accounts.User{}),
       page_title: gettext("Sign in"),
+      trigger_submit?: false,
       show_form?: false
     )
+  end
+
+  def handle_params(params, _uri, socket) do
+    {:noreply, assign(socket, show_form?: params["form"] == "true")}
   end
 
   def handle_event("toggle-form", _, socket) do
@@ -37,7 +41,7 @@ defmodule NewnixWeb.AuthLive.Login do
       {:noreply,
        socket
        |> put_flash(:info, gettext("Welcome back %{firstname}!", firstname: user.firstname))
-       |> assign(:trigger_submit, true)}
+       |> assign(:trigger_submit?, true)}
     else
       {:noreply,
        socket
