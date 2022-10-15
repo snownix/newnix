@@ -22,18 +22,20 @@ defmodule NewnixWeb.ProvidersController do
       end
     else
       case Accounts.get_user_by_provider_id(auth.provider, Kernel.inspect(auth.uid)) do
-        user when not is_nil(user) ->
-          log_in_user(conn, user)
-
-        _ ->
+        nil ->
           conn
-          |> put_flash(:error, "Login using this provider has been failed")
+          |> put_flash(:error, "This account has not been registered yet !")
           |> redirect(to: Routes.auth_login_path(conn, :login))
+
+        user ->
+          log_in_user(conn, user)
       end
     end
   end
 
-  def callback(%{assigns: %{ueberauth_failure: _failure}} = conn, _params) do
+  def callback(%{assigns: %{ueberauth_failure: failure}} = conn, _params) do
+    IO.inspect(failure, label: "Ueberauth failed")
+
     if get_session(conn, :auth_type) == "register" do
       conn
       |> put_flash(:error, "Registration using this provider has been failed")

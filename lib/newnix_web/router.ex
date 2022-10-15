@@ -34,7 +34,7 @@ defmodule NewnixWeb.Router do
 
   # User
   live_session :user, on_mount: {NewnixWeb.InitAssigns, :user} do
-    scope "/" do
+    scope "/", NewnixWeb.User do
       pipe_through [:browser, :require_authenticated_user, :user]
 
       live "/", IndexLive, :user
@@ -43,7 +43,7 @@ defmodule NewnixWeb.Router do
 
   # Project
   live_session :project, on_mount: {NewnixWeb.InitAssigns, :project} do
-    scope "/project", Project do
+    scope "/project", NewnixWeb.Project do
       pipe_through [:browser, :require_authenticated_user, :project]
 
       live "/", IndexLive, :project
