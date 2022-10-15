@@ -1,6 +1,8 @@
 defmodule NewnixWeb.Router do
   use NewnixWeb, :router
 
+  import NewnixWeb.UserAuth
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -8,24 +10,77 @@ defmodule NewnixWeb.Router do
     plug :put_root_layout, {NewnixWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_current_user
   end
 
-  pipeline :api do
-    plug :accepts, ["json"]
+  # pipeline :api do
+  #   plug :accepts, ["json"]
+  # end
+
+  pipeline :auth do
+    plug :put_root_layout, {NewnixWeb.LayoutView, "root.html"}
+    plug :put_layout, {NewnixWeb.AuthView, "app.html"}
   end
 
+  pipeline :user do
+    plug :put_root_layout, {NewnixWeb.LayoutView, "root.html"}
+    plug :put_layout, {NewnixWeb.UserView, "app.html"}
+  end
+
+  pipeline :project do
+    plug :put_root_layout, {NewnixWeb.LayoutView, "root.html"}
+    plug :put_layout, {NewnixWeb.ProjectView, "app.html"}
+  end
+
+  # User
+  live_session :user, on_mount: {NewnixWeb.InitAssigns, :user} do
+    scope "/", NewnixWeb.User do
+      pipe_through [:browser, :require_authenticated_user, :user]
+
+      live "/", IndexLive, :user
+    end
+  end
+
+  # Project
+  live_session :project, on_mount: {NewnixWeb.InitAssigns, :project} do
+    scope "/project", NewnixWeb.Project do
+      pipe_through [:browser, :require_authenticated_user, :project]
+
+      live "/", IndexLive, :project
+    end
+  end
+
+  # Auth
   scope "/", NewnixWeb do
-    pipe_through :browser
+    pipe_through [:browser, :auth]
 
-    live_session :user, on_mount: {NewnixWeb.InitAssigns, :user} do
-      scope "/user", User do
-        live "/", IndexLive, :user
-      end
+    scope "/account" do
+      live "/confirm", AuthLive.Reconfirm, :reconfirm
+      live "/confirm/:token", AuthLive.Confirm, :confirm
     end
 
-    live_session :project, on_mount: {NewnixWeb.InitAssigns, :project} do
-      scope "/project", Project do
-        live "/", IndexLive, :project
+    scope "/auth" do
+      scope "/" do
+        pipe_through :redirect_if_user_is_authenticated
+
+        live "/login", AuthLive.Login, :login
+        live "/register", AuthLive.Register, :register
+        live "/forgot-password", AuthLive.ForgotPassword, :forgot
+        live "/reset-password/:token", AuthLive.ResetPassword, :reset
+      end
+
+      ## Controllers
+      scope "/" do
+        pipe_through :require_authenticated_user
+        delete "/logout", UserSessionController, :delete
+      end
+
+      scope "/" do
+        pipe_through :redirect_if_user_is_authenticated
+        post "/login", UserSessionController, :create
+
+        get "/providers/:provider", ProvidersController, :request
+        get "/providers/:provider/callback", ProvidersController, :callback
       end
     end
   end
@@ -48,7 +103,7 @@ defmodule NewnixWeb.Router do
     scope "/" do
       pipe_through :browser
 
-      live_dashboard "/dashboard", metrics: NewnixWeb.Telemetry
+      live_dashboard("/dashboard", metrics: NewnixWeb.Telemetry)
     end
   end
 

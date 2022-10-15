@@ -1,0 +1,81 @@
+<section class="auth__form">
+    <div class="space-y-4">
+        <h1 class="w-full text-3xl font-bold"><%= gettext "Sign in" %></h1>
+        <p class="text-lg text-low mb-2">
+            <%= gettext "Don’t have an account?" %>
+            <.link navigate={Routes.auth_register_path(@socket, :register) <> "?form=#{@show_form?}"} class="text-primary underline">
+                <%= gettext("Sign up") %>
+            </.link>
+        </p>
+        <.live_component module={NewnixWeb.Components.AlertsComponent} flash={@flash} id="alerts" />
+
+        <%= if @show_form? do %>
+            <.form let={f} for={@changeset} phx-submit="create" phx-change="validate" class="relative w-full space-y-4" 
+                phx-trigger-action={@trigger_submit?} action={Routes.user_session_path(@socket, :create)}>
+                <div class="relative space-y-4">
+                    <%= ui_input assigns, f, :email, title: gettext("Enter Your Email Address"), required: true, phx_debounce: "blur" %>
+                    <%= ui_input assigns, f, :password, title: gettext("Password"), required: true, value: input_value(f, :password), phx_debounce: 1000, type: "password" %>
+                </div>
+                <div class="flex flex-col md:flex-row justify-between space-y-2 md:space-y-0">
+                    <div class="checkbox">
+                        <%= checkbox f, :remember_me  %>
+                        <label for="user_remember_me" >
+                            <%= gettext "Remember me" %>
+                        </label>
+                    </div>
+                    <.link navigate={Routes.auth_forgot_password_path(@socket, :forgot)} class="text-sm underline">
+                        <%= gettext("Forgot password") %>
+                    </.link>
+                </div>
+                <div>
+                <.ui_button disabled={length(f.errors) > 0} theme="dark">
+                    <span><%= render NewnixWeb.IconsView, "box-arrow-in-right" , %{class: "w-5 h-5"} %></span>
+                    <span><%= gettext("Sign in") %></span>
+                </.ui_button>
+                </div>
+            </.form>
+        <% end %>
+        <div class="w-full flex flex-col space-y-4">
+            <%= if @show_form? do %>
+                <div class="flex items-center space-x-4  after:w-1/2 after:h-1 after:bg-gray-100 before:w-1/2 before:h-1 before:bg-gray-100">
+                    <div class="font-bold px-6">Or</div>
+                </div>
+
+                <.ui_button phx-click="toggle-form" theme="simple" class="hover:text-dark-500">
+                    <div class="flex space-x-1">
+                        <svg class="w-7 h-7"><use href={Routes.static_path(@socket, "/icons/social.svg#github")} /></svg>
+                        <svg class="w-7 h-7"><use href={Routes.static_path(@socket, "/icons/social.svg#google")} /></svg>
+                        <svg class="w-7 h-7"><use href={Routes.static_path(@socket, "/icons/social.svg#twitter")} /></svg>
+                    </div>
+                </.ui_button>
+            <% else %>
+                <.ui_button phx-click="toggle-form" theme="dark">
+                    <span><%= render NewnixWeb.IconsView, "email" , %{class: "w-5 h-5"} %></span>
+                    <span><%= gettext("Sign in with Email") %></span>
+                </.ui_button>
+
+                
+                <div class="flex items-center space-x-4  after:w-1/2 after:h-1 after:bg-gray-100 before:w-1/2 before:h-1 before:bg-gray-100">
+                    <div class="font-bold px-6">Or</div>
+                </div>
+                
+                <.ui_button href={Routes.providers_path(@socket, :request, "github", type: "login")} class="w-full border-2 hover:border-gray-600 rounded-md py-3 flex justify-center items-center hover:!no-underline transition-all">
+                    <svg class="w-7 h-7"><use href={Routes.static_path(@socket, "/icons/social.svg#github")} /></svg>
+                    <span class="text-gray-800 font-medium">Sign in with Github</span>
+                </.ui_button>
+
+                <.ui_button href={Routes.providers_path(@socket, :request, "google", type: "login")} class="w-full border-2 hover:border-gray-600 rounded-md py-3 flex justify-center items-center hover:!no-underline transition-all">
+                    <svg class="w-7 h-7"><use href={Routes.static_path(@socket, "/icons/social.svg#google")} /></svg>
+                    <span class="text-gray-800 font-medium">Sign in with Google</span>
+                </.ui_button>
+
+                <.ui_button href={Routes.providers_path(@socket, :request, "twitter", type: "login")} class="w-full border-2 hover:border-gray-600 rounded-md py-3 flex justify-center items-center hover:!no-underline transition-all">
+                    <svg class="w-7 h-7"><use href={Routes.static_path(@socket, "/icons/social.svg#twitter")} /></svg>
+                    <span class="text-gray-800 font-medium">Sign in with Twitter</span>
+                </.ui_button>
+            <% end %>
+
+        </div>
+
+    </div>
+</section>

@@ -1,3 +1,3 @@
 defmodule NewnixWeb.Project.IndexLive do
-  use NewnixWeb, :live_dashboard
+  use NewnixWeb, :live_user
 end

@@ -6,15 +6,33 @@ defmodule NewnixWeb.ErrorHelpers do
   use Phoenix.HTML
 
   @doc """
+  check if form input has errors.
+  """
+  def tag_has_error(form, field) do
+    form.errors
+    |> Keyword.get_values(field)
+    |> Enum.count() > 0
+  end
+
+  @doc """
   Generates tag for inlined form input errors.
   """
-  def error_tag(form, field) do
-    Enum.map(Keyword.get_values(form.errors, field), fn error ->
-      content_tag(:span, translate_error(error),
-        class: "invalid-feedback",
-        phx_feedback_for: input_name(form, field)
-      )
-    end)
+  def error_tag(form, field, max \\ nil) do
+    errors =
+      Enum.map(Keyword.get_values(form.errors, field), fn error ->
+        content_tag(:span, translate_error(error),
+          class: "invalid-feedback",
+          phx_feedback_for: input_name(form, field)
+        )
+      end)
+
+    case is_nil(max) do
+      true ->
+        errors
+
+      false ->
+        errors |> Enum.slice(0, max)
+    end
   end
 
   @doc """

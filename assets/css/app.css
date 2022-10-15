@@ -6,8 +6,14 @@
 @import "./form.css";
 @import "./buttons.css";
 
+@import "./pages/auth.css";
+
 body {
 	@apply font-primary;
+}
+
+[data-phx-main] {
+	@apply flex flex-1 h-full min-h-screen;
 }
 
 /* Menu */

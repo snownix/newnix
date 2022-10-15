@@ -1,11 +1,30 @@
-.input_group__ {
-	@apply flex w-full;
+.input_group {
+	@apply relative;
+	@apply flex flex-col w-full px-2 pt-4 pb-1 rounded-md;
+	@apply bg-gray-100;
 }
 
-.input_group__ input {
-	@apply w-full focus:ring-0;
+.input_group[field-error] {
+	@apply ring ring-red-200;
 }
 
-.input_group__ .icon {
+.input_group label {
+	@apply absolute top-5 left-5 -z-0;
+	@apply text-grai-500 font-medium;
+	@apply delay-200;
+}
+
+.input_group:focus-within label,
+.input_group[field-fill] label {
+	@apply transition-all;
+	@apply top-1.5;
+}
+
+.input_group input {
+	@apply bg-transparent;
+	@apply w-full focus:ring-0 border-none z-0 pt-3;
+}
+
+.input_group .icon {
 	@apply m-auto;
 }

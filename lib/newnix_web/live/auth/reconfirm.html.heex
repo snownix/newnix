@@ -1,0 +1,23 @@
+<section class="auth__form">
+    <div class="auth__content">
+        <h1 class="w-full text-3xl font-bold"><%= gettext "Resend confirmation instructions" %></h1>
+        <p class="text-lg text-low mb-2">
+            <%= gettext "You already confirmed your account?" %>  
+            <%= live_patch gettext("Sign in"), to: Routes.auth_login_path(@socket, :login), class: "text-primary underline"  %>
+        </p>
+        <.live_component module={NewnixWeb.Components.AlertsComponent} flash={@flash} id="register-alerts" />
+
+        <.form let={f} for={@changeset} phx-submit="update" phx-change="validate" class="relative w-full space-y-4">
+            <div class="relative">
+                <%= ui_input assigns, f, :email, title: gettext("Enter Your Email Address"), required: true, phx_debounce: "blur" %>
+            </div>
+       
+            <.ui_button disabled={length(f.errors) > 0} theme="dark">
+                <span><%= render NewnixWeb.IconsView, "email" , %{class: "w-5 h-5"} %></span>
+                <span><%= gettext("Resend instructions") %></span>
+            </.ui_button>
+        </.form>
+    </div>
+</section>
+
+
