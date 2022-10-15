@@ -32,7 +32,7 @@
                 <%= live_patch gettext("Resend confirmation?") , to: Routes.auth_reconfirm_path(@socket, :reconfirm), class: "text-sm" %>
                 </div>
                 <div>
-                <.ui_button disabled={length(f.errors) > 0} style="dark">
+                <.ui_button disabled={length(f.errors) > 0} theme="dark">
                     <span><%= render NewnixWeb.IconsView, "box-arrow-in-right" , %{class: "w-5 h-5"} %></span>
                     <span><%= gettext("Sign up") %></span>
                 </.ui_button>
@@ -45,7 +45,7 @@
                     <div class="font-bold px-6">Or</div>
                 </div>
 
-                <.ui_button phx-click="toggle-form" type="button" style="simple" class="hover:text-dark-500">
+                <.ui_button phx-click="toggle-form" type="button" theme="simple" class="hover:text-dark-500">
                     <div class="flex space-x-1">
                         <svg class="w-7 h-7"><use href={Routes.static_path(@socket, "/icons/social.svg#github")} /></svg>
                         <svg class="w-7 h-7"><use href={Routes.static_path(@socket, "/icons/social.svg#google")} /></svg>
@@ -53,7 +53,7 @@
                     </div>
                 </.ui_button>
             <% else %>
-                <.ui_button phx-click="toggle-form" type="button" style="dark">
+                <.ui_button phx-click="toggle-form" type="button" theme="dark">
                     <span><%= render NewnixWeb.IconsView, "email" , %{class: "w-5 h-5"} %></span>
                     <span><%= gettext("Sign up with Email") %></span>
                 </.ui_button>

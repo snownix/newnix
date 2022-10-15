@@ -51,10 +51,10 @@ defmodule NewnixWeb do
     end
   end
 
-  def live_dashboard do
+  def live_user do
     quote do
       use Phoenix.LiveView,
-        layout: {NewnixWeb.LayoutView, "dashboard.html"}
+        layout: {NewnixWeb.UserView, "live.html"}
 
       unquote(view_helpers())
     end
@@ -63,7 +63,16 @@ defmodule NewnixWeb do
   def live_auth do
     quote do
       use Phoenix.LiveView,
-        layout: {NewnixWeb.LayoutView, "auth.html"}
+        layout: {NewnixWeb.AuthView, "live.html"}
+
+      unquote(view_helpers())
+    end
+  end
+
+  def live_project do
+    quote do
+      use Phoenix.LiveView,
+        layout: {NewnixWeb.ProjectView, "live.html"}
 
       unquote(view_helpers())
     end

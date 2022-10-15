@@ -13,28 +13,46 @@ defmodule NewnixWeb.Router do
     plug :fetch_current_user
   end
 
-  pipeline :api do
-    plug :accepts, ["json"]
+  # pipeline :api do
+  #   plug :accepts, ["json"]
+  # end
+
+  pipeline :auth do
+    plug :put_root_layout, {NewnixWeb.LayoutView, "root.html"}
+    plug :put_layout, {NewnixWeb.AuthView, "app.html"}
   end
 
-  scope "/", NewnixWeb do
-    pipe_through :browser
+  pipeline :user do
+    plug :put_root_layout, {NewnixWeb.LayoutView, "root.html"}
+    plug :put_layout, {NewnixWeb.UserView, "app.html"}
+  end
 
+  pipeline :project do
+    plug :put_root_layout, {NewnixWeb.LayoutView, "root.html"}
+    plug :put_layout, {NewnixWeb.ProjectView, "app.html"}
+  end
+
+  # User
+  live_session :user, on_mount: {NewnixWeb.InitAssigns, :user} do
     scope "/" do
-      pipe_through :require_authenticated_user
+      pipe_through [:browser, :require_authenticated_user, :user]
 
-      live_session :user, on_mount: {NewnixWeb.InitAssigns, :user} do
-        scope "/user", User do
-          live "/", IndexLive, :user
-        end
-      end
-
-      live_session :project, on_mount: {NewnixWeb.InitAssigns, :project} do
-        scope "/project", Project do
-          live "/", IndexLive, :project
-        end
-      end
+      live "/", IndexLive, :user
     end
+  end
+
+  # Project
+  live_session :project, on_mount: {NewnixWeb.InitAssigns, :project} do
+    scope "/project", Project do
+      pipe_through [:browser, :require_authenticated_user, :project]
+
+      live "/", IndexLive, :project
+    end
+  end
+
+  # Auth
+  scope "/", NewnixWeb do
+    pipe_through [:browser, :auth]
 
     scope "/account" do
       live "/confirm", AuthLive.Reconfirm, :reconfirm
@@ -53,6 +71,7 @@ defmodule NewnixWeb.Router do
 
       ## Controllers
       scope "/" do
+        pipe_through :require_authenticated_user
         delete "/logout", UserSessionController, :delete
       end
 
@@ -84,7 +103,7 @@ defmodule NewnixWeb.Router do
     scope "/" do
       pipe_through :browser
 
-      live_dashboard "/dashboard", metrics: NewnixWeb.Telemetry
+      live_dashboard("/dashboard", metrics: NewnixWeb.Telemetry)
     end
   end
 

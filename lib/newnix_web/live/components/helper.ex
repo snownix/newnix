@@ -20,18 +20,18 @@ defmodule NewnixWeb.Live.Components.Helper do
 
   slot(:inner_block, required: true)
   attr :rest, :global, include: ~w(form)
-  attr :style, :string, default: "simple"
+  attr :theme, :string, default: "simple"
   attr :class, :string, default: ""
   attr :href, :string, default: nil
 
   def ui_button(assigns) do
     ~H"""
       <%= if !is_nil(@href) do %>
-        <a class={@class <> " button " <> @style} {@rest} href={@href}>
+        <a class={@class <> " button " <> @theme} {@rest} href={@href}>
           <%= render_slot(@inner_block) %>
         </a>
       <% else %>
-        <button class={@class <> " button " <> @style} {@rest} >
+        <button class={@class <> " button " <> @theme} {@rest} >
           <%= render_slot(@inner_block) %>
         </button>
       <% end %>
