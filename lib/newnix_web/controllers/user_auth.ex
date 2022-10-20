@@ -91,7 +91,7 @@ defmodule NewnixWeb.UserAuth do
   def fetch_current_user(conn, _opts) do
     {user_token, conn} = ensure_user_token(conn)
     user = user_token && Accounts.get_user_by_session_token(user_token)
-    assign(conn, :current_user, user)
+    assign(conn, :user, user)
   end
 
   defp ensure_user_token(conn) do
@@ -112,7 +112,7 @@ defmodule NewnixWeb.UserAuth do
   Used for routes that require the user to not be authenticated.
   """
   def redirect_if_user_is_authenticated(conn, _opts) do
-    if conn.assigns[:current_user] do
+    if conn.assigns[:user] do
       conn
       |> redirect(to: signed_in_path(conn))
       |> halt()
@@ -128,7 +128,7 @@ defmodule NewnixWeb.UserAuth do
   they use the application at all, here would be a good place.
   """
   def require_authenticated_user(conn, _opts) do
-    if conn.assigns[:current_user] do
+    if conn.assigns[:user] do
       conn
     else
       conn

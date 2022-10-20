@@ -12,7 +12,7 @@ defmodule NewnixWeb.InitAssigns do
      socket
      |> assign(:sidebar, :user)
      |> assign_locale(session, params)
-     |> assign(:current_user, find_current_user(session))}
+     |> assign(:user, find_current_user(session))}
   end
 
   def on_mount(:project, _params, _session, socket) do

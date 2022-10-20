@@ -1,0 +1,13 @@
+<section class="m-auto">
+    <%= if Enum.count(@projects) > 0 do %>
+    <div>
+        Projects here
+    </div>
+    <% else %>
+        <.live_component 
+            module={NewnixWeb.Components.Cards.EmptyState} 
+            title="Project" 
+            id="project-empty-state"
+            href={Routes.live_path(@socket, NewnixWeb.User.DashboardLive.New)} />
+    <% end %>
+</section>

@@ -25,6 +25,11 @@ defmodule Newnix.Campaigns.Campaign do
   def changeset(campaign, attrs) do
     campaign
     |> cast(attrs, [:name, :description, :expire_at, :status])
-    |> validate_required([:name, :expire_at, :status])
+    |> validate_required([:name, :expire_at])
+  end
+
+  def project_assoc(changeset, project) do
+    changeset
+    |> put_assoc(:project, project)
   end
 end

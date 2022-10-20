@@ -16,9 +16,6 @@ defmodule NewnixWeb.Components.Partials.SidebarComponent do
           <.menu_item link="#" icon="kanban">Home</.menu_item>
           <.menu_item link="#" icon="users">Home</.menu_item>
         <% else %>
-          <.menu_item link={Routes.index_path(@socket,:project)} icon="kanban">Dashboard</.menu_item>
-          <.menu_item link={Routes.index_path(@socket,:project)} icon="bullseye">Campaigns</.menu_item>
-          <.menu_item link={Routes.index_path(@socket,:project)} icon="person-lines-fill">Subsribers</.menu_item>
         <% end %>
         </div>
       </nav>

@@ -1,8 +1,11 @@
 defmodule Newnix.Projects.Project do
   use Ecto.Schema
 
-  alias Newnix.Subscribers.Subscriber
+  alias Newnix.Accounts.User
   alias Newnix.Campaigns.Campaign
+  alias Newnix.Subscribers.Subscriber
+
+  alias Newnix.Projects.UserProject
 
   import Ecto.Changeset
 
@@ -13,8 +16,9 @@ defmodule Newnix.Projects.Project do
     field :description, :string
     field :website, :string
 
-    has_many :subscribers, Subscriber
     has_many :campaigns, Campaign
+    has_many :subscribers, Subscriber
+    many_to_many :users, User, join_through: UserProject
 
     timestamps()
   end
@@ -23,5 +27,11 @@ defmodule Newnix.Projects.Project do
     project
     |> cast(attrs, [:name, :description, :website])
     |> validate_required([:name])
+  end
+
+  def user_assoc(project, user) do
+    project
+    |> change()
+    |> put_assoc(:users, [user])
   end
 end

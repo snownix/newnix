@@ -1,25 +1,9 @@
 
 <div class="h-full min-h-screen flex flex-col flex-1">
-  <p class="alert alert-info" role="alert"
-    phx-click="lv:clear-flash"
-    phx-value-key="info"><%= live_flash(@flash, :info) %></p>
-
-  <p class="alert alert-danger" role="alert"
-    phx-click="lv:clear-flash"
-    phx-value-key="error"><%= live_flash(@flash, :error) %></p>
-
+  <.live_component module={NewnixWeb.Components.Partials.NavbarComponent} id="navbar" />
   <div class="min-h-0 flex-1 flex overflow-hidden">
-
-  
-    <!-- Sidebar -->
-    <.live_component module={NewnixWeb.Components.Wizards.SidebarComponent} id="sidebar" sidebar={@sidebar} />
-
-    <!-- Main area -->
-    <main class="min-w-0 flex-1 lg:flex">
-      <!-- Primary column -->
-      <section aria-labelledby="primary-heading" class="min-w-0 flex-1 h-full flex flex-col overflow-y-auto lg:order-last">
+      <section aria-labelledby="primary-heading" class="min-w-0 flex-1 h-full flex flex-col overflow-y-auto lg:order-last m-auto">
         <%= @inner_content %>
       </section>
-    </main>
   </div>
 </div>

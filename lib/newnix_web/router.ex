@@ -37,7 +37,10 @@ defmodule NewnixWeb.Router do
     scope "/", NewnixWeb.User do
       pipe_through [:browser, :require_authenticated_user, :user]
 
-      live "/", IndexLive, :user
+      scope "/", DashboardLive do
+        live "/", Index
+        live "/new", New
+      end
     end
   end
 
@@ -46,7 +49,7 @@ defmodule NewnixWeb.Router do
     scope "/project", NewnixWeb.Project do
       pipe_through [:browser, :require_authenticated_user, :project]
 
-      live "/", IndexLive, :project
+      live "/", DashboardLive.Index
     end
   end
 

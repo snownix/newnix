@@ -5,20 +5,39 @@ defmodule NewnixWeb.Live.Components.Helper do
   use Phoenix.HTML
   import NewnixWeb.ErrorHelpers
 
-  def ui_input(assigns, form, name, attrs \\ []) do
-    title = Keyword.get(attrs, :title, nil)
+  attr :rest, :global, include: ~w(form required value)
+  attr :name, :string, required: true
+  attr :form, :string, required: true
+  attr :title, :string, required: true
+  attr :type, :string, default: "text"
 
+  def ui_input(assigns) do
     ~H"""
-      <label class="input_group" field-error={tag_has_error(form, name)}
-        field-fill={is_fill(form, name)}>
-        <%= text_input form, name, attrs %>
-        <%= label form, name, title %>
+      <label class="input_group" field-error={tag_has_error(@form, @name)}
+        field-fill={is_fill(@form, @name)}>
+        <%= text_input @form, @name, type: @type %>
+        <%= label @form, @name, @title %>
+      </label>
+    """
+  end
+
+  attr :rest, :global, include: ~w(form required value)
+  attr :name, :string, required: true
+  attr :form, :string, required: true
+  attr :title, :string, required: true
+
+  def ui_textarea(assigns) do
+    ~H"""
+      <label class="input_group" field-error={tag_has_error(@form, @name)}
+        field-fill={is_fill(@form, @name)} phx-update="ignore" id={@name}>
+        <%= textarea @form, @name %>
+        <%= label @form, @name, @title %>
       </label>
     """
   end
 
   slot(:inner_block, required: true)
-  attr :rest, :global, include: ~w(form)
+  attr :rest, :global, include: ~w(form required)
   attr :theme, :string, default: "simple"
   attr :class, :string, default: ""
   attr :href, :string, default: nil

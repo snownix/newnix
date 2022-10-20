@@ -4,10 +4,12 @@ defmodule NewnixWeb.ErrorHelpers do
   """
 
   use Phoenix.HTML
+  import Phoenix.LiveView, only: [put_flash: 3]
 
   @doc """
   check if form input has errors.
   """
+
   def tag_has_error(form, field) do
     form.errors
     |> Keyword.get_values(field)
@@ -33,6 +35,19 @@ defmodule NewnixWeb.ErrorHelpers do
       false ->
         errors |> Enum.slice(0, max)
     end
+  end
+
+  def put_changeset_errors(conn, changeset) do
+    translate_errors(changeset)
+    |> Enum.reduce(conn, fn error, acc ->
+      acc |> put_flash(:error, error |> String.capitalize())
+    end)
+  end
+
+  def translate_errors(%{errors: errors} = _changeset) do
+    Enum.map(errors, fn {field, error} ->
+      Atom.to_string(field) <> " " <> translate_error(error)
+    end)
   end
 
   @doc """

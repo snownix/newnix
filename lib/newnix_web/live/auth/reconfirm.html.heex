@@ -9,7 +9,7 @@
 
         <.form let={f} for={@changeset} phx-submit="update" phx-change="validate" class="relative w-full space-y-4">
             <div class="relative">
-                <%= ui_input assigns, f, :email, title: gettext("Enter Your Email Address"), required: true, phx_debounce: "blur" %>
+                <.ui_input form={f} name={:email} title={gettext("Enter Your Email Address")} phx_debounce="blur" required/>
             </div>
        
             <.ui_button disabled={length(f.errors) > 0} theme="dark">

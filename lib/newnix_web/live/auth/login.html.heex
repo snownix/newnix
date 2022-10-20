@@ -13,8 +13,8 @@
             <.form let={f} for={@changeset} phx-submit="create" phx-change="validate" class="relative w-full space-y-4" 
                 phx-trigger-action={@trigger_submit?} action={Routes.user_session_path(@socket, :create)}>
                 <div class="relative space-y-4">
-                    <%= ui_input assigns, f, :email, title: gettext("Enter Your Email Address"), required: true, phx_debounce: "blur" %>
-                    <%= ui_input assigns, f, :password, title: gettext("Password"), required: true, value: input_value(f, :password), phx_debounce: 1000, type: "password" %>
+                    <.ui_input form={f} name={:email} title={gettext("Enter Your Email Address")} phx_debounce="blur" required />
+                    <.ui_input form={f} name={:password} title={gettext("Password")} phx_debounce="blur" value={input_value(f, :password)} type="password" required />
                 </div>
                 <div class="flex flex-col md:flex-row justify-between space-y-2 md:space-y-0">
                     <div class="checkbox">
