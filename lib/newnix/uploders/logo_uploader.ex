@@ -1,4 +1,4 @@
-defmodule Newnix.Uploaders.AvatarUploader do
+defmodule Newnix.Uploaders.LogoUploader do
   # Include ecto support (requires package waffle_ecto installed):
   use Waffle.Definition
   use Waffle.Ecto.Definition
@@ -28,11 +28,11 @@ defmodule Newnix.Uploaders.AvatarUploader do
 
   # Override the storage directory:
   def storage_dir(_version, {_file, scope}) do
-    "uploads/avatar/#{scope.id}"
+    "uploads/logos/#{scope.id}"
   end
 
   # Provide a default URL if there hasn't been a file uploaded
-  def default_url(version, _scope) do
+  def default_url(_version, _scope) do
     nil
   end
 

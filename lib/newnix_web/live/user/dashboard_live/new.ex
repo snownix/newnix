@@ -5,7 +5,12 @@ defmodule NewnixWeb.User.DashboardLive.New do
   alias Newnix.Projects.Project
 
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, %{changeset: Projects.change_project(%Project{})})}
+    {:ok, socket |> put_initiale_assigns()}
+  end
+
+  def put_initiale_assigns(socket) do
+    socket
+    |> assign(changeset: Projects.change_project(%Project{}))
   end
 
   def handle_event("validate", %{"project" => params}, socket) do

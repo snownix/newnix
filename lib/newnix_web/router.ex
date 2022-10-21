@@ -2,6 +2,7 @@ defmodule NewnixWeb.Router do
   use NewnixWeb, :router
 
   import NewnixWeb.UserAuth
+  import NewnixWeb.Project
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -12,10 +13,6 @@ defmodule NewnixWeb.Router do
     plug :put_secure_browser_headers
     plug :fetch_current_user
   end
-
-  # pipeline :api do
-  #   plug :accepts, ["json"]
-  # end
 
   pipeline :auth do
     plug :put_root_layout, {NewnixWeb.LayoutView, "root.html"}
@@ -28,16 +25,21 @@ defmodule NewnixWeb.Router do
   end
 
   pipeline :project do
+    plug :fetch_current_project
+    plug :required_project
+
     plug :put_root_layout, {NewnixWeb.LayoutView, "root.html"}
     plug :put_layout, {NewnixWeb.ProjectView, "app.html"}
   end
 
   # User
   live_session :user, on_mount: {NewnixWeb.InitAssigns, :user} do
-    scope "/", NewnixWeb.User do
+    scope "/", NewnixWeb do
       pipe_through [:browser, :require_authenticated_user, :user]
 
-      scope "/", DashboardLive do
+      get "/project/open/:id", ProjectController, :open
+
+      scope "/", User.DashboardLive do
         live "/", Index
         live "/new", New
       end
@@ -45,7 +47,8 @@ defmodule NewnixWeb.Router do
   end
 
   # Project
-  live_session :project, on_mount: {NewnixWeb.InitAssigns, :project} do
+  live_session :project,
+    on_mount: [{NewnixWeb.InitAssigns, :user}, {NewnixWeb.InitAssigns, :project}] do
     scope "/project", NewnixWeb.Project do
       pipe_through [:browser, :require_authenticated_user, :project]
 
@@ -72,7 +75,7 @@ defmodule NewnixWeb.Router do
         live "/reset-password/:token", AuthLive.ResetPassword, :reset
       end
 
-      ## Controllers
+      # Controllers
       scope "/" do
         pipe_through :require_authenticated_user
         delete "/logout", UserSessionController, :delete

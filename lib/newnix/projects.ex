@@ -3,7 +3,7 @@ defmodule Newnix.Projects do
   The Accounts context.
   """
 
-  # import Ecto.Query
+  import Ecto.Query
   alias Newnix.Repo
   alias Newnix.Projects.Project
   alias Newnix.Accounts.User
@@ -38,6 +38,14 @@ defmodule Newnix.Projects do
 
   """
   def get_project!(id), do: Repo.get!(Project, id)
+
+  def get_project!(user = %User{}, id) do
+    Repo.one!(
+      from p in Project,
+        join: u in assoc(p, :users),
+        where: p.id == ^id and u.id == ^user.id
+    )
+  end
 
   @doc """
   Creates a project.

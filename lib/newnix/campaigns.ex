@@ -20,7 +20,7 @@ defmodule Newnix.Campaigns do
   def list_campaigns(project = %Project{}) do
     project
     |> Repo.preload(:campaigns)
-    |> then(fn u -> u.campaigns end)
+    |> then(fn p -> p.campaigns end)
   end
 
   @doc """
@@ -40,7 +40,7 @@ defmodule Newnix.Campaigns do
   def get_campaign!(project = %Project{}, id) do
     query =
       from c in Campaign,
-        where: c.id == ^id and c.project_id == ^project
+        where: c.id == ^id and c.project_id == ^project.id
 
     Repo.one!(query)
   end

@@ -1,13 +1,43 @@
-<section class="m-auto">
-    <%= if Enum.count(@projects) > 0 do %>
-    <div>
-        Projects here
+<section class="flex flex-1 flex-col">
+    <header class="bg-gray-50 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:flex xl:items-center xl:justify-between">
+            <div class="flex-1 min-w-0">
+                <h1 class="mt-2 text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+                    Projects
+                </h1>
+            
+            </div>
+            <div class="mt-5 flex xl:mt-0 xl:ml-4">
+                <.ui_button theme="dark" size="small" 
+                    href={Routes.live_path(@socket, NewnixWeb.User.DashboardLive.New)}>
+                    <span><%= render NewnixWeb.IconsView, "plus" , %{class: "w-5 h-5"} %></span>
+                    <span><%= gettext("New Project") %></span>
+                </.ui_button>
+            </div>
+        </div>
+    </header>
+    <div class="max-w-7xl flex mx-auto">
+        <.live_component module={NewnixWeb.Components.AlertsComponent} id="alerts" {assigns} />
     </div>
-    <% else %>
-        <.live_component 
-            module={NewnixWeb.Components.Cards.EmptyState} 
+    <%= if Enum.count(@projects) === 0 do %>
+        <.live_component    
+            module={NewnixWeb.Components.Cards.EmptyStateComponent} 
             title="Project" 
             id="project-empty-state"
             href={Routes.live_path(@socket, NewnixWeb.User.DashboardLive.New)} />
+    <% else %>
+        <main class="pt-8 pb-16">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <!-- Stacked list -->
+                <ul role="list" class="mt-5 border-t border-gray-200 divide-y divide-gray-200 sm:mt-0 sm:border-t-0">
+                    <.live_component
+                        :for={project <- @projects}
+                        id={project.id}
+                        project={project}
+                        module={NewnixWeb.Components.Cards.ProjectComponent}
+                        />
+                </ul>
+            </div>
+        </main>
     <% end %>
 </section>

@@ -16,6 +16,8 @@ defmodule Newnix.Projects.Project do
     field :description, :string
     field :website, :string
 
+    field :logo, Newnix.Uploaders.LogoUploader.Type
+
     has_many :campaigns, Campaign
     has_many :subscribers, Subscriber
     many_to_many :users, User, join_through: UserProject

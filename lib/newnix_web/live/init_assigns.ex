@@ -6,6 +6,8 @@ defmodule NewnixWeb.InitAssigns do
 
   alias Newnix.Accounts
   alias Newnix.Accounts.User
+  alias Newnix.Projects
+  alias Newnix.Projects.Project
 
   def on_mount(:user, params, session, socket) do
     {:cont,
@@ -15,12 +17,26 @@ defmodule NewnixWeb.InitAssigns do
      |> assign(:user, find_current_user(session))}
   end
 
-  def on_mount(:project, _params, _session, socket) do
-    # code
-    {:cont,
-     socket
-     |> assign(:sidebar, :project)
-     |> assign(:page_title, "Project Dashboard")}
+  def on_mount(:project, _params, session, socket) do
+    %{user: user} = socket.assigns
+
+    socket =
+      socket
+      |> assign(:sidebar, :project)
+
+    if is_nil(user) do
+      {:cont, socket}
+    else
+      case find_current_project(user, session) do
+        nil ->
+          {:cont, socket}
+
+        project ->
+          {:cont,
+           socket
+           |> assign(:project, project)}
+      end
+    end
   end
 
   defp assign_locale(socket, session, params) do
@@ -33,6 +49,13 @@ defmodule NewnixWeb.InitAssigns do
     with user_token when not is_nil(user_token) <- session["user_token"],
          %User{} = user <- Accounts.get_user_by_session_token(user_token),
          do: user
+  end
+
+  defp find_current_project(user, session) do
+    with project_id when not is_nil(project_id) <- session["project_id"],
+         %Project{} = project <-
+           Projects.get_project!(user, project_id),
+         do: project
   end
 
   defp fetch_locale(socket, session) do

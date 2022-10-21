@@ -41,18 +41,44 @@ defmodule NewnixWeb.Live.Components.Helper do
   attr :theme, :string, default: "simple"
   attr :class, :string, default: ""
   attr :href, :string, default: nil
+  attr :size, :string, default: ""
 
   def ui_button(assigns) do
     ~H"""
       <%= if !is_nil(@href) do %>
-        <a class={@class <> " button " <> @theme} {@rest} href={@href}>
+        <a class={"button " <> @theme <> " " <> @size <> " " <> @class} {@rest} href={@href}>
           <%= render_slot(@inner_block) %>
         </a>
       <% else %>
-        <button class={@class <> " button " <> @theme} {@rest} >
+        <button class={"button " <> @theme <> " " <> @size <> " " <> @class} {@rest} >
           <%= render_slot(@inner_block) %>
         </button>
       <% end %>
+    """
+  end
+
+  attr :avatar, :string, default: nil
+  attr :text, :string, default: ""
+
+  def ui_avatar(assigns) do
+    ~H"""
+      <div class="flex items-center justify-center border h-12 w-12 rounded-full group-hover:opacity-75">
+        <%= if !is_nil(@avatar) do %>
+          <img src={@avatar} />
+        <% else %>
+          <span><%= @text %></span>
+        <% end %>
+      </div>
+    """
+  end
+
+  attr :time, :string
+
+  def ui_datetime(%{time: time} = assigns) do
+    timeFormated = Calendar.strftime(time, "%Y-%m-%d %H:%M:%S")
+
+    ~H"""
+      <time class="font-semibold text-gray-500" datetime={time}><%= timeFormated %></time>
     """
   end
 

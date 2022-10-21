@@ -8,6 +8,8 @@ defmodule Newnix.Repo.Migrations.CreateProjects do
       add :description, :string
       add :website, :string, size: 50
 
+      add :logo, :text
+
       timestamps()
     end
   end
