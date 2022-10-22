@@ -10,7 +10,7 @@
 
 .input_group label {
 	@apply absolute top-5 left-5 -z-0;
-	@apply text-grai-500 font-medium;
+	@apply text-gray-500 font-medium;
 }
 
 .input_group input,

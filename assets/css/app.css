@@ -16,18 +16,6 @@ body {
 	@apply flex flex-1 h-full min-h-screen;
 }
 
-/* Menu */
-.menu_item__ .menu_item_icon__ {
-	@apply opacity-0 left-24 hidden;
-}
-.menu_item__:hover .menu_item_icon__ {
-	@apply block transition-all ml-2 left-16 opacity-100 duration-500;
-}
-.menu_item__:hover,
-.menu_item__.active {
-	@apply hover:bg-dark-50 hover:bg-opacity-5;
-}
-
 /* List drop */
 .list_drop__ {
 	@apply space-y-2 text-gray-500;

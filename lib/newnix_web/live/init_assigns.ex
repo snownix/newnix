@@ -7,6 +7,7 @@ defmodule NewnixWeb.InitAssigns do
   alias Newnix.Accounts
   alias Newnix.Accounts.User
   alias Newnix.Projects
+  alias Newnix.Campaigns
   alias Newnix.Projects.Project
 
   def on_mount(:user, params, session, socket) do
@@ -34,7 +35,10 @@ defmodule NewnixWeb.InitAssigns do
         project ->
           {:cont,
            socket
-           |> assign(:project, project)}
+           |> assign(:page_title, project.name)
+           |> assign(:project, project)
+           |> assign(:projects, Projects.list_projects(user))
+           |> assign(:campaigns, Campaigns.meta_list_campaigns(project))}
       end
     end
   end

@@ -23,6 +23,15 @@ defmodule Newnix.Campaigns do
     |> then(fn p -> p.campaigns end)
   end
 
+  def meta_list_campaigns(project = %Project{}) do
+    query =
+      from p in Campaign,
+        where: p.project_id == ^project.id,
+        select: p.name
+
+    Repo.all(query)
+  end
+
   @doc """
   Gets a single campaign.
 

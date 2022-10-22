@@ -15,8 +15,6 @@ defmodule NewnixWeb.User.DashboardLive.Index do
   defp fetch_projects(socket) do
     %{user: user} = socket.assigns
 
-    IO.inspect(user)
-
     socket
     |> assign(:projects, list_projects(user))
   end

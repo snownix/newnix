@@ -1,4 +1,4 @@
-defmodule NewnixWeb.Project.DashboardLive.Index do
+defmodule NewnixWeb.Project.CampaignsLive.Index do
   use NewnixWeb, :live_project
 
   alias Newnix.Campaigns
@@ -14,8 +14,6 @@ defmodule NewnixWeb.Project.DashboardLive.Index do
 
   defp fetch_campaigns(socket) do
     %{project: project} = socket.assigns
-
-    IO.inspect(project)
 
     socket
     |> assign(:campaigns, list_campaigns(project))

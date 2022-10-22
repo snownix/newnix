@@ -53,6 +53,10 @@ defmodule NewnixWeb.Router do
       pipe_through [:browser, :require_authenticated_user, :project]
 
       live "/", DashboardLive.Index
+
+      scope "/campaigns", CampaignsLive do
+        live "/", Index
+      end
     end
   end
 
