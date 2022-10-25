@@ -6,19 +6,12 @@
       id="sidebar" 
       sidebar={@sidebar}
       projects={@projects}
-      module={NewnixWeb.Components.Partials.ProjectSidebarComponent}
+      module={NewnixWeb.Components.Partials.MainSidebarComponent}
        />
 
     <!-- Main area -->
-    <main class="min-w-0 flex-1 lg:flex">
-      <p class="alert alert-info" role="alert"
-        phx-click="lv:clear-flash"
-        phx-value-key="info"><%= live_flash(@flash, :info) %></p>
-
-      <p class="alert alert-danger" role="alert"
-        phx-click="lv:clear-flash"
-        phx-value-key="error"><%= live_flash(@flash, :error) %></p>
-
+    <main class="min-w-0 flex-1 lg:flex flex-col">
+      <.live_component module={NewnixWeb.Components.AlertsComponent} flash={@flash} id="alerts" />
       <!-- Primary column -->
       <section aria-labelledby="primary-heading" class="min-w-0 flex-1 h-full flex flex-col overflow-y-auto lg:order-last">
         <%= @inner_content %>

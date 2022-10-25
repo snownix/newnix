@@ -10,10 +10,11 @@ defmodule NewnixWeb.Live.Components.Helper do
   attr :form, :string, required: true
   attr :title, :string, required: true
   attr :type, :string, default: "text"
+  attr :class, :string, default: ""
 
   def ui_input(assigns) do
     ~H"""
-      <label class="input_group" field-error={tag_has_error(@form, @name)}
+      <label class={"input_group #{@class}"} field-error={tag_has_error(@form, @name)} {@rest}
         field-fill={is_fill(@form, @name)}>
         <%= text_input @form, @name, type: @type %>
         <%= label @form, @name, @title %>
@@ -25,10 +26,11 @@ defmodule NewnixWeb.Live.Components.Helper do
   attr :name, :string, required: true
   attr :form, :string, required: true
   attr :title, :string, required: true
+  attr :class, :string, default: ""
 
   def ui_textarea(assigns) do
     ~H"""
-      <label class="input_group" field-error={tag_has_error(@form, @name)}
+      <label class={"input_group #{@class}"} field-error={tag_has_error(@form, @name)}
         field-fill={is_fill(@form, @name)} phx-update="ignore" id={@name}>
         <%= textarea @form, @name %>
         <%= label @form, @name, @title %>

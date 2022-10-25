@@ -54,6 +54,10 @@ defmodule NewnixWeb.Router do
 
       live "/", DashboardLive.Index
 
+      scope "/settings", SettingsLive do
+        live "/", Index
+      end
+
       scope "/campaigns", CampaignsLive do
         live "/", Index
       end

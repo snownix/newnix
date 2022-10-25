@@ -1,0 +1,51 @@
+<main class="space-y-8 text-dark-50">
+    <div class="p-4 md:p-6 space-y-4">
+        <section class="pb-6 border-b border-gray-50">
+            <h2 class="font-bold text-2xl">Project Settings</h2>
+            <p class="text-grai">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla alias quidem tenetur .
+            </p>
+        </section>
+        <section class="flex flex-1">
+            <div class="hidden md:block w-1/3 md:pr-4">
+                <b>Basic Information</b>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati, earum dolorum beatae animi
+                    repellat quisquam neque numquam eaque iste quo .</p>
+            </div>
+            <div class="flex-1">
+                <.form :let={f} for={@changeset} phx-change="validate" phx-submit="save" class="space-y-4">
+                    <div>
+                        <.ui_input form={f} name={:name} class="!bg-opacity-20 border" title="Project Name" />
+                    </div>
+
+                    <div>
+                        <.ui_textarea form={f} name={:description} class="!bg-opacity-20 border" title="Description" />
+                    </div>
+                    <div class="flex justify-end">
+                        <.ui_button class="!w-fit" size="small">
+                            <%= gettext "Update" %>
+                        </.ui_button>
+                    </div>
+                </.form>
+            </div>
+        </section>
+    </div>
+
+    <!-- Section -->
+    <div class="flex border-b border-gray-100"></div>
+
+    <div class="p-4 md:p-6 space-y-4">
+        <section class="pb-6 border-b border-gray-50">
+            <h2 class="font-bold text-2xl">Team members</h2>
+            <p class="text-grai">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla alias quidem tenetur .
+            </p>
+        </section>
+        <section class="flex flex-1">
+            <div class="hidden md:block w-1/3 md:pr-4">
+                <b>Email notifications</b>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati, earum dolorum beatae
+                    provident ex.</p>
+            </div>
+            <div class="flex-1 md:border-l border-gray-100"></div>
+        </section>
+    </div>
+</main>

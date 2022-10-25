@@ -1,111 +1,99 @@
 defmodule NewnixWeb.Components.Partials.ProjectSidebarComponent do
   use NewnixWeb, :live_component
 
-  attr :project, :map
-  attr :projects, :map, default: []
+  attr :project, :map, default: nil
   attr :campaigns, :map, default: []
+  attr :projects, :map, default: []
   attr :projects_open, :boolean, default: false
 
   def render(assigns) do
     ~H"""
       <nav
         aria-label="Sidebar"
-        class="hidden md:flex w-20 flex-col md:flex-shrink-0 dark:md:bg-dark-800 md:overflow-y-none border-r space-y-4 py-4"
+        class="hidden md:flex"
       >
+        <%= if @project do %>
+          <div class="md:flex-shrink-0 dark:md:bg-dark-800 md:overflow-y-auto border-r w-72 bg-gray-50">
+            <.project_logo target={@myself} project={@project} />
 
-        <div class="px-4 flex-1">
-          <ul class="space-y-3">
-            <.project_button :for={project <- @projects} link={Routes.project_path(@socket, :open, project)} project={project} active={active(assigns[:project], project)} />
-            <.project_add_button />
-          </ul>
-        </div>
+            <div class="px-4 py-3 space-y-8">
+              <ul>
+                <.menu_item link={Routes.live_path(@socket, NewnixWeb.Project.DashboardLive.Index)} icon="dashboard">Dashboard</.menu_item>
+                <.menu_item link={Routes.live_path(@socket, NewnixWeb.Project.CampaignsLive.Index)} icon="campaign">Campaigns</.menu_item>
+                <.menu_item link={Routes.live_path(@socket, NewnixWeb.Project.CampaignsLive.Index)} icon="users">Subscribers</.menu_item>
+                <.menu_item link={Routes.live_path(@socket, NewnixWeb.Project.SettingsLive.Index)} icon="settings">Settings</.menu_item>
+              </ul>
 
-        <div class="px-4 mt-auto">
-          <ul class="space-y-3">
-           <.auth_logout />
-          </ul>
-        </div>
+              <div class="space-y-1">
+                <div class="px-3.5 text-sm font-medium text-gray-400">Campaigns</div>
+                <ul>
+                  <.campaign_item :for={campaign <- @campaigns} campaign={campaign} index={0} link="#" />
+                  <.campaign_item index={0} icon="plus" link="#" class="text-gray-500">new campaign</.campaign_item>
+                </ul>
+              </div>
+            </div>
+          </div>
+        <% end %>
       </nav>
     """
   end
-
-  def active(nil, _project), do: false
-  def active(project, current_project), do: project.id == current_project.id
 
   def handle_event("toggle-projects", _params, %{assigns: assigns} = socket) do
     {:noreply, socket |> assign(:projects_open, !assigns[:projects_open])}
   end
 
-  def logo(assigns) do
-    ~H"""
-      <.link navigate={"/"} class="flex items-center justify-center py-8 text-white h-20">
-        <svg class="w-12 h-12 text-primary-500">
-        <use href="/images/sprites.svg#icon" />
-        </svg>
-      </.link>
-    """
-  end
-
-  attr :project, :map
-  attr :active, :boolean, default: false
-
-  def project_button(assigns) do
-    ~H"""
-      <.menu_button link={@link} active={@active}>
-          <span>
-            <%= project_logo(@project) %>
-          </span>
-      </.menu_button>
-    """
-  end
-
-  def project_add_button(assigns) do
-    ~H"""
-      <.menu_button link={"/new"}>
-          <span>
-            <%= NewnixWeb.IconsView.render "plus", %{class: "w-5 h5"} %>
-          </span>
-      </.menu_button>
-    """
-  end
-
-  slot(:inner_block)
-  attr :link, :string
-  attr :active, :boolean, default: false
-
-  def menu_button(assigns) do
+  def menu_item(assigns) do
     ~H"""
       <.link navigate={@link}
-        class={"w-full h-12 flex-shrink-0 flex bg-gray-50 justify-center items-center  font-medium hover:text-white hover:bg-primary-500 dark:text-white rounded-md dark:bg-dark-900 space-x-4 " <> (if @active, do: "bg-primary-500 text-white", else: "text-gray-500")}>
-          <%= render_slot(@inner_block) %>
+        class="w-full h-10 px-4 font-medium flex-shrink-0 inline-flex items-center text-dark-50 hover:text-primary-500 hover:bg-gray-100 dark:text-white rounded-md dark:bg-dark-900 space-x-4">
+          <span>
+            <%= NewnixWeb.IconsView.render @icon, %{class: "w-5 h-5"} %>
+          </span>
+          <div>
+            <%= render_slot(@inner_block) %>
+          </div>
       </.link>
     """
   end
 
-  attr :name, :string
-  attr :logo, :string
+  attr :campaign, :map
+  attr :class, :string, default: ""
+
+  def campaign_item(%{index: index} = assigns) do
+    colors = ~w(bg-primary-400 bg-green-400 bg-red-400 bg-yellow-400 bg-purple-400 bg-orange-400)
+    color = Enum.at(colors, rem(index, Enum.count(colors)))
+
+    ~H"""
+      <a href={@link}
+        class={"w-full py-1 px-4 font-medium flex-shrink-0 inline-flex items-center text-dark-50 hover:text-primary-500 hover:bg-gray-100 dark:text-white rounded-md dark:bg-dark-900 space-x-4 #{@class}"}>
+          <%= if assigns[:icon] do %>
+            <div class={"w-4 h-4 rounded border flex items-center justify-center"}>
+            <%= NewnixWeb.IconsView.render @icon, %{class: "w-full h-full"} %>
+            </div>
+          <% else %>
+            <div class={"w-4 h-4 rounded #{color}"}></div>
+          <% end %>
+          <div>
+            <%= render_slot(@inner_block) %>
+          </div>
+      </a>
+    """
+  end
 
   def project_logo(assigns) do
     ~H"""
-      <div class="w-8 h-8 flex items-center justify-center text-lg font-bold uppercase">
-        <%= if @logo do %>
-          <img src={@logo} />
-        <% else %>
-          <span><%= project_name(@name) %></span>
-        <% end %>
+      <div
+        phx-click="toggle-projects" phx-target={@target}
+        class="flex items-center space-x-4 py-4 px-6 flex-1 bg-white  border-b cursor-pointer">
+        <div class="flex flex-col space-y-0.5 w-full">
+          <span class="font-semibold text-gray-900"><%= @project.name %></span>
+          <span class="text-gray-500 text-sm">Team free</span>
+        </div>
       </div>
     """
   end
 
-  defp project_name(name), do: String.slice(name, 0, 2)
-
-  def auth_logout(assigns) do
-    ~H"""
-      <.link href="/auth/logout" method="delete" class="w-full h-12 flex-shrink-0 flex bg-gray-50 justify-center items-center text-dark-50 font-medium hover:text-primary-500 hover:bg-gray-100 dark:text-white rounded-md dark:bg-dark-900 space-x-4">
-        <svg class="w-6 h-6">
-          <use href="/images/sprites.svg#icon-logout" />
-        </svg>
-      </.link>
-    """
+  def project_avatar(name) do
+    String.slice("#{name}", 0..1)
   end
 end
