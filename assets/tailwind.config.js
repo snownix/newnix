@@ -37,7 +37,8 @@ module.exports = {
           '900': '#000000'
         },
         grai: {
-          DEFAULT: 'rgb(107, 114, 128)'
+          DEFAULT: '#6b7280',
+          low: '#9098a6'
         }
       },
       fontFamily: {

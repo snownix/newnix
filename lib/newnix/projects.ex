@@ -48,6 +48,19 @@ defmodule Newnix.Projects do
   end
 
   @doc """
+  preload project users.
+
+  ## Examples
+
+      iex> list_users(project)
+      %Project{ users: [] }
+
+  """
+  def list_users(%Project{} = project) do
+    Repo.preload(project, :users)
+  end
+
+  @doc """
   Creates a project.
 
   ## Examples

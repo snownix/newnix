@@ -67,7 +67,8 @@ defmodule Newnix.MixProject do
       {:waffle_ecto, "~> 0.0"},
       {:slugify, "~> 1.3"},
       {:bcrypt_elixir, "~> 2.0"},
-      {:tailwind, "~> 0.1.6", runtime: Mix.env() == :dev}
+      {:tailwind, "~> 0.1.6", runtime: Mix.env() == :dev},
+      {:timex, "~> 3.0"}
     ]
   end
 
