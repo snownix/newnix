@@ -11,11 +11,14 @@ defmodule NewnixWeb.InitAssigns do
   alias Newnix.Projects.Project
 
   def on_mount(:user, params, session, socket) do
+    user = find_current_user(session)
+
     {:cont,
      socket
      |> assign(:sidebar, :user)
      |> assign_locale(session, params)
-     |> assign(:user, find_current_user(session))}
+     |> assign(:user, user)
+     |> assign(:projects, Projects.list_projects(user))}
   end
 
   def on_mount(:project, _params, session, socket) do
@@ -37,7 +40,6 @@ defmodule NewnixWeb.InitAssigns do
            socket
            |> assign(:page_title, project.name)
            |> assign(:project, project)
-           |> assign(:projects, Projects.list_projects(user))
            |> assign(:campaigns, Campaigns.meta_list_campaigns(project))}
       end
     end

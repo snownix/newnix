@@ -1,7 +1,7 @@
 defmodule NewnixWeb.Components.Partials.SidebarComponent do
   use NewnixWeb, :live_component
 
-  attr :project, :map
+  attr :project, :map, default: nil
   attr :campaigns, :map, default: []
   attr :projects, :map, default: []
   attr :projects_open, :boolean, default: false
@@ -10,27 +10,30 @@ defmodule NewnixWeb.Components.Partials.SidebarComponent do
     ~H"""
       <nav
         aria-label="Sidebar"
-        class="hidden md:block md:flex-shrink-0 dark:md:bg-dark-800 md:overflow-y-auto border-r w-72 bg-gray-50"
+        class="hidden md:flex flex-1"
       >
-        <.projects_select target={@myself} project={@project} />
-        <.projects_list projects={@projects} project={@project} open={@projects_open} />
+        <%= if @project do %>
+          <div class="md:flex-shrink-0 dark:md:bg-dark-800 md:overflow-y-auto border-r w-72 bg-gray-50">
+            <.project_logo target={@myself} project={@project} />
 
-        <div class="px-4 py-3 space-y-8">
-          <ul>
-            <.menu_item link={Routes.live_path(@socket, NewnixWeb.Project.DashboardLive.Index)} icon="dashboard">Dashboard</.menu_item>
-            <.menu_item link={Routes.live_path(@socket, NewnixWeb.Project.CampaignsLive.Index)} icon="campaign">Campaigns</.menu_item>
-            <.menu_item link={Routes.live_path(@socket, NewnixWeb.Project.CampaignsLive.Index)} icon="users">Subscribers</.menu_item>
-            <.menu_item link={Routes.live_path(@socket, NewnixWeb.Project.CampaignsLive.Index)} icon="settings">Settings</.menu_item>
-          </ul>
+            <div class="px-4 py-3 space-y-8">
+              <ul>
+                <.menu_item link={Routes.live_path(@socket, NewnixWeb.Project.DashboardLive.Index)} icon="dashboard">Dashboard</.menu_item>
+                <.menu_item link={Routes.live_path(@socket, NewnixWeb.Project.CampaignsLive.Index)} icon="campaign">Campaigns</.menu_item>
+                <.menu_item link={Routes.live_path(@socket, NewnixWeb.Project.CampaignsLive.Index)} icon="users">Subscribers</.menu_item>
+                <.menu_item link={Routes.live_path(@socket, NewnixWeb.Project.CampaignsLive.Index)} icon="settings">Settings</.menu_item>
+              </ul>
 
-          <div class="space-y-1">
-            <div class="px-3.5 text-sm font-medium text-gray-400">Campaigns</div>
-            <ul>
-              <.campaign_item :for={campaign <- @campaigns} campaign={campaign} index={0} link="#" />
-              <.campaign_item index={0} icon="plus" link="#" class="text-gray-500">new campaign</.campaign_item>
-            </ul>
+              <div class="space-y-1">
+                <div class="px-3.5 text-sm font-medium text-gray-400">Campaigns</div>
+                <ul>
+                  <.campaign_item :for={campaign <- @campaigns} campaign={campaign} index={0} link="#" />
+                  <.campaign_item index={0} icon="plus" link="#" class="text-gray-500">new campaign</.campaign_item>
+                </ul>
+              </div>
+            </div>
           </div>
-        </div>
+        <% end %>
       </nav>
     """
   end
@@ -77,48 +80,16 @@ defmodule NewnixWeb.Components.Partials.SidebarComponent do
     """
   end
 
-  def projects_select(assigns) do
+  def project_logo(assigns) do
     ~H"""
       <div
         phx-click="toggle-projects" phx-target={@target}
-        class="flex items-center space-x-4 py-4 px-6 flex-1 hover:bg-dark-50 hover:bg-opacity-5 cursor-pointer">
-        <div class="logo__ w-12 h-12 flex items-center justify-center bg-primary-500 rounded-lg flex-shrink-0">
-          <span class="font-bold text-white text-lg"><%= project_avatar(@project.name) %></span>
-        </div>
+        class="flex items-center space-x-4 py-4 px-6 flex-1 bg-white  border-b cursor-pointer">
         <div class="flex flex-col space-y-0.5 w-full">
           <span class="font-semibold text-gray-900"><%= @project.name %></span>
           <span class="text-gray-500 text-sm">Team free</span>
         </div>
-        <div>
-          <%= NewnixWeb.IconsView.render "chevron-up-down", %{class: "w-5 h-5"} %>
-        </div>
       </div>
-    """
-  end
-
-  def projects_list(%{open: _open, projects: _projects} = assigns) do
-    ~H"""
-      <div :if={@open} class="border-b border-t border-gray-200">
-        <.projects_item :if={project.id !== @project.id} :for={project <- @projects} project={project} />
-      </div>
-    """
-  end
-
-  def projects_item(%{project: _project} = assigns) do
-    ~H"""
-      <.link
-        navigate={"/project/open/#{@project.id}"}
-        class="flex items-center space-x-4 py-2 px-6 flex-1 hover:bg-dark-50 hover:bg-opacity-5 cursor-pointer">
-        <div class="logo__ w-8 h-8 flex items-center justify-center bg-primary-500 rounded-lg flex-shrink-0">
-          <span class="font-bold text-white text-sm"><%= project_avatar(@project.name) %></span>
-        </div>
-        <div class="flex flex-col space-y-0.5 w-full">
-          <span class="font-medium text-gray-900"><%= @project.name %></span>
-        </div>
-        <div>
-          <%= NewnixWeb.IconsView.render "arrow-right-left", %{class: "w-5 h-5"} %>
-        </div>
-      </.link>
     """
   end
 
