@@ -19,7 +19,7 @@ defmodule NewnixWeb.Components.Cards.ProjectComponent do
                     <div class="hidden md:block">
                         <div>
                           <p class="text-sm text-gray-900">
-                              <.ui_datetime time={@project.inserted_at} />
+                              <.ui_datetime_display time={@project.inserted_at} />
                           </p>
                           <p class="mt-2 flex items-center text-sm text-gray-500">
                               <%= @project.id %>

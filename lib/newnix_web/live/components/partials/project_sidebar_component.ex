@@ -19,8 +19,8 @@ defmodule NewnixWeb.Components.Partials.ProjectSidebarComponent do
             <div class="px-4 py-3 space-y-8">
               <ul>
                 <.menu_item link={Routes.live_path(@socket, NewnixWeb.Project.DashboardLive.Index)} icon="dashboard">Dashboard</.menu_item>
-                <.menu_item link={Routes.live_path(@socket, NewnixWeb.Project.CampaignsLive.Index)} icon="campaign">Campaigns</.menu_item>
-                <.menu_item link={Routes.live_path(@socket, NewnixWeb.Project.CampaignsLive.Index)} icon="users">Subscribers</.menu_item>
+                <.menu_item link={Routes.campaigns_index_path(@socket, :index)} icon="campaign">Campaigns</.menu_item>
+                <.menu_item link={Routes.campaigns_index_path(@socket, :index)} icon="users">Subscribers</.menu_item>
                 <.menu_item link={Routes.live_path(@socket, NewnixWeb.Project.SettingsLive.Index)} icon="settings">Settings</.menu_item>
               </ul>
 
@@ -63,6 +63,8 @@ defmodule NewnixWeb.Components.Partials.ProjectSidebarComponent do
     colors = ~w(bg-primary-400 bg-green-400 bg-red-400 bg-yellow-400 bg-purple-400 bg-orange-400)
     color = Enum.at(colors, rem(index, Enum.count(colors)))
 
+    assigns = assign(assigns, :color, color)
+
     ~H"""
       <a href={@link}
         class={"w-full py-1 px-4 font-medium flex-shrink-0 inline-flex items-center text-dark-50 hover:text-primary-500 hover:bg-gray-100 dark:text-white rounded-md dark:bg-dark-900 space-x-4 #{@class}"}>
@@ -71,7 +73,7 @@ defmodule NewnixWeb.Components.Partials.ProjectSidebarComponent do
             <%= NewnixWeb.IconsView.render @icon, %{class: "w-full h-full"} %>
             </div>
           <% else %>
-            <div class={"w-4 h-4 rounded #{color}"}></div>
+            <div class={"w-4 h-4 rounded #{@color}"}></div>
           <% end %>
           <div>
             <%= render_slot(@inner_block) %>

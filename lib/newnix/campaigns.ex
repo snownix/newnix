@@ -39,10 +39,10 @@ defmodule Newnix.Campaigns do
 
   ## Examples
 
-      iex> get_campaign!(123)
+      iex> get_campaign!(project, 123)
       %Campaign{}
 
-      iex> get_campaign!(456)
+      iex> get_campaign!(project, 456)
       ** (Ecto.NoResultsError)
 
   """

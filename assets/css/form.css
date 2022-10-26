@@ -24,6 +24,9 @@
 }
 
 /** Filled **/
+.input_group input[type="datetime-local"] + label,
+.input_group input[type="date"] + label,
+.input_group input[type="time"] + label,
 .input_group:focus-within label,
 .input_group[field-fill] label {
 	@apply transition-all text-xs;

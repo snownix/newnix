@@ -1,0 +1,28 @@
+<h1>Show Campaign</h1>
+
+<%= if @live_action in [:edit] do %>
+  <.rightbar_modal return_to={Routes.campaigns_show_path(@socket, :show, @campaign)}>
+    <.live_component
+      module={NewnixWeb.Project.CampaignsLive.FormComponent}
+      id={@campaign.id}
+      title={@page_title}
+      action={@live_action}
+      campaign={@campaign}
+      project={@project}
+      return_to={Routes.campaigns_show_path(@socket, :show, @campaign)}
+    />
+  </.rightbar_modal>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @campaign.name %>
+  </li>
+
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.campaigns_show_path(@socket, :edit, @campaign), class: "button" %></span> |
+<span><%= live_redirect "Back", to: Routes.campaigns_index_path(@socket, :index) %></span>

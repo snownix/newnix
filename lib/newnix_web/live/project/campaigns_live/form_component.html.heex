@@ -1,0 +1,35 @@
+<div class="flex flex-col space-y-4">
+  <h2 class="text-lg font-semibold">
+    <%= @title %>
+  </h2>
+
+  <.form
+    let={f}
+    for={@changeset}
+    id="campaign-form"
+    phx-target={@myself}
+    phx-change="validate"
+    phx-submit="save"
+    class="flex flex-col space-y-4">
+    <div>
+      <.ui_input form={f} name={:name} title="Campaign Name" />
+    </div>
+
+    <div>
+      <.ui_textarea form={f} name={:description} title="Campaign Description" />
+    </div>
+
+    <div>
+      <.ui_datetime form={f} type="datetime-local" name={:start_at} title="Start Date" />
+    </div>
+    <div>
+      <.ui_datetime form={f} type="datetime-local" name={:expire_at} title="End Date" />
+    </div>
+  
+    <div>
+      <.ui_button phx_disable_with="Saving...">
+        Save
+      </.ui_button>
+    </div>
+  </.form>
+</div>

@@ -59,7 +59,12 @@ defmodule NewnixWeb.Router do
       end
 
       scope "/campaigns", CampaignsLive do
-        live "/", Index
+        live "/", Index, :index
+        live "/new", Index, :new
+        live "/:id/edit", Index, :edit
+
+        live "/:id", Show, :show
+        live "/:id/show/edit", Show, :edit
       end
     end
   end

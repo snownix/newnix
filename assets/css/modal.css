@@ -1,0 +1,84 @@
+
+.phx-rightbar-modal {
+	opacity: 1 !important;
+	position: fixed;
+	z-index: 1;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: rgba(0, 0, 0, 0.4);
+}
+
+.phx-rightbar-modal-content {
+	@apply bg-white;
+	@apply w-full h-full;
+	@apply p-4 md:p-8;
+	@apply flex flex-col max-w-screen-sm absolute right-0;
+}
+
+.phx-rightbar-modal-close {
+	@apply absolute right-2 top-2;
+	@apply text-2xl;
+}
+
+.phx-rightbar-modal-close:hover,
+.phx-rightbar-modal-close:focus {
+	@apply text-primary-500;
+}
+
+.fade-in-scale {
+	animation: 0.2s ease-in 0s normal forwards 1 fade-in-scale-keys;
+}
+
+.fade-out-scale {
+	animation: 0.2s ease-out 0s normal forwards 1 fade-out-scale-keys;
+}
+
+.fade-in {
+	animation: 0.2s ease-out 0s normal forwards 1 fade-in-keys;
+}
+.fade-out {
+	animation: 0.2s ease-out 0s normal forwards 1 fade-out-keys;
+}
+
+@keyframes fade-in-scale-keys {
+	0% {
+		scale: 0.95;
+		opacity: 0;
+	}
+	100% {
+		scale: 1;
+		opacity: 1;
+	}
+}
+
+@keyframes fade-out-scale-keys {
+	0% {
+		scale: 1;
+		opacity: 1;
+	}
+	100% {
+		scale: 0.95;
+		opacity: 0;
+	}
+}
+
+@keyframes fade-in-keys {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+@keyframes fade-out-keys {
+	0% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+	}
+}

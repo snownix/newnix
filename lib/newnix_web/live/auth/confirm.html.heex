@@ -16,7 +16,7 @@
             </div>
        
             
-            <.ui_button disabled={length(f.errors) > 0} theme="dark">
+            <.ui_button size="large" disabled={length(f.errors) > 0} theme="dark">
                 <span><%= render NewnixWeb.IconsView, "email" , %{class: "w-5 h-5"} %></span>
                 <span><%= gettext("Confirm my account") %></span>
             </.ui_button>

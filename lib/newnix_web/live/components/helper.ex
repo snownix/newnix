@@ -26,6 +26,23 @@ defmodule NewnixWeb.Live.Components.Helper do
   attr :name, :string, required: true
   attr :form, :string, required: true
   attr :title, :string, required: true
+  attr :type, :string, default: "text"
+  attr :class, :string, default: ""
+
+  def ui_datetime(assigns) do
+    ~H"""
+      <label class={"input_group #{@class}"} field-error={tag_has_error(@form, @name)} {@rest}
+        field-fill={is_fill(@form, @name)}>
+        <%= datetime_local_input @form, @name, type: @type %>
+        <%= label @form, @name, @title %>
+      </label>
+    """
+  end
+
+  attr :rest, :global, include: ~w(form required value)
+  attr :name, :string, required: true
+  attr :form, :string, required: true
+  attr :title, :string, required: true
   attr :class, :string, default: ""
 
   def ui_textarea(assigns) do
@@ -76,7 +93,7 @@ defmodule NewnixWeb.Live.Components.Helper do
 
   attr :time, :string
 
-  def ui_datetime(%{time: time} = assigns) do
+  def ui_datetime_display(%{time: time} = assigns) do
     timeFormated = Calendar.strftime(time, "%Y-%m-%d %H:%M:%S")
 
     ~H"""

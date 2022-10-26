@@ -36,7 +36,7 @@
                 </.link>
                 </div>
                 <div>
-                <.ui_button disabled={length(f.errors) > 0} theme="dark">
+                <.ui_button size="large" disabled={length(f.errors) > 0} theme="dark">
                     <span><%= render NewnixWeb.IconsView, "box-arrow-in-right" , %{class: "w-5 h-5"} %></span>
                     <span><%= gettext("Sign up") %></span>
                 </.ui_button>
@@ -49,7 +49,7 @@
                     <div class="font-bold px-6">Or</div>
                 </div>
 
-                <.ui_button phx-click="toggle-form" type="button" theme="simple" class="hover:text-dark-500">
+                <.ui_button size="large" phx-click="toggle-form" type="button" theme="simple" class="hover:text-dark-500">
                     <div class="flex space-x-1">
                         <svg class="w-7 h-7"><use href={Routes.static_path(@socket, "/icons/social.svg#github")} /></svg>
                         <svg class="w-7 h-7"><use href={Routes.static_path(@socket, "/icons/social.svg#google")} /></svg>
@@ -57,7 +57,7 @@
                     </div>
                 </.ui_button>
             <% else %>
-                <.ui_button phx-click="toggle-form" type="button" theme="dark">
+                <.ui_button size="large" phx-click="toggle-form" type="button" theme="dark">
                     <span><%= render NewnixWeb.IconsView, "email" , %{class: "w-5 h-5"} %></span>
                     <span><%= gettext("Sign up with Email") %></span>
                 </.ui_button>
@@ -67,17 +67,17 @@
                     <div class="font-bold px-6">Or</div>
                 </div>
                 
-                <.ui_button href={Routes.providers_path(@socket, :request, "github", type: "register")} class="w-full border-2 hover:border-gray-600 rounded-md py-3 flex justify-center items-center hover:!no-underline transition-all">
+                <.ui_button size="large" href={Routes.providers_path(@socket, :request, "github", type: "register")} class="w-full border-2 hover:border-gray-600 rounded-md py-3 flex justify-center items-center hover:!no-underline transition-all">
                     <svg class="w-7 h-7"><use href={Routes.static_path(@socket, "/icons/social.svg#github")} /></svg>
                     <span class="text-gray-800 font-medium">Sign up with Github</span>
                 </.ui_button>
 
-                <.ui_button href={Routes.providers_path(@socket, :request, "google", type: "register")} class="w-full border-2 hover:border-gray-600 rounded-md py-3 flex justify-center items-center hover:!no-underline transition-all">
+                <.ui_button size="large" href={Routes.providers_path(@socket, :request, "google", type: "register")} class="w-full border-2 hover:border-gray-600 rounded-md py-3 flex justify-center items-center hover:!no-underline transition-all">
                     <svg class="w-7 h-7"><use href={Routes.static_path(@socket, "/icons/social.svg#google")} /></svg>
                     <span class="text-gray-800 font-medium">Sign up with Google</span>
                 </.ui_button>
 
-                <.ui_button href={Routes.providers_path(@socket, :request, "twitter", type: "register")} class="w-full border-2 hover:border-gray-600 rounded-md py-3 flex justify-center items-center hover:!no-underline transition-all">
+                <.ui_button size="large" href={Routes.providers_path(@socket, :request, "twitter", type: "register")} class="w-full border-2 hover:border-gray-600 rounded-md py-3 flex justify-center items-center hover:!no-underline transition-all">
                     <svg class="w-7 h-7"><use href={Routes.static_path(@socket, "/icons/social.svg#twitter")} /></svg>
                     <span class="text-gray-800 font-medium">Sign up with Twitter</span>
                 </.ui_button>
