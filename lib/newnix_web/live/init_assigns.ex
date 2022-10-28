@@ -40,6 +40,7 @@ defmodule NewnixWeb.InitAssigns do
            socket
            |> assign(:page_title, project.name)
            |> assign(:project, project)
+           |> assign(:toasts, [])
            |> assign(:campaigns, Campaigns.meta_list_campaigns(project))}
       end
     end

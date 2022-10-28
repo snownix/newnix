@@ -29,7 +29,6 @@ defmodule Newnix.Campaigns.Campaign do
     |> validate_required([:name])
   end
 
-  @spec project_assoc(Ecto.Changeset.t(), any) :: Ecto.Changeset.t()
   def project_assoc(changeset, project) do
     changeset
     |> put_assoc(:project, project)

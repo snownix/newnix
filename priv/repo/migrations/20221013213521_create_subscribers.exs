@@ -3,21 +3,26 @@ defmodule Newnix.Repo.Migrations.CreateSubscribers do
 
   def change do
     create table(:subscribers, primary_key: false) do
-      add(:id, :uuid, primary_key: true)
-      add(:name, :string, size: 50)
-      add(:email, :string, size: 50)
+      add :id, :uuid, primary_key: true
 
-      add(:project_id, references(:projects, type: :uuid))
+      add :firstname, :string, size: 100
+      add :lastname, :string, size: 100
+
+      add :unsubscribed, :boolean
+
+      add :email, :citext, null: false
+
+      add :project_id, references(:projects, type: :uuid)
 
       timestamps()
     end
 
     create table(:campaign_subscribers, primary_key: false) do
-      add(:id, :uuid, primary_key: true)
-      add(:subscribed_at, :utc_datetime)
+      add :id, :uuid, primary_key: true
 
-      add(:campaign_id, references(:campaigns, type: :uuid))
-      add(:subscriber_id, references(:subscribers, type: :uuid))
+      add :campaign_id, references(:campaigns, type: :uuid)
+      add :subscriber_id, references(:subscribers, type: :uuid)
+      add :subscribed_at, :utc_datetime
 
       timestamps()
     end

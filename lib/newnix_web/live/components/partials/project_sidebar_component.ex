@@ -20,7 +20,7 @@ defmodule NewnixWeb.Components.Partials.ProjectSidebarComponent do
               <ul>
                 <.menu_item link={Routes.live_path(@socket, NewnixWeb.Project.DashboardLive.Index)} icon="dashboard">Dashboard</.menu_item>
                 <.menu_item link={Routes.campaigns_index_path(@socket, :index)} icon="campaign">Campaigns</.menu_item>
-                <.menu_item link={Routes.campaigns_index_path(@socket, :index)} icon="users">Subscribers</.menu_item>
+                <.menu_item link={Routes.subscribers_index_path(@socket, :index)} icon="users">Subscribers</.menu_item>
                 <.menu_item link={Routes.live_path(@socket, NewnixWeb.Project.SettingsLive.Index)} icon="settings">Settings</.menu_item>
               </ul>
 

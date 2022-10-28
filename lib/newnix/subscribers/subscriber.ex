@@ -10,10 +10,13 @@ defmodule Newnix.Subscribers.Subscriber do
   @primary_key {:id, :binary_id, autogenerate: true}
 
   schema "subscribers" do
-    field :name, :string
-    field :email, :boolean
+    field :firstname, :string
+    field :lastname, :string
 
-    belongs_to :project, Project
+    field :email, :string
+    field :unsubscribed, :boolean
+
+    belongs_to :project, Project, type: :binary_id
     many_to_many :campaigns, Campaign, join_through: CampaignSubscriber
 
     timestamps()
@@ -21,7 +24,17 @@ defmodule Newnix.Subscribers.Subscriber do
 
   def changeset(subscriber, attrs) do
     subscriber
-    |> cast(attrs, [:name, :email])
-    |> validate_required([:name, :email])
+    |> cast(attrs, [:firstname, :lastname, :email, :unsubscribed])
+    |> validate_required([:email])
+  end
+
+  def project_assoc(changeset, project) do
+    changeset
+    |> put_assoc(:project, project)
+  end
+
+  def campaign_assoc(changeset, campaign) do
+    changeset
+    |> put_assoc(:campaign, [campaign])
   end
 end

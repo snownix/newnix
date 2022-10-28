@@ -66,6 +66,15 @@ defmodule NewnixWeb.Router do
         live "/:id", Show, :show
         live "/:id/show/edit", Show, :edit
       end
+
+      scope "/subscribers", SubscribersLive do
+        live "/", Index, :index
+        live "/new", Index, :new
+        live "/:id/edit", Index, :edit
+
+        live "/:id", Show, :show
+        live "/:id/show/edit", Show, :edit
+      end
     end
   end
 

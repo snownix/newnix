@@ -1,0 +1,74 @@
+<div class="p-6 sm:px-6 lg:px-8 space-y-8 flex-1">
+  <div class="sm:flex sm:items-center sm:space-y-2">
+    <div class="sm:flex-auto">
+      <h1 class="text-xl font-semibold text-gray-800">Subscribers</h1>
+      <p class="mt-2 text-sm text-grai">A list of all the subscribers in your project, with their name, description, start and end dates.</p>
+    </div>
+    <div class="sm:ml-16 sm:flex-none">
+      <.ui_button theme="primary" size="small" href={Routes.subscribers_index_path(@socket, :new)}>
+        <svg class="w-5 h-5"><use href="/images/sprites.svg#icon-plus"/></svg>
+        <span><%= gettext "New Subscriber" %></span>
+      </.ui_button>
+    </div>
+  </div>
+  <div class="flex-1">
+    <%= if Enum.count(@subscribers) > 0 do %>
+    <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+      <div class="inline-block min-w-full py-2 align-middle flex-1 h-full">
+        <div class="overflow-hidden">
+          <table class="min-w-full divide-y divide-gray-300 border-b">
+            <thead class="bg-gray-50">
+              <tr>
+                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-800 sm:pl-6 lg:pl-8">Email</th>
+                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-800 sm:pl-6 lg:pl-8">First name</th>
+                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-800 sm:pl-6 lg:pl-8">Last name</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-800">Subscribed Date</th>
+                <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6 lg:pr-8">
+                  <span class="sr-only">Actions</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 bg-white">
+              <%= for subscriber <- @subscribers do %>
+                <tr>
+                  <td class="whitespace-nowrap py-4 pl-4 pr-3 text-base font-medium text-gray-800 sm:pl-6 lg:pl-8"><%= subscriber.email %></td>
+                  <td class="whitespace-nowrap py-4 pl-4 pr-3 text-base font-medium text-gray-800 sm:pl-6 lg:pl-8"><%= subscriber.firstname %></td>
+                  <td class="whitespace-nowrap py-4 pl-4 pr-3 text-base font-medium text-gray-800 sm:pl-6 lg:pl-8"><%= subscriber.lastname %></td>
+                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><%= subscriber.inserted_at %></td>
+                  <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 lg:pr-8">
+                    <span><%= live_redirect "Show", to: Routes.subscribers_show_path(@socket, :show, subscriber) %></span>
+                    <span><%= live_patch "Edit", to: Routes.subscribers_index_path(@socket, :edit, subscriber) %></span>
+                    <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: subscriber.id, data: [confirm: "Are you sure?"] %></span>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <% else %>
+      <div class="flex items-center justify-center flex-1">
+        <.live_component 
+          id="empty-subscribers"
+          module={NewnixWeb.Components.Cards.EmptyStateComponent}
+          title="Subscriber"
+          href={Routes.subscribers_index_path(@socket, :new)}
+          />
+      </div>
+    <% end %>
+  </div>
+</div>
+<%= if @live_action in [:new, :edit] do %>
+  <.rightbar_modal return_to={Routes.subscribers_index_path(@socket, :index)}>
+    <.live_component
+      module={NewnixWeb.Project.SubscribersLive.FormComponent}
+      id={@subscriber.id || :new}
+      title={@page_title}
+      action={@live_action}
+      subscriber={@subscriber}
+      project={@project}
+      return_to={Routes.subscribers_index_path(@socket, :index)}
+    />
+  </.rightbar_modal>
+<% end %>

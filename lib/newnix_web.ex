@@ -127,6 +127,7 @@ defmodule NewnixWeb do
       import NewnixWeb.ErrorHelpers
       import NewnixWeb.Gettext
       import NewnixWeb.Live.Components.Helper
+      import NewnixWeb.Live.Components.Toast
       alias NewnixWeb.Router.Helpers, as: Routes
     end
   end
