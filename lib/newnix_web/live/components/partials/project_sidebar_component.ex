@@ -18,8 +18,8 @@ defmodule NewnixWeb.Components.Partials.ProjectSidebarComponent do
 
             <div class="px-4 py-3 space-y-8">
               <ul>
-                <.menu_item link={Routes.live_path(@socket, NewnixWeb.Project.DashboardLive.Index)} icon="dashboard">Dashboard</.menu_item>
-                <.menu_item link={Routes.campaigns_index_path(@socket, :index)} icon="campaign">Campaigns</.menu_item>
+                <.menu_item link={Routes.live_path(@socket, NewnixWeb.Project.DashboardLive.Index)} icon="layers">Dashboard</.menu_item>
+                <.menu_item link={Routes.campaigns_index_path(@socket, :index)} icon="inbox">Campaigns</.menu_item>
                 <.menu_item link={Routes.subscribers_index_path(@socket, :index)} icon="users">Subscribers</.menu_item>
                 <.menu_item link={Routes.live_path(@socket, NewnixWeb.Project.SettingsLive.Index)} icon="settings">Settings</.menu_item>
               </ul>
@@ -42,12 +42,16 @@ defmodule NewnixWeb.Components.Partials.ProjectSidebarComponent do
     {:noreply, socket |> assign(:projects_open, !assigns[:projects_open])}
   end
 
+  attr :icon, :string, default: ""
+
   def menu_item(assigns) do
     ~H"""
       <.link navigate={@link}
         class="w-full h-10 px-4 font-medium flex-shrink-0 inline-flex items-center text-dark-50 hover:text-primary-500 hover:bg-gray-100 dark:text-white rounded-md dark:bg-dark-900 space-x-4">
           <span>
-            <%= NewnixWeb.IconsView.render @icon, %{class: "w-5 h-5"} %>
+            <svg class="w-6 h-6">
+              <use href={"/images/sprites.svg#icon-#{@icon}"} />
+            </svg>
           </span>
           <div>
             <%= render_slot(@inner_block) %>

@@ -1,65 +1,66 @@
-<div class="p-6 sm:px-6 lg:px-8 space-y-8 flex-1">
-  <div class="sm:flex sm:items-center sm:space-y-2">
-    <div class="sm:flex-auto">
-      <h1 class="text-xl font-semibold text-gray-900">Campaigns</h1>
-      <p class="mt-2 text-sm text-grai">A list of all the campaigns in your project, with their name, description, start and end dates.</p>
+<%= if Enum.count(@campaigns) > 0 do %>
+  <div class="p-6 sm:px-6 lg:px-8 space-y-8 flex-1">
+    <div class="sm:flex sm:items-center sm:space-y-2">
+      <div class="sm:flex-auto">
+        <h1 class="text-xl font-semibold text-gray-900">Campaigns</h1>
+        <p class="mt-2 text-sm text-grai">A list of all the campaigns in your project, with their name, description, start and end dates.</p>
+      </div>
+      <div class="sm:ml-16 sm:flex-none">
+        <.ui_button theme="primary" size="small" href={Routes.campaigns_index_path(@socket, :new)}>
+          <svg class="w-5 h-5"><use href="/images/sprites.svg#icon-plus"/></svg>
+          <span><%= gettext "New Campaign" %></span>
+        </.ui_button>
+      </div>
     </div>
-    <div class="sm:ml-16 sm:flex-none">
-      <.ui_button theme="primary" size="small" href={Routes.campaigns_index_path(@socket, :new)}>
-        <svg class="w-5 h-5"><use href="/images/sprites.svg#icon-plus"/></svg>
-        <span><%= gettext "New Campaign" %></span>
-      </.ui_button>
-    </div>
-  </div>
-  <div class="flex-1">
-    <%= if Enum.count(@campaigns) > 0 do %>
-    <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
-      <div class="inline-block min-w-full py-2 align-middle flex-1 h-full">
-        <div class="overflow-hidden">
-          <table class="min-w-full divide-y divide-gray-300 border-b">
-            <thead class="bg-gray-50">
-              <tr>
-                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 lg:pl-8">Name</th>
-                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Start Date</th>
-                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">End Date</th>
-                <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6 lg:pr-8">
-                  <span class="sr-only">Actions</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100 bg-white">
-              <%= for campaign <- @campaigns do %>
+    <div class="flex-1">
+      <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div class="inline-block min-w-full py-2 align-middle flex-1 h-full">
+          <div class="overflow-hidden">
+            <table class="min-w-full divide-y divide-gray-300 border-b">
+              <thead class="bg-gray-50">
                 <tr>
-                  <td class="whitespace-nowrap py-4 pl-4 pr-3 text-base font-medium text-gray-900 sm:pl-6 lg:pl-8">
-                    <p class="font-semibold"><%= campaign.name %></p>
-                    <p class="text-grai text-sm"><%= campaign.description %></p>
-                  </td>
-                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><%= campaign.start_at %></td>
-                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><%= campaign.expire_at %></td>
-                  <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 lg:pr-8">
-                    <span><%= live_redirect "Show", to: Routes.campaigns_show_path(@socket, :show, campaign) %></span>
-                    <span><%= live_patch "Edit", to: Routes.campaigns_index_path(@socket, :edit, campaign) %></span>
-                    <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: campaign.id, data: [confirm: "Are you sure?"] %></span>
-                  </td>
+                  <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 lg:pl-8">Name</th>
+                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Start Date</th>
+                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">End Date</th>
+                  <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6 lg:pr-8">
+                    <span class="sr-only">Actions</span>
+                  </th>
                 </tr>
-              <% end %>
-            </tbody>
-          </table>
+              </thead>
+              <tbody class="divide-y divide-gray-100 bg-white">
+                <%= for campaign <- @campaigns do %>
+                  <tr>
+                    <td class="whitespace-nowrap py-4 pl-4 pr-3 text-base font-medium text-gray-900 sm:pl-6 lg:pl-8">
+                      <p class="font-semibold"><%= campaign.name %></p>
+                      <p class="text-grai text-sm"><%= campaign.description %></p>
+                    </td>
+                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><%= campaign.start_at %></td>
+                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><%= campaign.expire_at %></td>
+                    <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 lg:pr-8">
+                      <span><%= live_redirect "Show", to: Routes.campaigns_show_path(@socket, :show, campaign) %></span>
+                      <span><%= live_patch "Edit", to: Routes.campaigns_index_path(@socket, :edit, campaign) %></span>
+                      <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: campaign.id, data: [confirm: "Are you sure?"] %></span>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
-    <% else %>
-      <div class="flex items-center justify-center flex-1">
-        <.live_component 
-          id="empty-campaigns"
-          module={NewnixWeb.Components.Cards.EmptyStateComponent}
-          title="Campaign"
-          href={Routes.campaigns_index_path(@socket, :new)}
-          />
-      </div>
-    <% end %>
   </div>
-</div>
+<% else %>
+  <div class="flex items-center justify-center flex-1">
+    <.live_component
+      id="empty-campaigns"
+      module={NewnixWeb.Components.Cards.EmptyStateComponent}
+      title="Campaign"
+      icon="inbox"
+      href={Routes.campaigns_index_path(@socket, :new)}
+      />
+  </div>
+<% end %>
 <%= if @live_action in [:new, :edit] do %>
   <.rightbar_modal return_to={Routes.campaigns_index_path(@socket, :index)}>
     <.live_component
