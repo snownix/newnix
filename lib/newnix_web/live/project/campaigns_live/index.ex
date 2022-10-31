@@ -47,6 +47,10 @@ defmodule NewnixWeb.Project.CampaignsLive.Index do
     Campaigns.list_campaigns(project)
   end
 
+  def current_status(campaign) do
+    Campaign.campaign_status(campaign)
+  end
+
   def subscribers_format(0), do: ""
   def subscribers_format(1), do: "Subscriber"
   def subscribers_format(_count), do: "Subscribers"

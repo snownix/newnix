@@ -16,6 +16,7 @@
         <:thead class="bg-gray-50">
           <th>Name</th>
           <th>Subscribers</th>
+          <th>Status</th>
           <th>Start Date</th>
           <th>End Date</th>
           <th>
@@ -38,8 +39,19 @@
                   <%= subscribers_format(campaign.subscribers_count) %>
                 </span>
               </td>
-              <td><%= campaign.start_at %></td>
-              <td><%= campaign.expire_at %></td>
+              <td>
+                <%= current_status(campaign) %>
+              </td>
+              <td>
+                <span class="text-sm text-gray-700">
+                  <%= campaign.start_at %>
+                </span>
+              </td>
+              <td>
+                <span class="text-sm text-gray-700">
+                  <%= campaign.expire_at %>
+                </span>
+              </td>
               <td class="actions">
                 <span><%= live_redirect "Show", to: Routes.campaigns_show_path(@socket, :show, campaign) %></span>
                 <span><%= live_patch "Edit", to: Routes.campaigns_index_path(@socket, :edit, campaign) %></span>

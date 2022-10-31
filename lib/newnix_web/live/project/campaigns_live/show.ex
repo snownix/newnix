@@ -2,6 +2,7 @@ defmodule NewnixWeb.Project.CampaignsLive.Show do
   use NewnixWeb, :live_project
 
   alias Newnix.Campaigns
+  alias Newnix.Subscribers
   alias Newnix.Subscribers.Subscriber
 
   def mount(_params, _session, socket) do
@@ -33,6 +34,15 @@ defmodule NewnixWeb.Project.CampaignsLive.Show do
     {:noreply, apply_action(socket, live_action, params)}
   end
 
+  def handle_event("delete", %{"sub-id" => sub_id}, socket) do
+    %{campaign: campaign} = socket.assigns
+
+    subscriber = fetch_subscriber(campaign, sub_id)
+    {:ok, _} = Subscribers.delete_subscriber(subscriber)
+
+    {:noreply, socket |> assign_subscribers(campaign)}
+  end
+
   defp apply_action(socket, :show, _params) do
     socket
   end
@@ -61,12 +71,12 @@ defmodule NewnixWeb.Project.CampaignsLive.Show do
     Campaigns.get_campaign!(project, id)
   end
 
-  defp fetch_subscribers(campaign, opts \\ []) do
-    Campaigns.list_subscribers(campaign, opts)
-  end
-
   defp fetch_subscriber(campaign, id) do
     Campaigns.get_campaign_subscriber!(campaign, id)
+  end
+
+  defp fetch_subscribers(campaign, opts \\ []) do
+    Campaigns.list_subscribers(campaign, opts)
   end
 
   defp page_title(:show, campaign), do: "Show Campaign #{campaign.name}"

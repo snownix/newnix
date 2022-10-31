@@ -13,11 +13,13 @@
         </.ui_page_head>
     </div>
     <%= if Enum.count(@projects) === 0 do %>
+        <div class="w-full h-full flex-center">
         <.live_component    
             module={NewnixWeb.Components.Cards.EmptyStateComponent} 
             title="Project" 
             id="project-empty-state"
             href={Routes.live_path(@socket, NewnixWeb.User.DashboardLive.New)} />
+        </div>
     <% else %>
         <main>
             <!-- Stacked list -->

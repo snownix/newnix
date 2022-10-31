@@ -24,13 +24,9 @@ defmodule Newnix.Subscribers do
     query =
       from(
         s in Subscriber,
-        as: :subscribers,
-        join: c in assoc(s, :campaigns),
-        as: :campaigns,
-        where: c.project_id == ^project.id,
-        preload: [campaigns: c],
-        select: s
+        where: s.project_id == ^project.id
       )
+      |> IO.inspect()
 
     Repo.paginate(
       query,

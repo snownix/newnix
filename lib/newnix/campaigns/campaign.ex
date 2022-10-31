@@ -34,4 +34,9 @@ defmodule Newnix.Campaigns.Campaign do
     changeset
     |> put_assoc(:project, project)
   end
+
+  # "TODO:: check if between start & end(time left/progress), after end(expired), before start(ago),"
+  def campaign_status(_campaign) do
+    ""
+  end
 end

@@ -31,7 +31,7 @@
               <td class="actions">
                 <span><%= live_redirect "Show", to: Routes.subscribers_show_path(@socket, :show, subscriber) %></span>
                 <span><%= live_patch "Edit", to: Routes.campaigns_show_path(@socket, :edit_subscriber, @campaign.id, subscriber.id) %></span>
-                <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: subscriber.id, data: [confirm: "Are you sure?"] %></span>
+                <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_sub_id: subscriber.id, data: [confirm: "Are you sure?"] %></span>
               </td>
             </tr>
           <% end %>

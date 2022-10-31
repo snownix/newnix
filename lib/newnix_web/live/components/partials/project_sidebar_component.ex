@@ -94,13 +94,13 @@ defmodule NewnixWeb.Components.Partials.ProjectSidebarComponent do
       <.link navigate={@link}
         class={"w-full py-1.5 px-2 font-medium flex-shrink-0 inline-flex items-center text-dark-50 hover:text-primary-500 hover:bg-gray-100 dark:text-white rounded-md dark:bg-dark-900 space-x-4 #{@active && "bg-primary-100" ||""} #{@class}"}>
           <%= if assigns[:icon] do %>
-            <div class={"w-4 h-4 rounded border flex items-center justify-center"}>
+            <div class={"w-4 h-4 rounded flex-shrink-0 border flex items-center justify-center"}>
               <.ui_icon class="w-full h-full" icon={@icon} />
             </div>
           <% else %>
-            <div class={"w-4 h-4 rounded"} style={"background-color: #{@color};"}></div>
+            <div class={"w-4 h-4 rounded flex-shrink-0"} style={"background-color: #{@color};"}></div>
           <% end %>
-          <div>
+          <div class="truncate text-ellipsis">
             <%= render_slot(@inner_block) %>
           </div>
       </.link>
@@ -118,7 +118,9 @@ defmodule NewnixWeb.Components.Partials.ProjectSidebarComponent do
         phx-click="toggle-projects" phx-target={@target}
         class="flex items-center space-x-4 py-4 px-6 flex-1 bg-white  border-b cursor-pointer">
         <div class="flex flex-col space-y-0.5 w-full">
-          <span class="font-semibold text-gray-900"><%= @project.name %></span>
+          <span class="font-semibold truncate text-ellipsis text-gray-900">
+            <%= @project.name %>
+          </span>
           <span class="text-gray-500 text-sm">Team free</span>
         </div>
       </div>
