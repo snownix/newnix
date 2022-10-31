@@ -68,7 +68,8 @@ defmodule Newnix.MixProject do
       {:slugify, "~> 1.3"},
       {:bcrypt_elixir, "~> 2.0"},
       {:tailwind, "~> 0.1.6", runtime: Mix.env() == :dev},
-      {:timex, "~> 3.0"}
+      {:timex, "~> 3.0"},
+      {:paginator, "~> 1.2.0"}
     ]
   end
 

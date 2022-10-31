@@ -11,8 +11,8 @@ defmodule Newnix.Campaigns.CampaignSubscriber do
   schema "campaign_subscribers" do
     field :subscribed_at, :utc_datetime
 
-    belongs_to :campaign, Campaign
-    belongs_to :subscriber, Subscriber
+    belongs_to :campaign, Campaign, type: :binary_id
+    belongs_to :subscriber, Subscriber, type: :binary_id
 
     timestamps()
   end

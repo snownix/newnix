@@ -32,7 +32,7 @@ defmodule NewnixWeb.Components.AlertsComponent do
   def close_icon(assigns) do
     ~H"""
     <span class="close" phx-click="lv:clear-flash">
-        <svg><use href="/images/sprites.svg#icon-close" /></svg>
+      <.ui_icon class="" icon="close"/>
     </span>
     """
   end

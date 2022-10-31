@@ -1,4 +1,17 @@
-<section class="flex flex-1 flex-col">
+<section class="flex flex-1 flex-col py-8">
+    <div class="pb-8 border-b ">
+        <.ui_page_head 
+        title="Projects"
+        description="A list of all projects." 
+        icon="layers">
+        <:action>
+            <.ui_button theme="primary" size="small" href={Routes.live_path(@socket, NewnixWeb.User.DashboardLive.New)}>
+            <.ui_icon icon="plus"/>
+            <span><%= gettext "New Project" %></span>
+            </.ui_button>
+        </:action>
+        </.ui_page_head>
+    </div>
     <%= if Enum.count(@projects) === 0 do %>
         <.live_component    
             module={NewnixWeb.Components.Cards.EmptyStateComponent} 
@@ -6,18 +19,16 @@
             id="project-empty-state"
             href={Routes.live_path(@socket, NewnixWeb.User.DashboardLive.New)} />
     <% else %>
-        <main class="pt-8 pb-16">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <!-- Stacked list -->
-                <ul role="list" class="mt-5 border-t border-gray-200 divide-y divide-gray-200 sm:mt-0 sm:border-t-0">
-                    <.live_component
-                        :for={project <- @projects}
-                        id={project.id}
-                        project={project}
-                        module={NewnixWeb.Components.Cards.ProjectComponent}
-                        />
-                </ul>
-            </div>
+        <main>
+            <!-- Stacked list -->
+            <ul role="list" class="mt-5 border-t border-gray-200 divide-y divide-gray-200 sm:mt-0 sm:border-t-0">
+                <.live_component
+                    :for={project <- @projects}
+                    id={project.id}
+                    project={project}
+                    module={NewnixWeb.Components.Cards.ProjectComponent}
+                    />
+            </ul>
         </main>
     <% end %>
 </section>

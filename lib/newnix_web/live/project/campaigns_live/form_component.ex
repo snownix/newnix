@@ -4,7 +4,7 @@ defmodule NewnixWeb.Project.CampaignsLive.FormComponent do
   alias Newnix.Campaigns
 
   @impl true
-  def update(%{campaign: campaign, project: project} = assigns, socket) do
+  def update(%{campaign: campaign, project: _project} = assigns, socket) do
     changeset = Campaigns.change_campaign(campaign)
 
     {:ok,

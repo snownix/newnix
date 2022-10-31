@@ -2,8 +2,9 @@ defmodule NewnixWeb.Components.Partials.ProjectSidebarComponent do
   use NewnixWeb, :live_component
 
   attr :project, :map, default: nil
-  attr :campaigns, :map, default: []
+  attr :campaign, :map, default: nil
   attr :projects, :map, default: []
+  attr :campaigns, :map, default: []
   attr :projects_open, :boolean, default: false
 
   def render(assigns) do
@@ -18,17 +19,39 @@ defmodule NewnixWeb.Components.Partials.ProjectSidebarComponent do
 
             <div class="px-4 py-3 space-y-8">
               <ul>
-                <.menu_item link={Routes.live_path(@socket, NewnixWeb.Project.DashboardLive.Index)} icon="layers">Dashboard</.menu_item>
-                <.menu_item link={Routes.campaigns_index_path(@socket, :index)} icon="inbox">Campaigns</.menu_item>
-                <.menu_item link={Routes.subscribers_index_path(@socket, :index)} icon="users">Subscribers</.menu_item>
-                <.menu_item link={Routes.live_path(@socket, NewnixWeb.Project.SettingsLive.Index)} icon="settings">Settings</.menu_item>
+                <.menu_item link={Routes.live_path(@socket, NewnixWeb.Project.DashboardLive.Index)} icon="layers">
+                  Dashboard
+                </.menu_item>
+                <.menu_item link={Routes.campaigns_index_path(@socket, :index)} icon="inbox">
+                  Campaigns
+                </.menu_item>
+                <.menu_item link={Routes.subscribers_index_path(@socket, :index)} icon="user-group">
+                  Subscribers
+                </.menu_item>
+                <.menu_item link={Routes.live_path(@socket, NewnixWeb.Project.SettingsLive.Index)} icon="settings">
+                  Settings
+                </.menu_item>
               </ul>
 
-              <div class="space-y-1">
-                <div class="px-3.5 text-sm font-medium text-gray-400">Campaigns</div>
-                <ul>
-                  <.campaign_item :for={campaign <- @campaigns} campaign={campaign} index={0} link="#" />
-                  <.campaign_item index={0} icon="plus" link="#" class="text-gray-500">new campaign</.campaign_item>
+              <div class="px-3.5 space-y-2">
+                <div class="text-sm font-medium text-gray-400">Campaigns</div>
+                <ul class="space-y-1">
+                 <li
+                 :for={[id, name] <- @campaigns}
+                 >
+                 <.campaign_item
+                    link={Routes.campaigns_show_path(@socket, :show, id)}
+                    active={is_current_active(assigns, id)}
+                    id={id}
+                    >
+                    <%= name %>
+                  </.campaign_item>
+                 </li>
+                 <li>
+                  <.campaign_item icon="plus" link={Routes.campaigns_index_path(@socket, :new)} class="text-gray-500">
+                    New campaign
+                  </.campaign_item>
+                 </li>
                 </ul>
               </div>
             </div>
@@ -42,6 +65,7 @@ defmodule NewnixWeb.Components.Partials.ProjectSidebarComponent do
     {:noreply, socket |> assign(:projects_open, !assigns[:projects_open])}
   end
 
+  slot(:inner_block)
   attr :icon, :string, default: ""
 
   def menu_item(assigns) do
@@ -49,9 +73,7 @@ defmodule NewnixWeb.Components.Partials.ProjectSidebarComponent do
       <.link navigate={@link}
         class="w-full h-10 px-4 font-medium flex-shrink-0 inline-flex items-center text-dark-50 hover:text-primary-500 hover:bg-gray-100 dark:text-white rounded-md dark:bg-dark-900 space-x-4">
           <span>
-            <svg class="w-6 h-6">
-              <use href={"/images/sprites.svg#icon-#{@icon}"} />
-            </svg>
+            <.ui_icon class="w-6 h-6" icon={@icon}/>
           </span>
           <div>
             <%= render_slot(@inner_block) %>
@@ -60,31 +82,35 @@ defmodule NewnixWeb.Components.Partials.ProjectSidebarComponent do
     """
   end
 
-  attr :campaign, :map
   attr :class, :string, default: ""
+  attr :active, :boolean, default: false
 
-  def campaign_item(%{index: index} = assigns) do
-    colors = ~w(bg-primary-400 bg-green-400 bg-red-400 bg-yellow-400 bg-purple-400 bg-orange-400)
-    color = Enum.at(colors, rem(index, Enum.count(colors)))
+  def campaign_item(assigns) do
+    color = string_to_color_hash(assigns[:id] || "default")
 
     assigns = assign(assigns, :color, color)
 
     ~H"""
-      <a href={@link}
-        class={"w-full py-1 px-4 font-medium flex-shrink-0 inline-flex items-center text-dark-50 hover:text-primary-500 hover:bg-gray-100 dark:text-white rounded-md dark:bg-dark-900 space-x-4 #{@class}"}>
+      <.link navigate={@link}
+        class={"w-full py-1.5 px-2 font-medium flex-shrink-0 inline-flex items-center text-dark-50 hover:text-primary-500 hover:bg-gray-100 dark:text-white rounded-md dark:bg-dark-900 space-x-4 #{@active && "bg-primary-100" ||""} #{@class}"}>
           <%= if assigns[:icon] do %>
             <div class={"w-4 h-4 rounded border flex items-center justify-center"}>
-            <%= NewnixWeb.IconsView.render @icon, %{class: "w-full h-full"} %>
+              <.ui_icon class="w-full h-full" icon={@icon} />
             </div>
           <% else %>
-            <div class={"w-4 h-4 rounded #{@color}"}></div>
+            <div class={"w-4 h-4 rounded"} style={"background-color: #{@color};"}></div>
           <% end %>
           <div>
             <%= render_slot(@inner_block) %>
           </div>
-      </a>
+      </.link>
     """
   end
+
+  def is_current_active(%{campaign: campaign} = _assigns, id) when not is_nil(campaign),
+    do: id == campaign.id
+
+  def is_current_active(_assigns, _id), do: false
 
   def project_logo(assigns) do
     ~H"""

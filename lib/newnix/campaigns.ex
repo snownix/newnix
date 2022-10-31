@@ -7,6 +7,7 @@ defmodule Newnix.Campaigns do
   alias Newnix.Repo
   alias Newnix.Projects.Project
   alias Newnix.Campaigns.Campaign
+  alias Newnix.Subscribers.Subscriber
 
   @doc """
   Returns the list of campaigns.
@@ -17,17 +18,28 @@ defmodule Newnix.Campaigns do
       [%Menu{}, ...]
 
   """
-  def list_campaigns(project = %Project{}) do
-    project
-    |> Repo.preload(:campaigns)
-    |> then(fn p -> p.campaigns end)
+  def list_campaigns(project = %Project{}, opts \\ []) do
+    limit = Keyword.get(opts, :limit, 50)
+
+    query =
+      from c in Campaign,
+        where: c.project_id == ^project.id,
+        left_join: s in assoc(c, :subscribers),
+        group_by: c.id,
+        select_merge: %{subscribers_count: count(s.id)}
+
+    Repo.paginate(
+      query,
+      cursor_fields: [:inserted_at, :id],
+      limit: Repo.secure_allowed_limit(limit)
+    )
   end
 
   def meta_list_campaigns(project = %Project{}) do
     query =
       from p in Campaign,
         where: p.project_id == ^project.id,
-        select: p.name
+        select: [p.id, p.name]
 
     Repo.all(query)
   end
@@ -118,5 +130,61 @@ defmodule Newnix.Campaigns do
   """
   def change_campaign(%Campaign{} = campaign, attrs \\ %{}) do
     Campaign.changeset(campaign, attrs)
+  end
+
+  @doc """
+  Returns the list of subscribers.
+
+  ## Examples
+
+      iex> list_subscribers(%Campaign{}, limit: 50)
+      %{entries: [%Subscriber{}, ...], metadata: %Paginator.Page.Metadata{}}
+
+  """
+  def list_subscribers(campaign = %Campaign{}, opts \\ []) do
+    limit = Keyword.get(opts, :limit, 50)
+
+    query =
+      from(
+        s in Subscriber,
+        as: :subscribers,
+        join: c in assoc(s, :campaigns),
+        as: :campaigns,
+        where: c.id == ^campaign.id,
+        preload: [campaigns: c],
+        select: s
+      )
+
+    Repo.paginate(
+      query,
+      cursor_fields: [:inserted_at, :id],
+      limit: Repo.secure_allowed_limit(limit)
+    )
+  end
+
+  @doc """
+  Gets a single campaign.
+
+  Raises `Ecto.NoResultsError` if the Campaign does not exist.
+
+  ## Examples
+
+      iex> get_campaign_subscriber!(campaign, "a-b-c-d")
+      %Campaign{}
+
+      iex> get_campaign_subscriber!(campaign, "a-b-c-d")
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_campaign_subscriber!(campaign = %Campaign{}, id) do
+    query =
+      from(
+        s in Subscriber,
+        join: a in assoc(s, :campaigns),
+        where: a.id == ^campaign.id and s.id == ^id,
+        select: s
+      )
+
+    Repo.one!(query)
   end
 end

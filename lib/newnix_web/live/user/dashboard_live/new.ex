@@ -23,9 +23,9 @@ defmodule NewnixWeb.User.DashboardLive.New do
   end
 
   def handle_event("save", %{"project" => project_params}, socket) do
-    %{user: user} = socket.assigns
+    %{current_user: current_user} = socket.assigns
 
-    case Projects.create_project(user, project_params) do
+    case Projects.create_project(current_user, project_params) do
       {:ok, project} ->
         {:noreply,
          socket

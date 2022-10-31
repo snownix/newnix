@@ -39,9 +39,7 @@ defmodule NewnixWeb.Components.Partials.MainSidebarComponent do
   def logo(assigns) do
     ~H"""
       <.link navigate={"/"} class="flex items-center justify-center py-8 text-white h-20">
-        <svg class="w-12 h-12 text-primary-500">
-        <use href="/images/sprites.svg#icon" />
-        </svg>
+        <.ui_icon class="w-12 h-12 text-primary-500" icon="logo"/>
       </.link>
     """
   end
@@ -62,9 +60,7 @@ defmodule NewnixWeb.Components.Partials.MainSidebarComponent do
   def project_add_button(assigns) do
     ~H"""
       <.menu_button link={"/new"}>
-          <span>
-            <%= NewnixWeb.IconsView.render "plus", %{class: "w-5 h5"} %>
-          </span>
+        <.ui_icon class="w-6 h-6" icon="plus"/>
       </.menu_button>
     """
   end
@@ -102,9 +98,7 @@ defmodule NewnixWeb.Components.Partials.MainSidebarComponent do
   def auth_logout(assigns) do
     ~H"""
       <.link href="/auth/logout" method="delete" class="w-full h-12 flex-shrink-0 flex bg-gray-50 justify-center items-center text-dark-50 font-medium hover:text-primary-500 hover:bg-gray-100 dark:text-white rounded-md dark:bg-dark-900 space-x-4">
-        <svg class="w-6 h-6">
-          <use href="/images/sprites.svg#icon-logout" />
-        </svg>
+        <.ui_icon class="w-6 h-6" icon="logout"/>
       </.link>
     """
   end

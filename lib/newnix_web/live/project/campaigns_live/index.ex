@@ -35,13 +35,24 @@ defmodule NewnixWeb.Project.CampaignsLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    campaign = Campaigns.get_campaign!(socket.assigns.project, id)
+    %{project: project} = socket.assigns
+
+    campaign = Campaigns.get_campaign!(project, id)
     {:ok, _} = Campaigns.delete_campaign(campaign)
 
-    {:noreply, assign(socket, :campaigns, list_campaigns(socket.assigns.project))}
+    {:noreply, socket |> assign(:campaigns, list_campaigns(project))}
   end
 
   defp list_campaigns(project) do
     Campaigns.list_campaigns(project)
   end
+
+  def subscribers_format(0), do: ""
+  def subscribers_format(1), do: "Subscriber"
+  def subscribers_format(_count), do: "Subscribers"
+
+  def subscribers_icon(0), do: "face-down"
+  def subscribers_icon(1), do: "user"
+  def subscribers_icon(2), do: "user-group"
+  def subscribers_icon(_count), do: "users"
 end

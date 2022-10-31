@@ -8,9 +8,8 @@ defmodule NewnixWeb.Components.Cards.EmptyStateComponent do
   def render(assigns) do
     ~H"""
       <div class="text-center flex-1 m-auto">
-          <svg class="mx-auto h-12 w-12 text-gray-400">
-            <use href={"/images/sprites.svg#icon-#{@icon}"} />
-          </svg>
+          <.ui_icon class="mx-auto h-12 w-12 text-gray-400" icon={@icon}/>
+
           <h3 class="mt-2 text-sm font-medium text-gray-900">No <%= @title %>s</h3>
           <p class="mt-1 text-sm text-gray-500">Get started by creating a new <%= @title %>.</p>
           <div class="flex justify-center mt-6">

@@ -15,6 +15,7 @@ defmodule Newnix.Campaigns.Campaign do
     field :start_at, :utc_datetime
     field :expire_at, :utc_datetime
     field :status, Ecto.Enum, values: []
+    field :subscribers_count, :integer, virtual: true, default: 0
 
     belongs_to :project, Project, type: :binary_id
     has_many :tokens, CampaignToken

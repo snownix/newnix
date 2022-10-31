@@ -4,7 +4,7 @@ defmodule NewnixWeb.Components.Cards.ProjectComponent do
   def render(assigns) do
     ~H"""
       <li>
-        <.link href={Routes.project_path(@socket, :open, @project.id)} class="flex items-center py-5 px-4 sm:py-6 sm:px-0">
+        <.link href={Routes.project_path(@socket, :open, @project.id)} class="flex items-center py-5 px-4 sm:py-6">
               <div class="min-w-0 flex-1 flex items-center">
                   <div class="flex-shrink-0">
                     <.ui_avatar text="AB" avatar={@project.logo}></.ui_avatar>

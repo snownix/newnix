@@ -13,10 +13,10 @@ defmodule NewnixWeb.User.DashboardLive.Index do
   end
 
   defp fetch_projects(socket) do
-    %{user: user} = socket.assigns
+    %{current_user: current_user} = socket.assigns
 
     socket
-    |> assign(:projects, list_projects(user))
+    |> assign(:projects, list_projects(current_user))
   end
 
   defp list_projects(user) do

@@ -4,12 +4,14 @@ defmodule NewnixWeb.Project.SubscribersLive.FormComponent do
   alias Newnix.Subscribers
 
   @impl true
-  def update(%{subscriber: subscriber, project: project} = assigns, socket) do
+  def update(%{subscriber: subscriber, project: _project} = assigns, socket) do
     changeset = Subscribers.change_subscriber(subscriber)
 
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(campaign: assigns[:campaign] || nil)
+     |> assign(campaigns: assigns[:campaigns] || [])
      |> assign(:changeset, changeset)}
   end
 
@@ -41,12 +43,12 @@ defmodule NewnixWeb.Project.SubscribersLive.FormComponent do
   end
 
   defp save_subscriber(%{assigns: assigns} = socket, :new, subscriber_params) do
-    case Subscribers.create_subscriber(assigns.project, subscriber_params) do
+    case Subscribers.create_subscriber(assigns.project, assigns[:campaign], subscriber_params) do
       {:ok, _subscriber} ->
         {:noreply,
          socket
          |> put_flash(:info, "Subscriber created successfully")
-         |> push_redirect(to: socket.assigns.return_to)}
+         |> push_redirect(to: assigns.return_to)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset: changeset)}

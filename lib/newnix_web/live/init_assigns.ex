@@ -17,31 +17,32 @@ defmodule NewnixWeb.InitAssigns do
      socket
      |> assign(:sidebar, :user)
      |> assign_locale(session, params)
-     |> assign(:user, user)
+     |> assign(:current_user, user)
      |> assign(:projects, Projects.list_projects(user))}
   end
 
   def on_mount(:project, _params, session, socket) do
-    %{user: user} = socket.assigns
+    %{current_user: current_user} = socket.assigns
 
     socket =
       socket
       |> assign(:sidebar, :project)
 
-    if is_nil(user) do
+    if is_nil(current_user) do
       {:cont, socket}
     else
-      case find_current_project(user, session) do
+      case find_current_project(current_user, session) do
         nil ->
           {:cont, socket}
 
         project ->
+          campaigns = project |> Campaigns.meta_list_campaigns()
+
           {:cont,
            socket
-           |> assign(:page_title, project.name)
            |> assign(:project, project)
-           |> assign(:toasts, [])
-           |> assign(:campaigns, Campaigns.meta_list_campaigns(project))}
+           |> assign(:page_title, project.name)
+           |> assign(:project_campaigns, campaigns)}
       end
     end
   end

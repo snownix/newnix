@@ -1,22 +1,22 @@
 .button {
 	@apply flex items-center justify-center space-x-2;
 
-	@apply py-2 px-5 rounded-md  cursor-pointer;
+	@apply py-2.5 px-5 rounded-md  cursor-pointer;
 	@apply border border-dark-50 border-opacity-20;
 	@apply text-dark-100 font-medium;
 	@apply hover:bg-gray-50;
 }
 
 .button.large {
-	@apply py-3.5 px-5 w-full;
+	@apply py-4 px-5 w-full;
 }
 
 .button.medium {
-	@apply py-2;
+	@apply py-2.5;
 }
 
 .button.small {
-	@apply py-2 text-sm;
+	@apply py-2.5 text-sm;
 }
 
 .button.base {
@@ -24,7 +24,7 @@
 }
 
 .button.primary {
-	@apply bg-primary-500 text-white ;
+	@apply bg-primary-500 text-white border-primary-500;
 }
 
 .button.dark {

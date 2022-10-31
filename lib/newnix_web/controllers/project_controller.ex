@@ -4,7 +4,7 @@ defmodule NewnixWeb.ProjectController do
   alias Newnix.Projects
 
   def open(conn, %{"id" => id}) do
-    project = Projects.get_project!(conn.assigns[:user], id)
+    project = Projects.get_project!(conn.assigns.current_user, id)
 
     if project do
       log_in_project(conn, id)

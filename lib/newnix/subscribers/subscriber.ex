@@ -17,7 +17,7 @@ defmodule Newnix.Subscribers.Subscriber do
     field :unsubscribed, :boolean
 
     belongs_to :project, Project, type: :binary_id
-    many_to_many :campaigns, Campaign, join_through: CampaignSubscriber
+    many_to_many :campaigns, Campaign, join_through: CampaignSubscriber, on_delete: :delete_all
 
     timestamps()
   end
@@ -33,8 +33,8 @@ defmodule Newnix.Subscribers.Subscriber do
     |> put_assoc(:project, project)
   end
 
-  def campaign_assoc(changeset, campaign) do
+  def campaigns_assoc(changeset, campaigns) do
     changeset
-    |> put_assoc(:campaign, [campaign])
+    |> put_assoc(:campaigns, campaigns)
   end
 end

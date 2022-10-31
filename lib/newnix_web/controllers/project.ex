@@ -16,7 +16,7 @@ defmodule NewnixWeb.Project do
   @doc """
   """
   def fetch_current_project(conn, _opts) do
-    user = conn.assigns[:user]
+    user = conn.assigns.current_user
 
     case find_project(user, get_session(conn)) do
       nil ->

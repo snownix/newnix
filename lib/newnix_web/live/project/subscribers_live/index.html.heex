@@ -1,11 +1,11 @@
-<%= if Enum.count(@subscribers) > 0 do %>
+<%= if Enum.count(@subscribers.entries) > 0 do %>
   <div class="py-6 space-y-8">
     <.ui_page_head 
-      title={"#{@campaign.name} Subscribers"}
+      title="Subscribers"
       description="A list of all the subscribers in your project, with their name, description, start and end dates." 
       icon="user-group">
       <:action>
-        <.ui_button theme="primary" size="small" href={Routes.campaigns_show_path(@socket, :new_subscriber, @campaign)}>
+        <.ui_button theme="primary" size="small" href={Routes.subscribers_index_path(@socket, :new)}>
           <.ui_icon icon="plus"/>
           <span><%= gettext "New Subscriber" %></span>
         </.ui_button>
@@ -23,14 +23,14 @@
           </th>
         </:thead>
         <:tbody>
-          <%= for subscriber <- @subscribers do %>
+          <%= for subscriber <- @subscribers.entries do %>
             <tr>
               <td><%= subscriber.firstname %> <%= subscriber.lastname %></td>
               <td><%= subscriber.email %></td>
               <td class="low"><%= subscriber.inserted_at %></td>
               <td class="actions">
                 <span><%= live_redirect "Show", to: Routes.subscribers_show_path(@socket, :show, subscriber) %></span>
-                <span><%= live_patch "Edit", to: Routes.campaigns_show_path(@socket, :edit_subscriber, @campaign.id, subscriber.id) %></span>
+                <span><%= live_patch "Edit", to: Routes.subscribers_index_path(@socket, :edit, subscriber) %></span>
                 <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: subscriber.id, data: [confirm: "Are you sure?"] %></span>
               </td>
             </tr>
@@ -47,21 +47,21 @@
       module={NewnixWeb.Components.Cards.EmptyStateComponent}
       title="Subscriber"
       icon="user-group"
-      href={Routes.campaigns_show_path(@socket, :new_subscriber, @campaign.id)}
+      href={Routes.subscribers_index_path(@socket, :new)}
       />
   </div>
 <% end %>
-<%= if @live_action in [:new_subscriber, :edit_subscriber] do %>
-  <.rightbar_modal return_to={Routes.campaigns_show_path(@socket, :show, @campaign.id)}>
+<%= if @live_action in [:new, :edit] do %>
+  <.rightbar_modal return_to={Routes.subscribers_index_path(@socket, :index)}>
     <.live_component
       module={NewnixWeb.Project.SubscribersLive.FormComponent}
       id={@subscriber.id || :new}
       title={@page_title}
-      action={:new_subscriber == @live_action && :new || :edit}
+      action={@live_action}
       project={@project}
-      campaign={@campaign}
+      campaigns={@campaigns}
       subscriber={@subscriber}
-      return_to={Routes.campaigns_show_path(@socket, :show, @campaign.id)}
+      return_to={Routes.subscribers_index_path(@socket, :index)}
     />
   </.rightbar_modal>
 <% end %>

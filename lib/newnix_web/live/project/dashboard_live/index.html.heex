@@ -1,7 +1,7 @@
 <section class="m-auto">
-    <%= if Enum.count(@campaigns) > 0 do %>
+    <%= if Enum.count(@campaigns.entries) > 0 do %>
     <div>
-        campaigns here
+        campaigns <%= Enum.count(@campaigns.entries) %>
     </div>
     <% else %>
         <.live_component 

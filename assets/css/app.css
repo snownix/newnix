@@ -4,9 +4,10 @@
 
 @import "./alert.css";
 @import "./form.css";
-@import "./buttons.css";
 @import "./modal.css";
 @import "./toast.css";
+@import "./table.css";
+@import "./buttons.css";
 
 @import "./pages/auth.css";
 
@@ -16,6 +17,11 @@ body {
 
 [data-phx-main] {
 	@apply flex flex-1 h-full min-h-screen;
+}
+
+
+.flex-center {
+	@apply flex items-center space-x-2;
 }
 
 /* List drop */

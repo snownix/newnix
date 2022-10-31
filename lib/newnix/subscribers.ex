@@ -7,6 +7,7 @@ defmodule Newnix.Subscribers do
   alias Newnix.Repo
   alias Newnix.Projects.Project
   alias Newnix.Subscribers.Subscriber
+  alias Newnix.Campaigns.Campaign
 
   @doc """
   Returns the list of subscribers.
@@ -17,10 +18,25 @@ defmodule Newnix.Subscribers do
       [%Menu{}, ...]
 
   """
-  def list_subscribers(project = %Project{}) do
-    project
-    |> Repo.preload(:subscribers)
-    |> then(fn p -> p.subscribers end)
+  def list_subscribers(project = %Project{}, opts \\ []) do
+    limit = Keyword.get(opts, :limit, 50)
+
+    query =
+      from(
+        s in Subscriber,
+        as: :subscribers,
+        join: c in assoc(s, :campaigns),
+        as: :campaigns,
+        where: c.project_id == ^project.id,
+        preload: [campaigns: c],
+        select: s
+      )
+
+    Repo.paginate(
+      query,
+      cursor_fields: [:inserted_at, :id],
+      limit: Repo.secure_allowed_limit(limit)
+    )
   end
 
   def meta_list_subscribers(project = %Project{}) do
@@ -55,6 +71,24 @@ defmodule Newnix.Subscribers do
   end
 
   @doc """
+  fetch subscriber campaigns.
+
+  Raises `Ecto.NoResultsError` if the Subscriber does not exist.
+
+  ## Examples
+
+      iex> fetch_campaigns(%Subscriber{})
+      %Subscriber{}
+
+      iex> fetch_campaigns(%Subscriber{})
+      ** (Ecto.NoResultsError)
+
+  """
+  def fetch_campaigns(%Subscriber{} = subscriber) do
+    subscriber |> Repo.preload(:campaigns)
+  end
+
+  @doc """
   Creates a subscriber.
 
   ## Examples
@@ -66,12 +100,23 @@ defmodule Newnix.Subscribers do
       {:error, %Ecto.Changeset{}}
 
   """
+
   def create_subscriber(project = %Project{}, attrs \\ %{}) do
     %Subscriber{}
     |> Subscriber.changeset(attrs)
     |> Subscriber.project_assoc(project)
     |> Repo.insert()
   end
+
+  def create_subscriber(project = %Project{}, campaign = %Campaign{}, attrs) do
+    %Subscriber{}
+    |> Subscriber.changeset(attrs)
+    |> Subscriber.project_assoc(project)
+    |> Subscriber.campaigns_assoc([campaign])
+    |> Repo.insert()
+  end
+
+  def create_subscriber(project = %Project{}, nil, attrs), do: create_subscriber(project, attrs)
 
   @doc """
   Updates a subscriber.

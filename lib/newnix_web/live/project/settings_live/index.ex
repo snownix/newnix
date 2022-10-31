@@ -36,9 +36,8 @@ defmodule NewnixWeb.Project.SettingsLive.Index do
     end
   end
 
-  attr(:firstname, :string)
-  attr(:lastname, :string)
-  attr(:logo, :string)
+  attr :user, :map
+  attr :logo, :string, default: nil
 
   def user_row(assigns) do
     ~H"""
