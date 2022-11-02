@@ -38,7 +38,7 @@ defmodule NewnixWeb.Project.CampaignsLive.Show do
     %{campaign: campaign} = socket.assigns
 
     subscriber = fetch_subscriber(campaign, sub_id)
-    {:ok, _} = Subscribers.delete_subscriber(subscriber)
+    {:ok, _} = Subscribers.delete_subscriber_from_campaign(subscriber, campaign)
 
     {:noreply, socket |> assign_subscribers(campaign)}
   end

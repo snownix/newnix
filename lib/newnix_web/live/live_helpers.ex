@@ -26,10 +26,10 @@ defmodule NewnixWeb.LiveHelpers do
   def rightbar_modal(assigns) do
     ~H"""
     <div id="modal" class="phx-rightbar-modal fade-in" phx-remove={hide_modal()}>
+      <div class="absolute w-full h-full top-0 left-0" phx-click={JS.dispatch("click", to: "#close")}></div>
       <div
         id="modal-content"
         class="phx-rightbar-modal-content fade-in-scale"
-        phx-click-away={JS.dispatch("click", to: "#close")}
         phx-window-keydown={JS.dispatch("click", to: "#close")}
         phx-key="escape"
       >

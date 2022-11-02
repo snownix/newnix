@@ -9,7 +9,10 @@ defmodule Newnix.Campaigns.CampaignSubscriber do
   @primary_key {:id, :binary_id, autogenerate: true}
 
   schema "campaign_subscribers" do
-    field :subscribed_at, :utc_datetime
+    field :firstname, :string
+    field :lastname, :string
+
+    field :unsubscribed_at, :utc_datetime
 
     belongs_to :campaign, Campaign, type: :binary_id
     belongs_to :subscriber, Subscriber, type: :binary_id
@@ -19,7 +22,7 @@ defmodule Newnix.Campaigns.CampaignSubscriber do
 
   def changeset(subscriber, attrs) do
     subscriber
-    |> cast(attrs, [:subscribed_at])
-    |> validate_required([:subscribed_at])
+    |> cast(attrs, [:unsubscribed_at])
+    |> unique_constraint([:campaign_id, :subscriber_id])
   end
 end

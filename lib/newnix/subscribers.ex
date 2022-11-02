@@ -4,6 +4,8 @@ defmodule Newnix.Subscribers do
   """
 
   import Ecto.Query
+  import Ecto.Changeset, only: [get_field: 2]
+
   alias Newnix.Repo
   alias Newnix.Projects.Project
   alias Newnix.Subscribers.Subscriber
@@ -66,6 +68,15 @@ defmodule Newnix.Subscribers do
     Repo.one!(query)
   end
 
+  def get_subscriber_by_email!(project = %Project{}, email) do
+    query =
+      from c in Subscriber,
+        where: c.email == ^email and c.project_id == ^project.id,
+        preload: [:campaigns, :campaign_subscribers]
+
+    Repo.one!(query)
+  end
+
   @doc """
   fetch subscriber campaigns.
 
@@ -97,22 +108,30 @@ defmodule Newnix.Subscribers do
 
   """
 
-  def create_subscriber(project = %Project{}, attrs \\ %{}) do
+  def create_subscriber(%Project{} = project, attrs \\ %{}) do
     %Subscriber{}
     |> Subscriber.changeset(attrs)
     |> Subscriber.project_assoc(project)
-    |> Repo.insert()
+    |> insert_or_modify(project)
   end
 
-  def create_subscriber(project = %Project{}, campaign = %Campaign{}, attrs) do
+  def create_subscriber(%Project{} = project, campaign = %Campaign{}, attrs) do
+    campaign_subscriber_assoc = Map.merge(%{campaign: campaign}, take_names(attrs))
+
     %Subscriber{}
     |> Subscriber.changeset(attrs)
     |> Subscriber.project_assoc(project)
-    |> Subscriber.campaigns_assoc([campaign])
-    |> Repo.insert()
+    |> insert_or_modify(project, [campaign_subscriber_assoc])
   end
 
-  def create_subscriber(project = %Project{}, nil, attrs), do: create_subscriber(project, attrs)
+  def create_subscriber(%Project{} = project, nil, attrs), do: create_subscriber(project, attrs)
+
+  defp take_names(%{"firstname" => firstname, "lastname" => lastname} = _attrs),
+    do: %{firstname: firstname, lastname: lastname}
+
+  defp take_names(%{"lastname" => lastname} = _attrs), do: %{lastname: lastname}
+  defp take_names(%{"firstname" => firstname} = _attrs), do: %{firstname: firstname}
+  defp take_names(_), do: %{}
 
   @doc """
   Updates a subscriber.
@@ -159,5 +178,47 @@ defmodule Newnix.Subscribers do
   """
   def change_subscriber(%Subscriber{} = subscriber, attrs \\ %{}) do
     Subscriber.changeset(subscriber, attrs)
+  end
+
+  @doc """
+  Deletes a subscriber from campaign.
+
+  ## Examples
+
+      iex> delete_subscriber_from_campaign(subscriber, campaign)
+      {:ok, %Subscriber{}}
+
+      iex> delete_subscriber_from_campaign(subscriber, campaign)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_subscriber_from_campaign(%Subscriber{} = subscriber, %Campaign{} = campaign) do
+    subscriber = Repo.preload(subscriber, :campaigns)
+
+    campaigns = Enum.filter(subscriber.campaigns, &(&1.id !== campaign.id))
+
+    subscriber
+    |> Subscriber.campaigns_assoc(campaigns)
+    |> Repo.update()
+  end
+
+  def insert_or_modify(changeset, %Project{} = project, list_campaign_subscriber \\ []) do
+    changeset
+    |> Repo.insert()
+    |> case do
+      {:ok, subscriber} ->
+        {:ok, subscriber}
+
+      {:error, _} ->
+        email = get_field(changeset, :email)
+
+        subscriber = get_subscriber_by_email!(project, email)
+        campaigns = Map.get(subscriber, :campaign_subscribers, [])
+
+        subscriber
+        |> Subscriber.changeset()
+        |> Subscriber.campaigns_assoc(list_campaign_subscriber ++ campaigns)
+        |> Repo.update()
+    end
   end
 end

@@ -17,24 +17,33 @@ defmodule Newnix.Subscribers.Subscriber do
     field :unsubscribed, :boolean
 
     belongs_to :project, Project, type: :binary_id
-    many_to_many :campaigns, Campaign, join_through: CampaignSubscriber, on_delete: :delete_all
+
+    has_many :campaign_subscribers, CampaignSubscriber
+
+    many_to_many :campaigns, Campaign,
+      join_through: CampaignSubscriber,
+      on_delete: :delete_all,
+      on_replace: :delete
 
     timestamps()
   end
 
-  def changeset(subscriber, attrs) do
+  def changeset(subscriber, attrs \\ %{}) do
     subscriber
     |> cast(attrs, [:firstname, :lastname, :email, :unsubscribed])
     |> validate_required([:email])
+    |> unique_constraint(:email)
   end
 
   def project_assoc(changeset, project) do
     changeset
+    |> change()
     |> put_assoc(:project, project)
   end
 
-  def campaigns_assoc(changeset, campaigns) do
+  def campaigns_assoc(changeset, campaigns \\ []) do
     changeset
-    |> put_assoc(:campaigns, campaigns)
+    |> change()
+    |> put_assoc(:campaign_subscribers, campaigns)
   end
 end

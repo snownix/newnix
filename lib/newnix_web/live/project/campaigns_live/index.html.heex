@@ -17,8 +17,7 @@
           <th>Name</th>
           <th>Subscribers</th>
           <th>Status</th>
-          <th>Start Date</th>
-          <th>End Date</th>
+          <th>Dates</th>
           <th>
             <span class="sr-only">Actions</span>
           </th>
@@ -32,12 +31,12 @@
               </td>
               <td>
                 <div class="flex-center">
-                <.ui_icon icon={subscribers_icon(campaign.subscribers_count)} />
-                <span><%= campaign.subscribers_count %></span>
+                  <.ui_icon icon={subscribers_icon(campaign.subscribers_count)} />
+                  <span><%= campaign.subscribers_count %></span>
+                  <span class="text-sm text-grai">
+                    <%= subscribers_format(campaign.subscribers_count) %>
+                  </span>
                 </div>
-                <span class="text-sm text-grai">
-                  <%= subscribers_format(campaign.subscribers_count) %>
-                </span>
               </td>
               <td>
                 <%= current_status(campaign) %>
@@ -46,8 +45,6 @@
                 <span class="text-sm text-gray-700">
                   <%= campaign.start_at %>
                 </span>
-              </td>
-              <td>
                 <span class="text-sm text-gray-700">
                   <%= campaign.expire_at %>
                 </span>

@@ -11,6 +11,7 @@ defmodule NewnixWeb.Live.Components.Helper do
   attr :title, :string, required: true
   attr :type, :string, default: "text"
   attr :class, :string, default: ""
+  attr :show_error, :boolean, default: false
 
   def ui_input(assigns) do
     ~H"""
@@ -18,6 +19,9 @@ defmodule NewnixWeb.Live.Components.Helper do
         field-fill={is_fill(@form, @name)}>
         <%= text_input @form, @name, type: @type %>
         <%= label @form, @name, @title, class: "label" %>
+        <%= if @show_error do %>
+          <%= error_tag @form , @name %>
+        <% end %>
       </label>
     """
   end

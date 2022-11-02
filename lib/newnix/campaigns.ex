@@ -7,6 +7,7 @@ defmodule Newnix.Campaigns do
   alias Newnix.Repo
   alias Newnix.Projects.Project
   alias Newnix.Campaigns.Campaign
+  alias Newnix.Campaigns.CampaignSubscriber
   alias Newnix.Subscribers.Subscriber
 
   @doc """
@@ -21,27 +22,27 @@ defmodule Newnix.Campaigns do
   def list_campaigns(project = %Project{}, opts \\ []) do
     limit = Keyword.get(opts, :limit, 50)
 
-    query =
-      from c in Campaign,
-        where: c.project_id == ^project.id,
-        left_join: s in assoc(c, :subscribers),
-        group_by: c.id,
-        select_merge: %{subscribers_count: count(s.id)}
-
-    Repo.paginate(
-      query,
+    from(c in Campaign,
+      where: c.project_id == ^project.id,
+      left_join: s in assoc(c, :subscribers),
+      group_by: c.id,
+      select_merge: %{
+        subscribers_count: count(s.id)
+      }
+    )
+    |> Repo.paginate(
       cursor_fields: [:inserted_at, :id],
       limit: Repo.secure_allowed_limit(limit)
     )
   end
 
   def meta_list_campaigns(project = %Project{}) do
-    query =
-      from p in Campaign,
-        where: p.project_id == ^project.id,
-        select: [p.id, p.name]
-
-    Repo.all(query)
+    from(
+      p in Campaign,
+      where: p.project_id == ^project.id,
+      select: [p.id, p.name]
+    )
+    |> Repo.all()
   end
 
   @doc """
@@ -144,19 +145,18 @@ defmodule Newnix.Campaigns do
   def list_subscribers(campaign = %Campaign{}, opts \\ []) do
     limit = Keyword.get(opts, :limit, 50)
 
-    query =
-      from(
-        s in Subscriber,
-        as: :subscribers,
-        join: c in assoc(s, :campaigns),
-        as: :campaigns,
-        where: c.id == ^campaign.id,
-        preload: [campaigns: c],
-        select: s
-      )
-
-    Repo.paginate(
-      query,
+    from(
+      s in Subscriber,
+      join: cs in CampaignSubscriber,
+      where:
+        cs.campaign_id == ^campaign.id and
+          cs.subscriber_id == s.id,
+      select_merge: %{
+        firstname: coalesce(cs.firstname, s.firstname),
+        lastname: coalesce(cs.lastname, s.lastname)
+      }
+    )
+    |> Repo.paginate(
       cursor_fields: [:inserted_at, :id],
       limit: Repo.secure_allowed_limit(limit)
     )
@@ -177,14 +177,18 @@ defmodule Newnix.Campaigns do
 
   """
   def get_campaign_subscriber!(campaign = %Campaign{}, id) do
-    query =
-      from(
-        s in Subscriber,
-        join: a in assoc(s, :campaigns),
-        where: a.id == ^campaign.id and s.id == ^id,
-        select: s
-      )
-
-    Repo.one!(query)
+    from(
+      s in Subscriber,
+      join: cs in CampaignSubscriber,
+      where:
+        cs.campaign_id == ^campaign.id and
+          cs.subscriber_id == s.id and
+          cs.subscriber_id == ^id,
+      select_merge: %{
+        firstname: coalesce(cs.firstname, s.firstname),
+        lastname: coalesce(cs.lastname, s.lastname)
+      }
+    )
+    |> Repo.one!()
   end
 end

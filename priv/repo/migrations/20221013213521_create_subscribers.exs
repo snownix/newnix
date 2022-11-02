@@ -17,12 +17,18 @@ defmodule Newnix.Repo.Migrations.CreateSubscribers do
       timestamps()
     end
 
+    create unique_index(:subscribers, [:email])
+
     create table(:campaign_subscribers, primary_key: false) do
       add :id, :uuid, primary_key: true
 
       add :campaign_id, references(:campaigns, type: :uuid)
       add :subscriber_id, references(:subscribers, type: :uuid)
-      add :subscribed_at, :utc_datetime
+
+      add :firstname, :string, size: 100
+      add :lastname, :string, size: 100
+
+      add :unsubscribed_at, :utc_datetime
 
       timestamps()
     end
