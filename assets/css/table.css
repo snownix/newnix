@@ -1,22 +1,31 @@
 .table {
-    @apply w-full divide-y divide-gray-300 border-b text-dark-300 table-fixed 2xl:table-auto;
+	@apply w-full divide-y divide-gray-300 border-b text-dark-300 table-fixed 2xl:table-auto;
 }
-.table th{
-    @apply py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6 lg:pl-8;
-}
-
-.table tr td{
-    @apply whitespace-nowrap py-4 pl-4 pr-3 text-base font-medium sm:pl-6 lg:pl-8;
+.table th {
+	@apply py-3.5 text-left text-sm font-semibold pl-2 md:pl-4;
 }
 
-.table *{
-    @apply truncate;
+.table tr td {
+	@apply whitespace-nowrap py-4 pr-3 text-base font-medium pl-2 md:pl-4;
+}
+
+.table th:first-child,
+.table tr td:first-child {
+	@apply lg:pl-8;
+}
+.table th:last-child,
+.table tr td:last-child {
+	@apply lg:pr-8;
+}
+
+.table * {
+	@apply truncate;
 }
 
 .table .low {
-    @apply whitespace-nowrap px-3 py-4 text-sm text-gray-500;
+	@apply whitespace-nowrap px-3 py-4 text-sm text-gray-500;
 }
 
 .table .actions {
-    @apply relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 lg:pr-8;
+	@apply relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 lg:pr-8;
 }

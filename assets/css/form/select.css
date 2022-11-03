@@ -1,0 +1,3 @@
+.select {
+	@apply rounded-lg py-1.5 border-2 pr-14 border-grai border-opacity-20;
+}

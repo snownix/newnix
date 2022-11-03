@@ -153,7 +153,8 @@ defmodule Newnix.Campaigns do
           cs.subscriber_id == s.id,
       select_merge: %{
         firstname: coalesce(cs.firstname, s.firstname),
-        lastname: coalesce(cs.lastname, s.lastname)
+        lastname: coalesce(cs.lastname, s.lastname),
+        unsubscribed_at: cs.unsubscribed_at
       }
     )
     |> Repo.paginate(
@@ -186,9 +187,34 @@ defmodule Newnix.Campaigns do
           cs.subscriber_id == ^id,
       select_merge: %{
         firstname: coalesce(cs.firstname, s.firstname),
-        lastname: coalesce(cs.lastname, s.lastname)
+        lastname: coalesce(cs.lastname, s.lastname),
+        unsubscribed_at: cs.unsubscribed_at
       }
     )
     |> Repo.one!()
+  end
+
+  def subscribers_stats(%Project{} = project, campaignsIds \\ []) do
+    from(
+      s in Subscriber,
+      join: cs in CampaignSubscriber,
+      join: c in Campaign,
+      where:
+        cs.campaign_id in ^campaignsIds and
+          cs.subscriber_id == s.id and
+          cs.campaign_id == c.id and
+          c.project_id == ^project.id,
+      select: %{
+        unsubscribers: count(cs.unsubscribed_at),
+        subscribers:
+          fragment(
+            "COUNT(DISTINCT(CASE WHEN ? IS NULL THEN (?,?) ELSE NULL END))",
+            cs.unsubscribed_at,
+            cs.subscriber_id,
+            cs.campaign_id
+          )
+      }
+    )
+    |> Repo.one()
   end
 end

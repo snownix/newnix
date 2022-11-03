@@ -18,12 +18,16 @@ defmodule Newnix.Subscribers.Subscriber do
 
     belongs_to :project, Project, type: :binary_id
 
-    has_many :campaign_subscribers, CampaignSubscriber
+    has_many :campaign_subscribers, CampaignSubscriber, on_replace: :delete
 
     many_to_many :campaigns, Campaign,
       join_through: CampaignSubscriber,
       on_delete: :delete_all,
       on_replace: :delete
+
+    field :subscribers, :integer, virtual: true
+    field :unsubscribers, :integer, virtual: true
+    field :unsubscribed_at, :utc_datetime, virtual: true
 
     timestamps()
   end

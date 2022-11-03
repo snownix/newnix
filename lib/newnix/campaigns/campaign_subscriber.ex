@@ -22,7 +22,7 @@ defmodule Newnix.Campaigns.CampaignSubscriber do
 
   def changeset(subscriber, attrs) do
     subscriber
-    |> cast(attrs, [:unsubscribed_at])
+    |> cast(attrs, [:unsubscribed_at, :firstname, :lastname])
     |> unique_constraint([:campaign_id, :subscriber_id])
   end
 end

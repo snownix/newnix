@@ -34,6 +34,16 @@ defmodule NewnixWeb.Project.CampaignsLive.Show do
     {:noreply, apply_action(socket, live_action, params)}
   end
 
+  def handle_event("toggle-subscribe", %{"id" => sub_id}, socket) do
+    %{campaign: campaign} = socket.assigns
+
+    subscriber = fetch_subscriber(campaign, sub_id)
+
+    toggle_subscriber(is_nil(subscriber.unsubscribed_at), subscriber, campaign)
+
+    {:noreply, socket |> assign_subscribers(campaign)}
+  end
+
   def handle_event("delete", %{"sub-id" => sub_id}, socket) do
     %{campaign: campaign} = socket.assigns
 
@@ -42,6 +52,12 @@ defmodule NewnixWeb.Project.CampaignsLive.Show do
 
     {:noreply, socket |> assign_subscribers(campaign)}
   end
+
+  def toggle_subscriber(false, subscriber, campaign),
+    do: Subscribers.resubscribe_from_campaign(subscriber, campaign)
+
+  def toggle_subscriber(true, subscriber, campaign),
+    do: Subscribers.unsubscribe_from_campaign(subscriber, campaign)
 
   defp apply_action(socket, :show, _params) do
     socket
@@ -78,6 +94,12 @@ defmodule NewnixWeb.Project.CampaignsLive.Show do
   defp fetch_subscribers(campaign, opts \\ []) do
     Campaigns.list_subscribers(campaign, opts)
   end
+
+  def subscribe_action(%{unsubscribed_at: unsubscribed_at}) when is_nil(unsubscribed_at),
+    do: "Unsubscribe"
+
+  def subscribe_action(_),
+    do: "Resubscribe"
 
   defp page_title(:show, campaign), do: "Show Campaign #{campaign.name}"
   defp page_title(:edit, campaign), do: "Edit Campaign #{campaign.name}"

@@ -1,13 +1,50 @@
-<section class="m-auto">
-    <%= if Enum.count(@campaigns.entries) > 0 do %>
-    <div>
-        campaigns <%= Enum.count(@campaigns.entries) %>
-    </div>
-    <% else %>
-        <.live_component 
-            module={NewnixWeb.Components.Cards.EmptyStateComponent} 
-            title="campaign" 
-            id="campaign-empty-state"
-            href={Routes.live_path(@socket, NewnixWeb.Project.DashboardLive.Index)} />
-    <% end %>
-</section>
+<div class="p-6 space-y-6">
+    <form class="flex flex-col md:flex-row md:items-center justify-between">
+        <div>
+            <h2 class="text-2xl font-bold">Analytics</h2>
+        </div>
+        <div class="flex items-center space-x-4">
+            <select class="select" name="campaign" phx-change="select-campaign">
+                <option>All Campaigns</option>
+                <option :for={campaign <- @campaigns} value={campaign.value} selected={campaign.selected}>
+                    <%= campaign.label %>
+                </option>
+            </select>
+
+            <select class="select" name="period" phx-change="select-period">
+                <option :for={period <- @periods} value={period.value} selected={period.selected}>
+                    <%= period.label %>
+                </option>
+            </select>
+        </div>
+    </form>
+    <section
+        class="flex flex-col md:flex-row text-sm md:text-lg divide-y md:items-center bg-gray-50 w-full rounded-lg border border-opacity-5 md:divide-y-0 md:divide-x">
+        <div class="flex-1 py-3 md:py-5 px-4">
+            <p clsas="font-semibold">Subscribers</p>
+            <div class="font-bold text-2xl md:text-3xl">
+                <%= @stats.subscribers %>
+            </div>
+            <div class="text-sm text-gray-400">Emails</div>
+        </div>
+        <div class="flex-1 py-3 md:py-5 px-4">
+            <p clsas="font-semibold">Unsubscribers</p>
+            <div class="font-bold text-2xl md:text-3xl">
+                <%= @stats.unsubscribers %>
+            </div>
+            <div class="text-sm text-gray-400">Emails</div>
+        </div>
+        <div class="flex-1 py-3 md:py-5 px-4">
+            <p clsas="font-semibold">Rate</p>
+            <div class="font-bold text-2xl md:text-3xl">
+                <span>
+                    <%= @stats.rate %>
+                </span>
+                <small>%</small>
+            </div>
+            <div class="text-sm text-gray-400">-</div>
+        </div>
+    </section>
+    <section>
+    </section>
+</div>

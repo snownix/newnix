@@ -17,6 +17,7 @@
         <:thead class="bg-gray-50">
           <th>Full name</th>
           <th>Email</th>
+          <th>UnSubscribed Date</th>
           <th>Subscribed Date</th>
           <th>
             <span class="sr-only">Actions</span>
@@ -27,10 +28,27 @@
             <tr>
               <td><%= subscriber.firstname %> <%= subscriber.lastname %></td>
               <td><%= subscriber.email %></td>
-              <td class="low"><%= subscriber.inserted_at %></td>
-              <td class="actions">
-                <span><%= live_redirect "Show", to: Routes.subscribers_show_path(@socket, :show, subscriber) %></span>
+              <td class="low">
+                <span :if={subscriber.unsubscribed_at}>
+                  <.ui_datetime_display time={subscriber.unsubscribed_at} />
+                </span>
+              </td>
+              <td class="low">
+                <span :if={subscriber.inserted_at}>
+                  <.ui_datetime_display time={subscriber.inserted_at} />
+                </span>
+              </td>
+              <td class="actions space-x-2">
+                <button 
+                  type="button"
+                  phx-click="toggle-subscribe"
+                  phx-value-id={subscriber.id}
+                  class="cursor-pointer hover:text-orange-500" >
+                  <%= subscribe_action(subscriber) %>
+                </button>
+                
                 <span><%= live_patch "Edit", to: Routes.campaigns_show_path(@socket, :edit_subscriber, @campaign.id, subscriber.id) %></span>
+              
                 <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_sub_id: subscriber.id, data: [confirm: "Are you sure?"] %></span>
               </td>
             </tr>

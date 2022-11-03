@@ -26,11 +26,16 @@ defmodule NewnixWeb.Project.SubscribersLive.FormComponent do
   end
 
   def handle_event("save", %{"subscriber" => subscriber_params}, socket) do
+    IO.inspect(subscriber_params, label: "subscriber_params")
     save_subscriber(socket, socket.assigns.action, subscriber_params)
   end
 
-  defp save_subscriber(socket, :edit, subscriber_params) do
-    case Subscribers.update_subscriber(socket.assigns.subscriber, subscriber_params) do
+  defp save_subscriber(%{assigns: assigns} = socket, :edit, subscriber_params) do
+    case Subscribers.update_subscriber(
+           socket.assigns.subscriber,
+           assigns[:campaign],
+           subscriber_params
+         ) do
       {:ok, _subscriber} ->
         {:noreply,
          socket
