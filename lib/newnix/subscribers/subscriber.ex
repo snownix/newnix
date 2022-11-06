@@ -27,7 +27,7 @@ defmodule Newnix.Subscribers.Subscriber do
 
     field :subscribers, :integer, virtual: true
     field :unsubscribers, :integer, virtual: true
-    field :unsubscribed_at, :utc_datetime, virtual: true
+    field :unsubscribed_at, :utc_datetime_usec, virtual: true
 
     timestamps()
   end
@@ -36,7 +36,7 @@ defmodule Newnix.Subscribers.Subscriber do
     subscriber
     |> cast(attrs, [:firstname, :lastname, :email, :unsubscribed])
     |> validate_required([:email])
-    |> unique_constraint(:email)
+    |> unique_constraint([:email, :project_id])
   end
 
   def project_assoc(changeset, project) do

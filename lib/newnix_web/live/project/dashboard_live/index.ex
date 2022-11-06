@@ -4,11 +4,10 @@ defmodule NewnixWeb.Project.DashboardLive.Index do
   alias Newnix.Campaigns
 
   @periods [
-    %{value: :all, label: "All time", selected: false},
-    %{value: :day, label: "Last day", selected: false},
-    %{value: :seven_day, label: "Last 7 days", selected: true},
-    %{value: :month, label: "Last month", selected: false},
-    %{value: :two_months, label: "Last 60 days", selected: false}
+    %{value: :day, label: "Last day", selected: false, days: 1, type: :hours},
+    %{value: :seven_day, label: "Last 7 days", selected: true, days: 7, type: :days},
+    %{value: :month, label: "Last month", selected: false, days: 30, type: :days},
+    %{value: :two_months, label: "Last 60 days", selected: false, days: 60, type: :days}
   ]
 
   def mount(_params, _session, socket) do
@@ -18,7 +17,10 @@ defmodule NewnixWeb.Project.DashboardLive.Index do
   defp put_initial_assigns(%{assigns: assigns} = socket) do
     %{project_campaigns: project_campaigns} = assigns
 
+    send(self(), :update)
+
     socket
+    |> assign(:loading, true)
     |> assign(:periods, @periods)
     |> assign(
       :campaigns,
@@ -31,23 +33,61 @@ defmodule NewnixWeb.Project.DashboardLive.Index do
       unsubscribers: 0,
       rate: 0
     })
-    |> put_new_stats()
+    |> assign(:chart_stats, [])
   end
 
   def put_new_stats(%{assigns: assigns} = socket) do
     %{stats: stats, project: project, campaigns: campaigns} = assigns
 
-    # period = selected_period(assigns)
     campaigns = selected_campaigns(assigns) |> all_or_many_campaigns(campaigns)
 
-    newStats = Campaigns.subscribers_stats(project, campaigns)
+    stats = stats |> Map.merge(Campaigns.subscribers_stats(project, campaigns))
+    stats = stats |> Map.merge(%{rate: calc_success_rate(stats.subscribers, stats.unsubscribers)})
 
-    socket |> assign(:stats, Map.merge(stats, newStats))
+    period = selected_period(assigns)
+
+    chart_stats =
+      Campaigns.subscribers_chart_stats(project, campaigns,
+        start_date: calc_period(period),
+        format_date: period.type
+      )
+      |> map_chart_stats()
+
+    socket
+    |> assign(:loading, false)
+    |> assign(:stats, stats)
+    |> assign(:chart_stats, chart_stats)
   end
 
-  # def selected_period(%{periods: periods}), do: Enum.find(periods, & &1.selected)
+  defp map_chart_stats(nil), do: []
+  defp map_chart_stats([]), do: []
 
-  def selected_campaigns(%{campaigns: campaigns}),
+  defp map_chart_stats(stats) do
+    maxRecord =
+      Enum.max_by(stats, fn d ->
+        d.subscribers + d.unsubscribers
+      end)
+
+    maxSubs = maxRecord.subscribers + maxRecord.unsubscribers
+
+    stats
+    |> Enum.map(fn d ->
+      Map.merge(d, %{
+        sub_bar: Float.round(d.subscribers / maxSubs * 100, 2),
+        unsub_bar: Float.round(d.unsubscribers / maxSubs * 100, 2)
+      })
+    end)
+  end
+
+  defp calc_period(%{days: nil}), do: nil
+
+  defp calc_period(%{days: days}) when days > 0 do
+    Timex.shift(DateTime.utc_now(), days: -days)
+  end
+
+  defp selected_period(%{periods: periods}), do: Enum.find(periods, & &1.selected) || %{days: nil}
+
+  defp selected_campaigns(%{campaigns: campaigns}),
     do: Enum.filter(campaigns, & &1.selected) |> Enum.map(& &1.value)
 
   def all_or_many_campaigns([], campaigns), do: campaigns |> Enum.map(& &1.value)
@@ -64,7 +104,12 @@ defmodule NewnixWeb.Project.DashboardLive.Index do
         %{per | selected: per.value == value}
       end)
 
-    {:noreply, socket |> assign(:periods, periods) |> put_new_stats()}
+    send(self(), :update)
+
+    {:noreply,
+     socket
+     |> assign(:loading, true)
+     |> assign(:periods, periods)}
   end
 
   def handle_event("select-campaign", %{"campaign" => value}, %{assigns: assigns} = socket) do
@@ -76,6 +121,15 @@ defmodule NewnixWeb.Project.DashboardLive.Index do
         %{c | selected: c.value == value}
       end)
 
-    {:noreply, socket |> assign(:campaigns, campaigns) |> put_new_stats()}
+    send(self(), :update)
+
+    {:noreply,
+     socket
+     |> assign(:loading, true)
+     |> assign(:campaigns, campaigns)}
+  end
+
+  def handle_info(:update, socket) do
+    {:noreply, socket |> put_new_stats()}
   end
 end

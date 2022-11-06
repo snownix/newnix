@@ -6,8 +6,25 @@ defmodule NewnixWeb.Project.CampaignsLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    project = socket.assigns.project
-    {:ok, assign(socket, :campaigns, list_campaigns(project))}
+    {:ok, socket |> put_initial_assigns()}
+  end
+
+  defp put_initial_assigns(socket) do
+    socket
+    |> assign(:loading, true)
+    |> assign(:campaigns, %{
+      meta: nil,
+      entries:
+        skeleton_fake_data(%Campaign{
+          name: "Loading",
+          description: "Loading",
+          id: "loading",
+          start_at: DateTime.utc_now(),
+          expire_at: DateTime.utc_now(),
+          subscribers_count: 9_999_999
+        })
+    })
+    |> fetch_records()
   end
 
   @impl true
@@ -40,23 +57,32 @@ defmodule NewnixWeb.Project.CampaignsLive.Index do
     campaign = Campaigns.get_campaign!(project, id)
     {:ok, _} = Campaigns.delete_campaign(campaign)
 
-    {:noreply, socket |> assign(:campaigns, list_campaigns(project))}
+    {:noreply, socket |> fetch_records()}
+  end
+
+  @impl true
+  def handle_info(:update, %{assigns: assigns} = socket) do
+    %{project: project} = assigns
+
+    campaigns = list_campaigns(project)
+
+    {:noreply,
+     socket
+     |> assign(:campaigns, campaigns)
+     |> assign(:loading, false)}
+  end
+
+  defp fetch_records(socket) do
+    send(self(), :update)
+
+    socket |> assign(:loading, true)
   end
 
   defp list_campaigns(project) do
     Campaigns.list_campaigns(project)
   end
 
-  def current_status(campaign) do
-    Campaign.campaign_status(campaign)
+  def current_status(_campaign) do
+    "-"
   end
-
-  def subscribers_format(0), do: ""
-  def subscribers_format(1), do: "Subscriber"
-  def subscribers_format(_count), do: "Subscribers"
-
-  def subscribers_icon(0), do: "face-down"
-  def subscribers_icon(1), do: "user"
-  def subscribers_icon(2), do: "user-group"
-  def subscribers_icon(_count), do: "users"
 end

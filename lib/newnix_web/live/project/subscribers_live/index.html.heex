@@ -1,5 +1,4 @@
-<%= if Enum.count(@subscribers.entries) > 0 do %>
-  <div class="py-6 space-y-8">
+  <div class="flex flex-col h-full py-6 space-y-8">
     <.ui_page_head 
       title="Subscribers"
       description="A list of all the subscribers in your project, with their name, description, start and end dates." 
@@ -13,46 +12,54 @@
     </.ui_page_head>
     
     <div class="flex-1">
-      <.ui_table>
-        <:thead class="bg-gray-50">
-          <th>Full name</th>
-          <th class="min-w-fit">Email</th>
-          <th>Subscribed Date</th>
-          <th>
-            <span class="sr-only">Actions</span>
-          </th>
-        </:thead>
-        <:tbody>
-          <%= for subscriber <- @subscribers.entries do %>
-            <tr>
-              <td><p><%= subscriber.firstname %> <%= subscriber.lastname %></p></td>
-              <td class="hover:text-primary-800">
-                <a href={"mailto:#{subscriber.email}"}><%= subscriber.email %></a>
-              </td>
-              <td class="low"><%= subscriber.inserted_at %></td>
-              <td class="actions">
-                <span><%= live_redirect "Show", to: Routes.subscribers_show_path(@socket, :show, subscriber) %></span>
-                <span><%= live_patch "Edit", to: Routes.subscribers_index_path(@socket, :edit, subscriber) %></span>
-                <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: subscriber.id, data: [confirm: "Are you sure?"] %></span>
-              </td>
-            </tr>
-          <% end %>
-        </:tbody>
-      </.ui_table>
+      <%= if Enum.count(@subscribers.entries) > 0 do %>
+        <.ui_table>
+          <:thead class="bg-gray-50">
+            <th>Full name</th>
+            <th class="min-w-fit">Email</th>
+            <th>Subscribed Date</th>
+            <th>
+              <span class="sr-only">Actions</span>
+            </th>
+          </:thead>
+          <:tbody>
+            <%= for subscriber <- @subscribers.entries do %>
+              <tr class={skeleton_class(@loading)}>
+                <td><p skl><%= subscriber.firstname %> <%= subscriber.lastname %></p></td>
+                <td class="hover:text-primary-800">
+                  <a skl href={"mailto:#{subscriber.email}"}><%= subscriber.email %></a>
+                </td>
+                <td class="low">
+                  <.ui_datetime_display skl time={subscriber.inserted_at} />
+                </td>
+                <td class="actions">
+                    <.link skl navigate={Routes.subscribers_show_path(@socket, :show, subscriber)}>
+                      <.ui_icon class="w-6 h-6" icon="inbox" />
+                    </.link>
+                    <.link skl navigate={Routes.subscribers_index_path(@socket, :edit, subscriber)}>
+                      <.ui_icon class="w-6 h-6" icon="pencil-square" />
+                    </.link>
+                    <.link skl navigate="#" phx-click="delete" phx-value-id={subscriber.id} data={[confirm: "Are you sure?"]}>
+                      <.ui_icon class="w-6 h-6" icon="trash" />
+                    </.link>
+                  </td>
+              </tr>
+            <% end %>
+          </:tbody>
+        </.ui_table>
+      <% else %>
+        <div class="flex items-center justify-center h-full">
+          <.live_component 
+            id="empty-subscribers"
+            module={NewnixWeb.Components.Cards.EmptyStateComponent}
+            title="Subscriber"
+            icon="user-group"
+            href={Routes.subscribers_index_path(@socket, :new)}
+            />
+        </div>
+      <% end %>
     </div>
   </div>
-
-<% else %>
-  <div class="flex items-center justify-center flex-1">
-    <.live_component 
-      id="empty-subscribers"
-      module={NewnixWeb.Components.Cards.EmptyStateComponent}
-      title="Subscriber"
-      icon="user-group"
-      href={Routes.subscribers_index_path(@socket, :new)}
-      />
-  </div>
-<% end %>
 <%= if @live_action in [:new, :edit] do %>
   <.rightbar_modal return_to={Routes.subscribers_index_path(@socket, :index)}>
     <.live_component

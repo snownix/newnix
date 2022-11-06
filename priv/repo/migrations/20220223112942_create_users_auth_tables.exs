@@ -23,7 +23,7 @@ defmodule Newnix.Repo.Migrations.CreateUsersAuthTables do
       # active, inactive, suspend, banned
       add :status, :string, size: 10
 
-      add :confirmed_at, :naive_datetime
+      add :confirmed_at, :utc_datetime_usec
       timestamps()
     end
 

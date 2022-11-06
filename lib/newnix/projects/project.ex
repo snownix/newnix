@@ -28,10 +28,17 @@ defmodule Newnix.Projects.Project do
   def changeset(project, attrs) do
     project
     |> cast(attrs, [:name, :description, :website])
+    |> cast_assoc(:campaigns)
     |> validate_required([:name])
   end
 
   def user_assoc(project, user) do
+    project
+    |> change()
+    |> put_assoc(:users, [user])
+  end
+
+  def owner_changeset(project, user) do
     project
     |> change()
     |> put_assoc(:users, [user])

@@ -58,13 +58,13 @@
                             <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                                 Date Added
                             </th>
-                            <th :if={@current_user.admin} scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                            <th :if={true} scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
                                 <span class="sr-only">Edit</span>
                             </th>
                         </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 bg-white">
-                            <.user_row :for={user <- @project.users} admin={@current_user.admin} user={user} />
+                            <.user_row :for={user <- @project.users} admin={true} user={user} />
                         </tbody>
                     </table>
                     </div>

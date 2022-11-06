@@ -10,7 +10,7 @@ defmodule NewnixWeb.Components.Partials.MainSidebarComponent do
     ~H"""
       <nav
         aria-label="Sidebar"
-        class="hidden md:flex w-20 flex-col md:flex-shrink-0 dark:md:bg-dark-800 md:overflow-y-none border-r space-y-4 py-4"
+        class="hidden md:flex w-20 flex-col md:flex-shrink-0 dark:md:bg-dark-800 md:overflow-y-auto border-r space-y-4 py-4"
       >
 
         <div class="px-4 flex-1">

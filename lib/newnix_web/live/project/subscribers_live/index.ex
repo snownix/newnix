@@ -7,13 +7,54 @@ defmodule NewnixWeb.Project.SubscribersLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    project = socket.assigns.project
-    {:ok, socket |> fetch_data(project)}
+    {:ok, socket |> put_initial_assigns()}
+  end
+
+  defp put_initial_assigns(socket) do
+    socket
+    |> assign(:loading, true)
+    |> assign(:campaigns, %{
+      meta: nil,
+      entries: []
+    })
+    |> assign(:subscribers, %{
+      meta: nil,
+      entries:
+        skeleton_fake_data(%Subscriber{
+          id: "loading",
+          firstname: "Loading",
+          lastname: "Loading",
+          email: "Loading",
+          inserted_at: DateTime.utc_now(),
+          updated_at: DateTime.utc_now()
+        })
+    })
+    |> fetch_records()
   end
 
   @impl true
   def handle_params(params, _url, socket) do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
+  end
+
+  @impl true
+  def handle_info(:update, %{assigns: assigns} = socket) do
+    %{project: project} = assigns
+
+    campaigns = list_campaigns(project)
+    subscribers = list_subscribers(project)
+
+    {:noreply,
+     socket
+     |> assign(:subscribers, subscribers)
+     |> assign(:campaigns, campaigns)
+     |> assign(:loading, false)}
+  end
+
+  defp fetch_records(socket) do
+    send(self(), :update)
+
+    socket |> assign(:loading, true)
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
@@ -44,12 +85,6 @@ defmodule NewnixWeb.Project.SubscribersLive.Index do
     {:ok, _} = Subscribers.delete_subscriber(subscriber)
 
     {:noreply, assign(socket, :subscribers, list_subscribers(socket.assigns.project))}
-  end
-
-  defp fetch_data(socket, project) do
-    socket
-    |> assign(:subscribers, list_subscribers(project))
-    |> assign(:campaigns, list_campaigns(project))
   end
 
   defp list_subscribers(project) do

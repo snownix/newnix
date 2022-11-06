@@ -69,7 +69,9 @@ defmodule Newnix.MixProject do
       {:bcrypt_elixir, "~> 2.0"},
       {:tailwind, "~> 0.1.6", runtime: Mix.env() == :dev},
       {:timex, "~> 3.0"},
-      {:paginator, "~> 1.2.0"}
+      {:paginator, "~> 1.2.0"},
+      {:faker, "~> 0.17", only: [:dev, :test]},
+      {:ecto_psql_extras, "~> 0.6"}
     ]
   end
 

@@ -16,8 +16,20 @@ defmodule NewnixWeb.Project.CampaignsLive.Show do
         limit: 50
       }
     )
-    |> assign(:campaign, [])
-    |> assign(:subscribers, [])
+    |> assign(:loading, true)
+    |> assign(:campaign, nil)
+    |> assign(:subscribers, %{
+      meta: nil,
+      entries:
+        skeleton_fake_data(%Subscriber{
+          id: "loading",
+          firstname: "Loading",
+          lastname: "Loading",
+          email: "Loading",
+          inserted_at: DateTime.utc_now(),
+          updated_at: DateTime.utc_now()
+        })
+    })
   end
 
   def handle_params(%{"id" => id} = params, _, %{assigns: assigns} = socket) do
@@ -28,8 +40,9 @@ defmodule NewnixWeb.Project.CampaignsLive.Show do
     socket =
       socket
       |> assign(:campaign, campaign)
-      |> assign_subscribers(campaign)
       |> assign(:page_title, page_title(live_action, campaign))
+
+    send(self(), :update)
 
     {:noreply, apply_action(socket, live_action, params)}
   end
@@ -41,7 +54,7 @@ defmodule NewnixWeb.Project.CampaignsLive.Show do
 
     toggle_subscriber(is_nil(subscriber.unsubscribed_at), subscriber, campaign)
 
-    {:noreply, socket |> assign_subscribers(campaign)}
+    {:noreply, socket |> fetch_records(false)}
   end
 
   def handle_event("delete", %{"sub-id" => sub_id}, socket) do
@@ -50,7 +63,16 @@ defmodule NewnixWeb.Project.CampaignsLive.Show do
     subscriber = fetch_subscriber(campaign, sub_id)
     {:ok, _} = Subscribers.delete_subscriber_from_campaign(subscriber, campaign)
 
-    {:noreply, socket |> assign_subscribers(campaign)}
+    {:noreply, socket |> fetch_records()}
+  end
+
+  def handle_info(:update, %{assigns: assigns} = socket) do
+    %{campaign: campaign} = assigns
+
+    {:noreply,
+     socket
+     |> assign(:loading, false)
+     |> assign_subscribers(campaign)}
   end
 
   def toggle_subscriber(false, subscriber, campaign),
@@ -76,11 +98,14 @@ defmodule NewnixWeb.Project.CampaignsLive.Show do
   end
 
   defp assign_subscribers(socket, campaign) do
-    %{metadata: metadata, entries: subscribers} = fetch_subscribers(campaign)
-
     socket
-    |> assign(:metadata, metadata)
-    |> assign(:subscribers, subscribers)
+    |> assign(:subscribers, fetch_subscribers(campaign))
+  end
+
+  defp fetch_records(socket, loading \\ true) do
+    send(self(), :update)
+
+    socket |> assign(:loading, loading)
   end
 
   defp fetch_campaign(project, id) do

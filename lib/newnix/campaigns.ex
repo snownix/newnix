@@ -217,4 +217,39 @@ defmodule Newnix.Campaigns do
     )
     |> Repo.one()
   end
+
+  def subscribers_chart_stats(%Project{} = project, campaignsIds \\ [], opts \\ []) do
+    start_date = Keyword.get(opts, :start_date, DateTime.utc_now())
+    date_format = to_char_format(Keyword.get(opts, :format_date, :days))
+
+    from(
+      s in Subscriber,
+      join: cs in CampaignSubscriber,
+      join: c in Campaign,
+      where:
+        cs.campaign_id in ^campaignsIds and
+          cs.subscriber_id == s.id and
+          cs.campaign_id == c.id and
+          c.project_id == ^project.id and
+          cs.subscribed_at >= ^start_date,
+      select: %{
+        unsubscribers: count(cs.unsubscribed_at),
+        subscribers:
+          fragment(
+            "COUNT(DISTINCT(CASE WHEN ? IS NULL THEN (?,?) ELSE NULL END))",
+            cs.unsubscribed_at,
+            cs.subscriber_id,
+            cs.campaign_id
+          ),
+        parsed_day:
+          selected_as(fragment("to_char(?, ?)", cs.subscribed_at, ^date_format), :parsed_day)
+      },
+      group_by: selected_as(:parsed_day)
+    )
+    |> Repo.all()
+  end
+
+  def to_char_format(:hours), do: "HH DD-MM-YYYY"
+  def to_char_format(:days), do: "DD-MM-YYYY"
+  def to_char_format(:months), do: "MM-YYYY"
 end

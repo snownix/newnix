@@ -1,5 +1,4 @@
-<%= if Enum.count(@subscribers) > 0 do %>
-  <div class="py-6 space-y-8">
+  <div class="flex flex-col h-full py-6 space-y-8">
     <.ui_page_head 
       title={"#{@campaign.name} Subscribers"}
       description="A list of all the subscribers in your project, with their name, description, start and end dates." 
@@ -13,62 +12,67 @@
     </.ui_page_head>
     
     <div class="flex-1">
-      <.ui_table>
-        <:thead class="bg-gray-50">
-          <th>Full name</th>
-          <th>Email</th>
-          <th>UnSubscribed Date</th>
-          <th>Subscribed Date</th>
-          <th>
-            <span class="sr-only">Actions</span>
-          </th>
-        </:thead>
-        <:tbody>
-          <%= for subscriber <- @subscribers do %>
-            <tr>
-              <td><%= subscriber.firstname %> <%= subscriber.lastname %></td>
-              <td><%= subscriber.email %></td>
-              <td class="low">
-                <span :if={subscriber.unsubscribed_at}>
-                  <.ui_datetime_display time={subscriber.unsubscribed_at} />
-                </span>
-              </td>
-              <td class="low">
-                <span :if={subscriber.inserted_at}>
-                  <.ui_datetime_display time={subscriber.inserted_at} />
-                </span>
-              </td>
-              <td class="actions space-x-2">
-                <button 
-                  type="button"
-                  phx-click="toggle-subscribe"
-                  phx-value-id={subscriber.id}
-                  class="cursor-pointer hover:text-orange-500" >
-                  <%= subscribe_action(subscriber) %>
-                </button>
-                
-                <span><%= live_patch "Edit", to: Routes.campaigns_show_path(@socket, :edit_subscriber, @campaign.id, subscriber.id) %></span>
-              
-                <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_sub_id: subscriber.id, data: [confirm: "Are you sure?"] %></span>
-              </td>
-            </tr>
-          <% end %>
-        </:tbody>
-      </.ui_table>
+      <%= if Enum.count(@subscribers.entries) > 0 do %>
+        <.ui_table>
+          <:thead class="bg-gray-50">
+            <th>Full name</th>
+            <th>Email</th>
+            <th>UnSubscribed Date</th>
+            <th>Subscribed Date</th>
+            <th>
+              <span class="sr-only">Actions</span>
+            </th>
+          </:thead>
+          <:tbody>
+            <%= for subscriber <- @subscribers.entries do %>
+              <tr class={skeleton_class(@loading)}>
+                <td><p skl><%= subscriber.firstname %> <%= subscriber.lastname %></p></td>
+                <td class="hover:text-primary-800">
+                  <a skl href={"mailto:#{subscriber.email}"}><%= subscriber.email %></a>
+                </td>
+                <td class="low">
+                  <span :if={subscriber.unsubscribed_at}>
+                    <.ui_datetime_display skl time={subscriber.unsubscribed_at} />
+                  </span>
+                </td>
+                <td class="low">
+                  <span :if={subscriber.inserted_at}>
+                  <.ui_datetime_display skl time={subscriber.inserted_at} />
+                  </span>
+                </td>
+                <td class="actions space-x-2">
+                  <button 
+                    skl
+                    type="button"
+                    phx-click="toggle-subscribe"
+                    phx-value-id={subscriber.id}
+                    class="cursor-pointer hover:text-orange-500" >
+                    <%= subscribe_action(subscriber) %>
+                  </button>
+                  <.link skl navigate={Routes.campaigns_show_path(@socket, :edit_subscriber, @campaign.id, subscriber.id)}>
+                    <.ui_icon class="w-6 h-6" icon="pencil-square" />
+                  </.link>
+                  <.link skl navigate="#" phx-click="delete" phx-value-id={subscriber.id} data={[confirm: "Are you sure?"]}>
+                    <.ui_icon class="w-6 h-6" icon="trash" />
+                  </.link>
+                </td>
+              </tr>
+            <% end %>
+          </:tbody>
+        </.ui_table>
+      <% else %>
+        <div class="flex items-center justify-center h-full">
+          <.live_component 
+            id="empty-subscribers"
+            module={NewnixWeb.Components.Cards.EmptyStateComponent}
+            title="Subscriber"
+            icon="user-group"
+            href={Routes.campaigns_show_path(@socket, :new_subscriber, @campaign.id)}
+            />
+        </div>
+      <% end %>
     </div>
   </div>
-
-<% else %>
-  <div class="flex items-center justify-center flex-1">
-    <.live_component 
-      id="empty-subscribers"
-      module={NewnixWeb.Components.Cards.EmptyStateComponent}
-      title="Subscriber"
-      icon="user-group"
-      href={Routes.campaigns_show_path(@socket, :new_subscriber, @campaign.id)}
-      />
-  </div>
-<% end %>
 <%= if @live_action in [:new_subscriber, :edit_subscriber] do %>
   <.rightbar_modal return_to={Routes.campaigns_show_path(@socket, :show, @campaign.id)}>
     <.live_component

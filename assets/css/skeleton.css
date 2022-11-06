@@ -1,0 +1,35 @@
+.skeleton {
+	@apply relative;
+	@apply transition-all;
+}
+
+.skeleton [skl],
+.skeleton [skl-full] {
+	@apply relative;
+	@apply rounded-lg;
+	@apply text-transparent;
+}
+
+.skeleton [skl] *,
+.skeleton [skl-full] * {
+	@apply text-transparent bg-transparent;
+}
+
+.skeleton *[skl]:before {
+	@apply content-[""];
+	@apply absolute top-1 left-0;
+	@apply animate-pulse;
+	@apply bg-gray-200;
+	@apply rounded-lg;
+	@apply w-full max-w-full h-4/5;
+	@apply block;
+}
+
+.skeleton *[skl-full]:before {
+	@apply content-[""];
+	@apply absolute top-0 left-0;
+	@apply animate-pulse;
+	@apply bg-gray-200;
+	@apply w-full max-w-full h-full;
+	@apply block;
+}

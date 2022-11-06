@@ -7,10 +7,10 @@ defmodule Newnix.Repo.Migrations.CreateCampaigns do
       add :name, :string, size: 50
       add :description, :string
 
-      add :start_at, :utc_datetime
-      add :expire_at, :utc_datetime
+      add :start_at, :utc_datetime_usec
+      add :expire_at, :utc_datetime_usec
 
-      add :status, :string, size: 50
+      add :status, :string
 
       add :project_id, references(:projects, type: :uuid)
 

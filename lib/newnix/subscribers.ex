@@ -295,7 +295,7 @@ defmodule Newnix.Subscribers do
       {:ok, subscriber} ->
         {:ok, subscriber}
 
-      {:error, _} ->
+      {:error, error} ->
         email = get_field(changeset, :email)
 
         subscriber = get_subscriber_by_email!(project, email)

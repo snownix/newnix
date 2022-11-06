@@ -12,15 +12,20 @@ defmodule Newnix.Campaigns.Campaign do
   schema "campaigns" do
     field :name, :string
     field :description, :string
-    field :start_at, :utc_datetime
-    field :expire_at, :utc_datetime
-    field :status, Ecto.Enum, values: []
-    field :subscribers_count, :integer, virtual: true, default: 0
+    field :start_at, :utc_datetime_usec
+    field :expire_at, :utc_datetime_usec
+
+    field :status, Ecto.Enum,
+      values: [:active, :inactive, :expired, :paused, :finished],
+      default: :active
 
     belongs_to :project, Project, type: :binary_id
     has_many :tokens, CampaignToken
 
     many_to_many :subscribers, Subscriber, join_through: CampaignSubscriber
+    has_many :campaign_subscribers, CampaignSubscriber, on_replace: :delete
+
+    field :subscribers_count, :integer, virtual: true, default: 0
 
     timestamps()
   end
@@ -28,6 +33,8 @@ defmodule Newnix.Campaigns.Campaign do
   def changeset(campaign, attrs) do
     campaign
     |> cast(attrs, [:name, :description, :start_at, :expire_at, :status])
+    |> cast_assoc(:subscribers)
+    |> cast_assoc(:campaign_subscribers)
     |> validate_required([:name])
   end
 

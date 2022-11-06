@@ -99,10 +99,11 @@ defmodule NewnixWeb.Live.Components.Helper do
 
   attr :avatar, :string, default: nil
   attr :text, :string, default: ""
+  attr :rest, :global, include: ~w(skl)
 
   def ui_avatar(assigns) do
     ~H"""
-      <div class="flex items-center justify-center border h-12 w-12 rounded-full group-hover:opacity-75">
+      <div class="flex items-center justify-center border h-12 w-12 rounded-full group-hover:opacity-75" {@rest}>
         <%= if !is_nil(@avatar) do %>
           <img src={@avatar} />
         <% else %>
@@ -113,15 +114,21 @@ defmodule NewnixWeb.Live.Components.Helper do
   end
 
   attr :time, :string
+  attr :rest, :global, include: ~w(skl)
 
   def ui_datetime_display(%{time: time} = assigns) do
-    timeFormated = Calendar.strftime(time, "%Y-%m-%d %H:%M:%S")
+    if is_nil(time) do
+      ~H"""
+      """
+    else
+      timeFormated = Calendar.strftime(time, "%Y-%m-%d %H:%M:%S")
 
-    assigns = assigns |> assign(:timeFormated, timeFormated)
+      assigns = assigns |> assign(:timeFormated, timeFormated)
 
-    ~H"""
-      <time class="font-semibold text-gray-500" datetime={@time}><%= @timeFormated %></time>
-    """
+      ~H"""
+        <time {@rest} class="font-semibold text-gray-500" datetime={@time}><%= @timeFormated %></time>
+      """
+    end
   end
 
   slot(:thead, required: true)
@@ -149,7 +156,7 @@ defmodule NewnixWeb.Live.Components.Helper do
 
   def ui_page_head(assigns) do
     ~H"""
-      <div class="px-6 lg:px-8 sm:flex sm:items-center sm:space-y-2">
+      <div class="px-6 lg:px-8 sm:flex sm:items-center sm:space-y-2" >
         <div class="sm:flex-auto">
           <h1 class="text-xl flex-center font-semibold text-gray-900">
             <%= if @icon do %>
@@ -170,10 +177,21 @@ defmodule NewnixWeb.Live.Components.Helper do
 
   attr :icon, :string, default: ""
   attr :class, :string, default: "w-5 h-5"
+  attr :rest, :global, include: ~w(skl)
 
   def ui_icon(assigns) do
     ~H"""
-    <svg class={@class}><use href={"/images/icons.svg#icon-#{@icon}"}/></svg>
+    <svg class={@class} {@rest}><use href={"/images/icons.svg#icon-#{@icon}"}/></svg>
+    """
+  end
+
+  def ui_loading(assigns) do
+    ~H"""
+    <div class="newnix-loading">
+      <div class="newnix-ripple">
+        <div></div><div></div>
+      </div>
+    </div>
     """
   end
 
@@ -200,4 +218,22 @@ defmodule NewnixWeb.Live.Components.Helper do
 
     color
   end
+
+  def calc_success_rate(a, b) when is_number(a) and a > 0,
+    do: Float.round((a - b) / a * 100, 2)
+
+  def calc_success_rate(_a, _b), do: 0
+
+  def skeleton_class(true), do: "skeleton"
+  def skeleton_class(_), do: ""
+
+  def subscribers_format(0), do: ""
+  def subscribers_format(1), do: "Subscriber"
+  def subscribers_format(_count), do: "Subscribers"
+
+  def subscribers_icon(0), do: "face-down"
+  def subscribers_icon(1), do: "user"
+  def subscribers_icon(2), do: "user-group"
+  def subscribers_icon(_count), do: "users"
+  def skeleton_fake_data(schema, repeat \\ 1..20), do: repeat |> Enum.map(fn _ -> schema end)
 end

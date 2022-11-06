@@ -1,5 +1,4 @@
-<%= if Enum.count(@campaigns.entries) > 0 do %>
-  <div class="py-6 space-y-8">
+  <div class="flex flex-col flex-1 py-6 space-y-8">
     <.ui_page_head 
       title="Campaigns"
       description="A list of all the campaigns in your project, with their name, description, start and end dates." 
@@ -11,66 +10,79 @@
         </.ui_button>
       </:action>
     </.ui_page_head>
-    <div class="flex-1">
-      <.ui_table>
-        <:thead class="bg-gray-50">
-          <th>Name</th>
-          <th>Subscribers</th>
-          <th>Status</th>
-          <th>Dates</th>
-          <th>
-            <span class="sr-only">Actions</span>
-          </th>
-        </:thead>
-        <:tbody>
-          <%= for campaign <- @campaigns.entries do %>
-            <tr>
-              <td>
-                <p class="font-semibold"><%= campaign.name %></p>
-                <p class="text-grai text-sm"><%= campaign.description %></p>
-              </td>
-              <td>
-                <div class="flex-center">
-                  <.ui_icon icon={subscribers_icon(campaign.subscribers_count)} />
-                  <span><%= campaign.subscribers_count %></span>
-                  <span class="text-sm text-grai">
-                    <%= subscribers_format(campaign.subscribers_count) %>
-                  </span>
-                </div>
-              </td>
-              <td>
-                <%= current_status(campaign) %>
-              </td>
-              <td>
-                <span class="text-sm text-gray-700">
-                  <%= campaign.start_at %>
-                </span>
-                <span class="text-sm text-gray-700">
-                  <%= campaign.expire_at %>
-                </span>
-              </td>
-              <td class="actions">
-                <span><%= live_redirect "Show", to: Routes.campaigns_show_path(@socket, :show, campaign) %></span>
-                <span><%= live_patch "Edit", to: Routes.campaigns_index_path(@socket, :edit, campaign) %></span>
-                <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: campaign.id, data: [confirm: "Are you sure?"] %></span>
-              </td>
-            </tr>
-          <% end %>
-        </:tbody>
-      </.ui_table>
+    <div class="flex-1 h-full">
+      <%= if Enum.count(@campaigns.entries) > 0 do %>
+        <.ui_table>
+          <:thead class="bg-gray-50">
+            <th>Name</th>
+            <th>Subscribers</th>
+            <th>Status</th>
+            <th>Dates</th>
+            <th>
+              <span class="sr-only">Actions</span>
+            </th>
+          </:thead>
+          <:tbody>
+            <%= for campaign <- @campaigns.entries do %>
+              <tr class={skeleton_class(@loading)}>
+                <td>
+                  <p class="font-semibold" skl><%= campaign.name %></p>
+                  <p class="text-grai text-sm break-words w-80" skl><%= campaign.description %></p>
+                </td>
+                <td>
+                  <div class="flex flex-col">
+                    <div class="flex-center" skl>
+                      <.ui_icon icon={subscribers_icon(campaign.subscribers_count)}  />
+                      <span><%= campaign.subscribers_count %></span>
+                    </div>
+                    <span class="text-sm text-grai" skl>
+                      <%= subscribers_format(campaign.subscribers_count) %>
+                    </span>
+                  </div>
+                </td>
+                <td>
+                  <div skl>
+                    <%= current_status(campaign) %>
+                  </div>
+                </td>
+                <td>
+                  <div class="flex flex-col space-y-1">
+                    <span class="text-sm text-gray-700" skl>
+                      <.ui_datetime_display time={campaign.start_at} />
+                    </span>
+                    <span class="text-sm text-gray-700" skl>
+                      <.ui_datetime_display time={campaign.expire_at} />
+                    </span>
+                  </div>
+                </td>
+                <td class="actions">
+                  <.link skl navigate={Routes.campaigns_show_path(@socket, :show, campaign)}>
+                    <.ui_icon class="w-6 h-6" icon="inbox" />
+                  </.link>
+                  <.link skl navigate={Routes.campaigns_index_path(@socket, :edit, campaign)}>
+                    <.ui_icon class="w-6 h-6" icon="pencil-square" />
+                  </.link>
+                  <.link skl navigate="#" phx-click="delete" phx-value-id={campaign.id} data={[confirm: "Are you sure?"]}>
+                    <.ui_icon class="w-6 h-6" icon="trash" />
+                  </.link>
+                </td>
+              </tr>
+            <% end %>
+          </:tbody>
+        </.ui_table>
+      <% else %>
+        <div class="flex h-full items-center justify-center">
+          <.live_component
+            id="empty-campaigns"
+            module={NewnixWeb.Components.Cards.EmptyStateComponent}
+            title="Campaign"
+            icon="inbox"
+            href={Routes.campaigns_index_path(@socket, :new)}
+            />
+        </div>
+      <% end %>
     </div>
   </div>
-<% else %>
-  <div class="flex items-center justify-center flex-1">
-    <.live_component
-      id="empty-campaigns"
-      module={NewnixWeb.Components.Cards.EmptyStateComponent}
-      title="Campaign"
-      icon="inbox"
-      href={Routes.campaigns_index_path(@socket, :new)}
-      />
-  </div>
-<% end %>
 <%= if @live_action in [:new, :edit] do %>
   <.rightbar_modal return_to={Routes.campaigns_index_path(@socket, :index)}>
     <.live_component

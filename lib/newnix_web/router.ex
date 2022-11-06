@@ -134,7 +134,9 @@ defmodule NewnixWeb.Router do
     scope "/" do
       pipe_through :browser
 
-      live_dashboard("/dashboard", metrics: NewnixWeb.Telemetry)
+      live_dashboard "/dashboard",
+        metrics: NewnixWeb.Telemetry,
+        ecto_psql_extras_options: [long_running_queries: [threshold: "200 milliseconds"]]
     end
   end
 

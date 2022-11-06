@@ -8,6 +8,8 @@ defmodule Newnix.Projects.UserProject do
 
   @primary_key false
   schema "users_projects" do
+    field :role, :string, default: "user"
+
     belongs_to :user, User, type: :binary_id
     belongs_to :project, Project, type: :binary_id
 

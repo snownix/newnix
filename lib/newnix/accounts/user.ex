@@ -8,6 +8,7 @@ defmodule Newnix.Accounts.User do
   alias Newnix.Projects.UserProject
 
   @primary_key {:id, :binary_id, autogenerate: true}
+  @timestamps_opts [type: :utc_datetime_usec]
 
   schema "users" do
     field :firstname, :string
@@ -19,8 +20,9 @@ defmodule Newnix.Accounts.User do
     field :email, :string
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
-    field :confirmed_at, :naive_datetime
+    field :confirmed_at, :utc_datetime_usec
 
+    # Newnix admin
     field :admin, :boolean, default: false
 
     has_many :identities, Identity, foreign_key: :user_id
@@ -161,7 +163,7 @@ defmodule Newnix.Accounts.User do
   Confirms the account by setting `confirmed_at`.
   """
   def confirm_changeset(user) do
-    now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+    now = NaiveDateTime.utc_now()
     change(user, confirmed_at: now)
   end
 
