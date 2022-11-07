@@ -1,19 +1,17 @@
 .chart__bar {
-	@apply flex items-baseline mt-4 h-64 border-b;
+	@apply flex items-baseline mt-4 h-64 border-b mb-4;
 }
 
 .chart__bar .bar__container {
 	@apply w-full h-full;
 	@apply bg-gray-50 bg-opacity-20;
-	@apply flex flex-col-reverse lg:flex-row content-start items-end justify-center;
-	@apply cursor-pointer;
-	@apply rounded-t-lg px-0.5;
+	@apply flex self-end items-end justify-center;
 }
 
 .chart__bar .bar {
-	@apply w-full max-w-[2em] h-0 relative xl:rounded-t-lg;
+	@apply w-full max-w-[2em] h-0 relative;
 }
 
-.chart__bar .bar:last-child {
+.chart__bar .bar {
 	@apply rounded-t-lg;
 }
