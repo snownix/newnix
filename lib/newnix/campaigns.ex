@@ -154,7 +154,8 @@ defmodule Newnix.Campaigns do
       select_merge: %{
         firstname: coalesce(cs.firstname, s.firstname),
         lastname: coalesce(cs.lastname, s.lastname),
-        unsubscribed_at: cs.unsubscribed_at
+        unsubscribed_at: cs.unsubscribed_at,
+        subscribed_at: cs.subscribed_at
       }
     )
     |> Repo.paginate(

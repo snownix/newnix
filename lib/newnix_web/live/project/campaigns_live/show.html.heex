@@ -17,8 +17,7 @@
           <:thead class="bg-gray-50">
             <th>Full name</th>
             <th>Email</th>
-            <th>UnSubscribed Date</th>
-            <th>Subscribed Date</th>
+            <th>Date</th>
             <th>
               <span class="sr-only">Actions</span>
             </th>
@@ -31,14 +30,17 @@
                   <a skl href={"mailto:#{subscriber.email}"}><%= subscriber.email %></a>
                 </td>
                 <td class="low">
-                  <span :if={subscriber.unsubscribed_at}>
-                    <.ui_datetime_display skl time={subscriber.unsubscribed_at} />
-                  </span>
-                </td>
-                <td class="low">
-                  <span :if={subscriber.inserted_at}>
-                  <.ui_datetime_display skl time={subscriber.inserted_at} />
-                  </span>
+                  <%= if subscriber.unsubscribed_at do %>
+                    <span class="flex-center">
+                      <.ui_icon icon="no-symbol" />
+                      <.ui_datetime_display skl time={subscriber.unsubscribed_at} />
+                    </span>
+                    <% else %>
+                    <span class="flex-center">
+                      <.ui_icon icon="plus" />
+                      <.ui_datetime_display skl time={subscriber.subscribed_at} />
+                    </span>
+                  <% end %>
                 </td>
                 <td class="actions space-x-2">
                   <button 

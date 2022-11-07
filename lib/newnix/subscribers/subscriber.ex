@@ -27,6 +27,7 @@ defmodule Newnix.Subscribers.Subscriber do
 
     field :subscribers, :integer, virtual: true
     field :unsubscribers, :integer, virtual: true
+    field :subscribed_at, :utc_datetime_usec, virtual: true
     field :unsubscribed_at, :utc_datetime_usec, virtual: true
 
     timestamps()
