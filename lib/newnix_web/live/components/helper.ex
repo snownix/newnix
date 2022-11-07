@@ -203,7 +203,7 @@ defmodule NewnixWeb.Live.Components.Helper do
           <div class="bar__container relative group"
               :for={item <- @items}>
               <div class={"absolute-center -bottom-6 text-sm min-w-max " <> chart_display_all(@count)}>
-                <div class="w-2 h-1 rounded-b-full bg-gray-500 absolute-center -top-1 absolute"></div>
+                <div class="w-2 h-2 rounded-full bg-gray-300 absolute-center -top-2 absolute"></div>
                 <span><%= item.title %></span>
               </div>
               <div :for={bar <- item.bars} skl-full

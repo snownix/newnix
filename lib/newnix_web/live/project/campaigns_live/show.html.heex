@@ -1,4 +1,4 @@
-  <div class="flex flex-col h-full py-6 space-y-8">
+  <div class="flex flex-col h-screen pt-6 space-y-8">
     <.ui_page_head 
       title={"#{@campaign.name} Subscribers"}
       description="A list of all the subscribers in your project, with their name, description, start and end dates." 
@@ -11,7 +11,7 @@
       </:action>
     </.ui_page_head>
     
-    <div class="flex-1">
+    <div class="flex-1 overflow-y-auto">
       <%= if Enum.count(@subscribers.entries) > 0 do %>
         <.ui_table>
           <:thead class="bg-gray-50">

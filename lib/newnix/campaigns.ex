@@ -23,12 +23,21 @@ defmodule Newnix.Campaigns do
     limit = Keyword.get(opts, :limit, 50)
 
     from(c in Campaign,
-      where: c.project_id == ^project.id,
-      left_join: s in assoc(c, :subscribers),
-      group_by: c.id,
+      join: cs in CampaignSubscriber,
+      where:
+        c.project_id == ^project.id and
+          cs.campaign_id == c.id,
       select_merge: %{
-        subscribers_count: count(s.id)
-      }
+        unsubscribers_count: count(cs.unsubscribed_at),
+        subscribers_count:
+          fragment(
+            "COUNT(DISTINCT(CASE WHEN ? IS NULL THEN (?,?) ELSE NULL END))",
+            cs.unsubscribed_at,
+            cs.subscriber_id,
+            cs.campaign_id
+          )
+      },
+      group_by: c.id
     )
     |> Repo.paginate(
       cursor_fields: [:inserted_at, :id],

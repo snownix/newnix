@@ -1,4 +1,4 @@
-  <div class="flex flex-col flex-1 py-6 space-y-8">
+  <div class="flex flex-col h-screen pt-6 space-y-8">
     <.ui_page_head 
       title="Campaigns"
       description="A list of all the campaigns in your project, with their name, description, start and end dates." 
@@ -10,7 +10,7 @@
         </.ui_button>
       </:action>
     </.ui_page_head>
-    <div class="flex-1 h-full">
+    <div class="flex-1 h-full overflow-y-auto">
       <%= if Enum.count(@campaigns.entries) > 0 do %>
         <.ui_table>
           <:thead class="bg-gray-50">
@@ -35,9 +35,10 @@
                       <.ui_icon icon={subscribers_icon(campaign.subscribers_count)}  />
                       <span><%= campaign.subscribers_count %></span>
                     </div>
-                    <span class="text-sm text-grai" skl>
-                      <%= subscribers_format(campaign.subscribers_count) %>
-                    </span>
+                    <div class="flex-center text-xs text-gray-400" skl>
+                      <.ui_icon icon="no-symbol"/>
+                      <span><%= campaign.unsubscribers_count %></span>
+                    </div>
                   </div>
                 </td>
                 <td>

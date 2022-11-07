@@ -32,6 +32,28 @@ defmodule NewnixWeb.Project.CampaignsLive.Index do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
+  @impl true
+  def handle_event("delete", %{"id" => id}, socket) do
+    %{project: project} = socket.assigns
+
+    campaign = Campaigns.get_campaign!(project, id)
+    {:ok, _} = Campaigns.delete_campaign(campaign)
+
+    {:noreply, socket |> fetch_records()}
+  end
+
+  @impl true
+  def handle_info(:update, %{assigns: assigns} = socket) do
+    %{project: project} = assigns
+
+    campaigns = Campaigns.list_campaigns(project)
+
+    {:noreply,
+     socket
+     |> assign(:campaigns, campaigns)
+     |> assign(:loading, false)}
+  end
+
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
     |> assign(:page_title, "Edit Campaign")
@@ -50,36 +72,10 @@ defmodule NewnixWeb.Project.CampaignsLive.Index do
     |> assign(:campaign, nil)
   end
 
-  @impl true
-  def handle_event("delete", %{"id" => id}, socket) do
-    %{project: project} = socket.assigns
-
-    campaign = Campaigns.get_campaign!(project, id)
-    {:ok, _} = Campaigns.delete_campaign(campaign)
-
-    {:noreply, socket |> fetch_records()}
-  end
-
-  @impl true
-  def handle_info(:update, %{assigns: assigns} = socket) do
-    %{project: project} = assigns
-
-    campaigns = list_campaigns(project)
-
-    {:noreply,
-     socket
-     |> assign(:campaigns, campaigns)
-     |> assign(:loading, false)}
-  end
-
   defp fetch_records(socket) do
     send(self(), :update)
 
     socket |> assign(:loading, true)
-  end
-
-  defp list_campaigns(project) do
-    Campaigns.list_campaigns(project)
   end
 
   def current_status(_campaign) do

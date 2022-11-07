@@ -26,10 +26,19 @@ defmodule Newnix.Campaigns.Campaign do
     has_many :campaign_subscribers, CampaignSubscriber, on_replace: :delete
 
     field :subscribers_count, :integer, virtual: true, default: 0
+    field :unsubscribers_count, :integer, virtual: true, default: 0
 
     timestamps()
   end
 
+  @spec changeset(
+          {map, map}
+          | %{
+              :__struct__ => atom | %{:__changeset__ => map, optional(any) => any},
+              optional(atom) => any
+            },
+          :invalid | %{optional(:__struct__) => none, optional(atom | binary) => any}
+        ) :: Ecto.Changeset.t()
   def changeset(campaign, attrs) do
     campaign
     |> cast(attrs, [:name, :description, :start_at, :expire_at, :status])
