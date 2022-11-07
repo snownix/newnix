@@ -1,0 +1,19 @@
+.chart__bar {
+	@apply flex items-baseline mt-4 h-64 border-b;
+}
+
+.chart__bar .bar__container {
+	@apply w-full h-full;
+	@apply bg-gray-50 bg-opacity-20;
+	@apply flex flex-col-reverse lg:flex-row content-start items-end justify-center;
+	@apply cursor-pointer;
+	@apply rounded-t-lg px-0.5;
+}
+
+.chart__bar .bar {
+	@apply w-full max-w-[2em] h-0 relative xl:rounded-t-lg;
+}
+
+.chart__bar .bar:last-child {
+	@apply rounded-t-lg;
+}

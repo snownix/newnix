@@ -194,16 +194,14 @@ defmodule Newnix.Campaigns do
     |> Repo.one!()
   end
 
-  def subscribers_stats(%Project{} = project, campaignsIds \\ []) do
+  def subscribers_stats(%Project{} = project, campaignsIds \\ [], opts \\ []) do
+    start_date = Keyword.get(opts, :start_date, nil)
+
     from(
       s in Subscriber,
       join: cs in CampaignSubscriber,
       join: c in Campaign,
-      where:
-        cs.campaign_id in ^campaignsIds and
-          cs.subscriber_id == s.id and
-          cs.campaign_id == c.id and
-          c.project_id == ^project.id,
+      where: ^with_project_campaigns(project, campaignsIds, start_date),
       select: %{
         unsubscribers: count(cs.unsubscribed_at),
         subscribers:
@@ -218,20 +216,26 @@ defmodule Newnix.Campaigns do
     |> Repo.one()
   end
 
+  defp with_project_campaigns(project, campaignsIds, start_date) do
+    dynamic(
+      [s, cs, c],
+      cs.campaign_id in ^campaignsIds and
+        c.project_id == ^project.id and
+        cs.subscriber_id == s.id and
+        cs.campaign_id == c.id and
+        ^with_start_date(start_date)
+    )
+  end
+
   def subscribers_chart_stats(%Project{} = project, campaignsIds \\ [], opts \\ []) do
-    start_date = Keyword.get(opts, :start_date, DateTime.utc_now())
+    start_date = Keyword.get(opts, :start_date, nil)
     date_format = to_char_format(Keyword.get(opts, :format_date, :days))
 
     from(
       s in Subscriber,
       join: cs in CampaignSubscriber,
       join: c in Campaign,
-      where:
-        cs.campaign_id in ^campaignsIds and
-          cs.subscriber_id == s.id and
-          cs.campaign_id == c.id and
-          c.project_id == ^project.id and
-          cs.subscribed_at >= ^start_date,
+      where: ^with_project_campaigns(project, campaignsIds, start_date),
       select: %{
         unsubscribers: count(cs.unsubscribed_at),
         subscribers:
@@ -241,13 +245,16 @@ defmodule Newnix.Campaigns do
             cs.subscriber_id,
             cs.campaign_id
           ),
-        parsed_day:
-          selected_as(fragment("to_char(?, ?)", cs.subscribed_at, ^date_format), :parsed_day)
+        day_date:
+          selected_as(fragment("to_char(?, ?)", cs.subscribed_at, ^date_format), :day_date)
       },
-      group_by: selected_as(:parsed_day)
+      group_by: selected_as(:day_date)
     )
     |> Repo.all()
   end
+
+  def with_start_date(nil), do: true
+  def with_start_date(start_date), do: dynamic([s, cs, c], cs.subscribed_at >= ^start_date)
 
   def to_char_format(:hours), do: "HH DD-MM-YYYY"
   def to_char_format(:days), do: "DD-MM-YYYY"

@@ -29,7 +29,6 @@ defmodule Newnix.Subscribers do
         s in Subscriber,
         where: s.project_id == ^project.id
       )
-      |> IO.inspect()
 
     Repo.paginate(
       query,

@@ -185,6 +185,39 @@ defmodule NewnixWeb.Live.Components.Helper do
     """
   end
 
+  attr :items, :map, default: []
+  attr :levels, :map, default: []
+
+  def ui_chart_bar(assigns) do
+    assigns = assigns |> assign(:count, Enum.count(assigns.items))
+
+    ~H"""
+      <div class="chart__bar relative">
+          <div
+            :for={level <- @levels}
+            class="absolute w-full border-t border-gray-100"
+            style={"bottom: #{level.pos}%;"}>
+            <div class="text-gray-400 text-sm bottom-0"><%= trunc(level.value) %></div>
+          </div>
+          <div class="h-full pr-10"></div>
+          <div class="bar__container relative group"
+              :for={item <- @items}>
+              <div class={"absolute-center -bottom-6 text-sm min-w-max " <> chart_display_all(@count)}>
+                <div class="w-2 h-1 rounded-b-full bg-gray-500 absolute-center -top-1 absolute"></div>
+                <span><%= item.title %></span>
+              </div>
+              <div :for={bar <- item.bars} skl-full
+                  class={"bar #{bar.color}"}
+                  style={"height: #{bar.value}%;"}>
+              </div>
+          </div>
+      </div>
+    """
+  end
+
+  def chart_display_all(count) when count < 10, do: ""
+  def chart_display_all(_), do: "hidden group-hover:block"
+
   def ui_loading(assigns) do
     ~H"""
     <div class="newnix-loading">

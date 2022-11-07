@@ -26,7 +26,6 @@ defmodule NewnixWeb.Project.SubscribersLive.FormComponent do
   end
 
   def handle_event("save", %{"subscriber" => subscriber_params}, socket) do
-    IO.inspect(subscriber_params, label: "subscriber_params")
     save_subscriber(socket, socket.assigns.action, subscriber_params)
   end
 
