@@ -54,7 +54,7 @@ defmodule NewnixWeb.Live.Components.Partials.NavbarComponent do
 
   def menu_item(assigns) do
     ~H"""
-      <.link navigate={@link}
+      <.link patch={@link}
         class="border-indigo-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
         >
         <%= render_slot(@inner_block) %>

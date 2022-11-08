@@ -3,7 +3,7 @@
         <h1 class="w-full text-3xl font-bold"><%= gettext "Sign up" %></h1>
         <p class="text-lg text-low mb-2">
             <%= gettext "Already have an account?" %>
-            <.link navigate={Routes.auth_login_path(@socket, :login) <> "?form=#{@show_form?}"} class="text-primary underline">
+            <.link patch={Routes.auth_login_path(@socket, :login) <> "?form=#{@show_form?}"} class="text-primary underline">
                 <%= gettext("Sign in") %>
             </.link>
         </p>
@@ -31,7 +31,7 @@
                             <%= gettext "Agree our Terms" %>
                         </label>
                     </div>
-                <.link navigate={Routes.auth_reconfirm_path(@socket, :reconfirm)} class="text-sm underline">
+                <.link patch={Routes.auth_reconfirm_path(@socket, :reconfirm)} class="text-sm underline">
                     <%= gettext("Resend confirmation") %>
                 </.link>
                 </div>

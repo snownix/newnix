@@ -1,4 +1,4 @@
-defmodule NewnixWeb.Project.CampaignsLive.FormComponent do
+defmodule NewnixWeb.Live.Project.CampaignsLive.FormComponent do
   use NewnixWeb, :live_component
 
   alias Newnix.Campaigns

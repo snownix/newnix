@@ -51,7 +51,7 @@
                     class="cursor-pointer hover:text-orange-500" >
                     <%= subscribe_action(subscriber) %>
                   </button>
-                  <.link skl navigate={Routes.project_campaigns_show_path(@socket, :edit_subscriber, @campaign.id, subscriber.id)}>
+                  <.link skl patch={Routes.project_campaigns_show_path(@socket, :edit_subscriber, @campaign.id, subscriber.id)}>
                     <.ui_icon class="w-6 h-6" icon="pencil-square" />
                   </.link>
                   <.link skl navigate="#" phx-click="delete" phx-value-id={subscriber.id} data={[confirm: "Are you sure?"]}>

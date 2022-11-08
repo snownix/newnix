@@ -69,7 +69,7 @@ defmodule NewnixWeb.Live.Components.Helper do
   def ui_button(assigns) do
     ~H"""
       <%= if !is_nil(@href) do %>
-        <.link class={"button " <> @theme <> " " <> @size <> " " <> @class} {@rest} navigate={@href}>
+        <.link class={"button " <> @theme <> " " <> @size <> " " <> @class} {@rest} patch={@href}>
           <%= render_slot(@inner_block) %>
         </.link>
       <% else %>

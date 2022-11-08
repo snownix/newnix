@@ -57,10 +57,10 @@
                   </div>
                 </td>
                 <td class="actions">
-                  <.link skl navigate={Routes.project_campaigns_show_path(@socket, :show, campaign)}>
+                  <.link skl patch={Routes.project_campaigns_show_path(@socket, :show, campaign)}>
                     <.ui_icon class="w-6 h-6" icon="inbox" />
                   </.link>
-                  <.link skl navigate={Routes.project_campaigns_index_path(@socket, :edit, campaign)}>
+                  <.link skl patch={Routes.project_campaigns_index_path(@socket, :edit, campaign)}>
                     <.ui_icon class="w-6 h-6" icon="pencil-square" />
                   </.link>
                   <.link skl phx-click="delete" phx-value-id={campaign.id} data={[confirm: "Are you sure?"]}>
@@ -87,7 +87,7 @@
 <%= if @live_action in [:new, :edit] do %>
   <.rightbar_modal return_to={Routes.project_campaigns_index_path(@socket, :index)}>
     <.live_component
-      module={NewnixWeb.Project.CampaignsLive.FormComponent}
+      module={NewnixWeb.Live.Project.CampaignsLive.FormComponent}
       id={@campaign.id || :new}
       title={@page_title}
       action={@live_action}

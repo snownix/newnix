@@ -1,4 +1,4 @@
-defmodule NewnixWeb.Project.CampaignsLive.Index do
+defmodule NewnixWeb.Live.Project.CampaignsLive.Index do
   use NewnixWeb, :live_project
 
   alias Newnix.Campaigns

@@ -3,7 +3,7 @@
         <h1 class="w-full text-3xl font-bold"><%= gettext "Confirm account" %></h1>
         <p class="text-lg text-low mb-2">
             <%= gettext("You already confirmed your account?") %>
-            <.link navigate={Routes.auth_login_path(@socket, :login)} class="text-primary underline">
+            <.link patch={Routes.auth_login_path(@socket, :login)} class="text-primary underline">
                 <%= gettext("Sign in") %>
             </.link>
         </p>

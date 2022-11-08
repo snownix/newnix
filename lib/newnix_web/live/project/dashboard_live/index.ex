@@ -19,6 +19,10 @@ defmodule NewnixWeb.Live.Project.DashboardLive.Index do
     {:ok, socket |> put_initial_assigns()}
   end
 
+  def handle_params(_params, _uri, socket) do
+    {:noreply, socket}
+  end
+
   defp put_initial_assigns(%{assigns: assigns} = socket) do
     %{project_campaigns: project_campaigns} = assigns
 
