@@ -1,4 +1,4 @@
-defmodule NewnixWeb.AuthLive.Login do
+defmodule NewnixWeb.Live.AuthLive.Login do
   use NewnixWeb, :live_auth
 
   alias Newnix.Accounts

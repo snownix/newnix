@@ -7,7 +7,7 @@
                 <%= gettext("Sign up") %>
             </.link>
         </p>
-        <.live_component module={NewnixWeb.Components.AlertsComponent} flash={@flash} id="alerts" />
+        <.live_component module={NewnixWeb.Live.Components.AlertsComponent} flash={@flash} id="alerts" />
 
         <%= if @show_form? do %>
             <.form let={f} for={@changeset} phx-submit="create" phx-change="validate" class="relative w-full space-y-4" 

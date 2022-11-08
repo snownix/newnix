@@ -5,7 +5,7 @@
         description="A list of all projects." 
         icon="layers">
         <:action>
-            <.ui_button theme="primary" size="small" href={Routes.live_path(@socket, NewnixWeb.User.DashboardLive.New)}>
+            <.ui_button theme="primary" size="small" href={Routes.live_path(@socket, NewnixWeb.Live.User.DashboardLive.New)}>
             <.ui_icon icon="plus"/>
             <span><%= gettext "New Project" %></span>
             </.ui_button>
@@ -15,10 +15,10 @@
     <%= if Enum.count(@projects) === 0 do %>
         <div class="w-full h-full flex-center">
         <.live_component    
-            module={NewnixWeb.Components.Cards.EmptyStateComponent} 
+            module={NewnixWeb.Live.Components.Cards.EmptyStateComponent} 
             title="Project" 
             id="project-empty-state"
-            href={Routes.live_path(@socket, NewnixWeb.User.DashboardLive.New)} />
+            href={Routes.live_path(@socket, NewnixWeb.Live.User.DashboardLive.New)} />
         </div>
     <% else %>
         <main>
@@ -28,7 +28,7 @@
                     :for={project <- @projects}
                     id={project.id}
                     project={project}
-                    module={NewnixWeb.Components.Cards.ProjectComponent}
+                    module={NewnixWeb.Live.Components.Cards.ProjectComponent}
                     />
             </ul>
         </main>

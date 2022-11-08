@@ -1,4 +1,4 @@
-defmodule NewnixWeb.Components.Cards.EmptyStateComponent do
+defmodule NewnixWeb.Live.Components.Cards.EmptyStateComponent do
   use NewnixWeb, :live_component
 
   attr :title, :string

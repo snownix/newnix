@@ -1,4 +1,4 @@
-defmodule NewnixWeb.Components.Partials.ProjectSidebarComponent do
+defmodule NewnixWeb.Live.Components.Partials.ProjectSidebarComponent do
   use NewnixWeb, :live_component
 
   attr :project, :map, default: nil
@@ -19,16 +19,16 @@ defmodule NewnixWeb.Components.Partials.ProjectSidebarComponent do
 
             <div class="px-4 py-3 space-y-8">
               <ul>
-                <.menu_item link={Routes.live_path(@socket, NewnixWeb.Project.DashboardLive.Index)} icon="layers">
+                <.menu_item link={Routes.live_path(@socket, NewnixWeb.Live.Project.DashboardLive.Index)} icon="layers">
                   Dashboard
                 </.menu_item>
-                <.menu_item link={Routes.campaigns_index_path(@socket, :index)} icon="inbox-stack">
+                <.menu_item link={Routes.project_campaigns_index_path(@socket, :index)} icon="inbox-stack">
                   Campaigns
                 </.menu_item>
-                <.menu_item link={Routes.subscribers_index_path(@socket, :index)} icon="user-group">
+                <.menu_item link={Routes.project_subscribers_index_path(@socket, :index)} icon="user-group">
                   Subscribers
                 </.menu_item>
-                <.menu_item link={Routes.live_path(@socket, NewnixWeb.Project.SettingsLive.Index)} icon="settings">
+                <.menu_item link={Routes.live_path(@socket, NewnixWeb.Live.Project.SettingsLive.Index)} icon="settings">
                   Settings
                 </.menu_item>
               </ul>
@@ -40,7 +40,7 @@ defmodule NewnixWeb.Components.Partials.ProjectSidebarComponent do
                  :for={[id, name] <- @campaigns}
                  >
                  <.campaign_item
-                    link={Routes.campaigns_show_path(@socket, :show, id)}
+                    link={Routes.project_campaigns_show_path(@socket, :show, id)}
                     active={is_current_active(assigns, id)}
                     id={id}
                     >
@@ -48,7 +48,7 @@ defmodule NewnixWeb.Components.Partials.ProjectSidebarComponent do
                   </.campaign_item>
                  </li>
                  <li>
-                  <.campaign_item icon="plus" link={Routes.campaigns_index_path(@socket, :new)} class="text-gray-500">
+                  <.campaign_item icon="plus" link={Routes.project_campaigns_index_path(@socket, :new)} class="text-gray-500">
                     New campaign
                   </.campaign_item>
                  </li>

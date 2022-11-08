@@ -1,4 +1,4 @@
-defmodule NewnixWeb.AuthLive.ForgotPassword do
+defmodule NewnixWeb.Live.AuthLive.ForgotPassword do
   use NewnixWeb, :live_auth
 
   alias Newnix.Accounts

@@ -1,4 +1,4 @@
-defmodule NewnixWeb.Components.Partials.ToastsComponent do
+defmodule NewnixWeb.Live.Components.Partials.ToastsComponent do
   use NewnixWeb, :live_component
 
   attr :toasts, :map, default: []

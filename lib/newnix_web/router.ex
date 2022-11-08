@@ -39,7 +39,7 @@ defmodule NewnixWeb.Router do
 
       get "/project/open/:id", ProjectController, :open
 
-      scope "/", User.DashboardLive do
+      scope "/", Live.User.DashboardLive do
         live "/", Index
         live "/new", New
       end
@@ -49,16 +49,16 @@ defmodule NewnixWeb.Router do
   # Project
   live_session :project,
     on_mount: [{NewnixWeb.InitAssigns, :user}, {NewnixWeb.InitAssigns, :project}] do
-    scope "/project", NewnixWeb.Project do
+    scope "/project", NewnixWeb do
       pipe_through [:browser, :require_authenticated_user, :project]
 
-      live "/", DashboardLive.Index
+      live "/", Live.Project.DashboardLive.Index
 
-      scope "/settings", SettingsLive do
+      scope "/settings", Live.Project.SettingsLive do
         live "/", Index
       end
 
-      scope "/campaigns", CampaignsLive do
+      scope "/campaigns", Live.Project.CampaignsLive do
         live "/", Index, :index
         live "/new", Index, :new
         live "/:id/edit", Index, :edit
@@ -70,13 +70,12 @@ defmodule NewnixWeb.Router do
         live "/:id/subscriber/:sub_id/edit", Show, :edit_subscriber
       end
 
-      scope "/subscribers", SubscribersLive do
+      scope "/subscribers", Live.Project.SubscribersLive do
         live "/", Index, :index
         live "/new", Index, :new
-        live "/:id/edit", Index, :edit
 
-        live "/:id", Show, :show
-        live "/:id/show/edit", Show, :edit
+        live "/:id/edit", Index, :edit
+        live "/:id/show", Index, :show
       end
     end
   end
@@ -85,13 +84,13 @@ defmodule NewnixWeb.Router do
   scope "/", NewnixWeb do
     pipe_through [:browser, :auth]
 
-    scope "/account" do
+    scope "/account", Live do
       live "/confirm", AuthLive.Reconfirm, :reconfirm
       live "/confirm/:token", AuthLive.Confirm, :confirm
     end
 
     scope "/auth" do
-      scope "/" do
+      scope "/", Live do
         pipe_through :redirect_if_user_is_authenticated
 
         live "/login", AuthLive.Login, :login

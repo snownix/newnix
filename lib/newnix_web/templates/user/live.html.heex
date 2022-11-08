@@ -6,12 +6,12 @@
       id="sidebar" 
       sidebar={@sidebar}
       projects={@projects}
-      module={NewnixWeb.Components.Partials.MainSidebarComponent}
+      module={NewnixWeb.Live.Components.Partials.MainSidebarComponent}
        />
 
     <!-- Main area -->
     <main class="min-w-0 flex-1 lg:flex flex-col">
-      <.live_component module={NewnixWeb.Components.AlertsComponent} flash={@flash} id="alerts" />
+      <.live_component module={NewnixWeb.Live.Components.AlertsComponent} flash={@flash} id="alerts" />
       <!-- Primary column -->
       <section aria-labelledby="primary-heading" class="min-w-0 flex-1 h-full flex flex-col overflow-y-auto lg:order-last">
         <%= @inner_content %>

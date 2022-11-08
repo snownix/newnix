@@ -1,4 +1,4 @@
-defmodule NewnixWeb.Project.SubscribersLive.Index do
+defmodule NewnixWeb.Live.Project.SubscribersLive.Index do
   use NewnixWeb, :live_project
 
   alias Newnix.Subscribers
@@ -29,7 +29,6 @@ defmodule NewnixWeb.Project.SubscribersLive.Index do
           updated_at: DateTime.utc_now()
         })
     })
-    |> fetch_records()
   end
 
   @impl true
@@ -57,6 +56,13 @@ defmodule NewnixWeb.Project.SubscribersLive.Index do
     socket |> assign(:loading, true)
   end
 
+  defp apply_action(socket, :index, _params) do
+    socket
+    |> assign(:page_title, "Listing Subscribers")
+    |> assign(:subscriber, nil)
+    |> fetch_records()
+  end
+
   defp apply_action(socket, :edit, %{"id" => id}) do
     subscriber =
       Subscribers.get_subscriber!(socket.assigns.project, id)
@@ -67,16 +73,20 @@ defmodule NewnixWeb.Project.SubscribersLive.Index do
     |> assign(:subscriber, subscriber)
   end
 
+  defp apply_action(socket, :show, %{"id" => id}) do
+    subscriber =
+      Subscribers.get_subscriber!(socket.assigns.project, id)
+      |> Subscribers.fetch_campaigns()
+
+    socket
+    |> assign(:page_title, "Show Subscriber")
+    |> assign(:subscriber, subscriber)
+  end
+
   defp apply_action(socket, :new, _params) do
     socket
     |> assign(:page_title, "New Subscriber")
     |> assign(:subscriber, %Subscriber{})
-  end
-
-  defp apply_action(socket, :index, _params) do
-    socket
-    |> assign(:page_title, "Listing Subscribers")
-    |> assign(:subscriber, nil)
   end
 
   @impl true

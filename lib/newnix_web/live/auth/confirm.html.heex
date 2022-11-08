@@ -7,7 +7,7 @@
                 <%= gettext("Sign in") %>
             </.link>
         </p>
-        <.live_component module={NewnixWeb.Components.AlertsComponent} flash={@flash} id="confirm-alerts" />
+        <.live_component module={NewnixWeb.Live.Components.AlertsComponent} flash={@flash} id="confirm-alerts" />
 
         <.form let={f} for={@changeset} phx-submit="update" phx-change="validate" class="relative w-full space-y-4">
            <div class="relative">

@@ -1,4 +1,4 @@
-defmodule NewnixWeb.Components.Cards.ProjectComponent do
+defmodule NewnixWeb.Live.Components.Cards.ProjectComponent do
   use NewnixWeb, :live_component
 
   def render(assigns) do

@@ -1,4 +1,4 @@
-defmodule NewnixWeb.User.DashboardLive.Index do
+defmodule NewnixWeb.Live.User.DashboardLive.Index do
   use NewnixWeb, :live_user
 
   alias Newnix.Projects

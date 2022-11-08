@@ -11,19 +11,19 @@ defmodule NewnixWeb.ProjectController do
     else
       conn
       |> put_flash(:error, gettext("Project not found !"))
-      |> redirect(to: Routes.live_path(conn, NewnixWeb.User.DashboardLive.Index))
+      |> redirect(to: Routes.live_path(conn, NewnixWeb.Live.User.DashboardLive.Index))
     end
   end
 
   def log_in_project(conn, id) do
     conn
     |> put_session(:project_id, id)
-    |> redirect(to: Routes.live_path(conn, NewnixWeb.Project.DashboardLive.Index))
+    |> redirect(to: Routes.live_path(conn, NewnixWeb.Live.Project.DashboardLive.Index))
   end
 
   def leave(conn, _) do
     conn
     |> delete_session(:project_id)
-    |> redirect(to: Routes.live_path(conn, NewnixWeb.User.DashboardLive.Index))
+    |> redirect(to: Routes.live_path(conn, NewnixWeb.Live.User.DashboardLive.Index))
   end
 end

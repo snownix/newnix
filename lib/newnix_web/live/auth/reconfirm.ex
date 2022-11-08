@@ -1,4 +1,4 @@
-defmodule NewnixWeb.AuthLive.Reconfirm do
+defmodule NewnixWeb.Live.AuthLive.Reconfirm do
   use NewnixWeb, :live_auth
 
   alias Newnix.Accounts

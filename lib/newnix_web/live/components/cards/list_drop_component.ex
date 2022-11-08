@@ -1,4 +1,4 @@
-defmodule NewnixWeb.Components.Cards.ListDropComponent do
+defmodule NewnixWeb.Live.Components.Cards.ListDropComponent do
   use NewnixWeb, :live_component
 
   def update(assigns, socket) do

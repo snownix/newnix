@@ -1,4 +1,4 @@
-defmodule NewnixWeb.Project.SettingsLive.Index do
+defmodule NewnixWeb.Live.Project.SettingsLive.Index do
   use NewnixWeb, :live_project
 
   alias Newnix.Projects

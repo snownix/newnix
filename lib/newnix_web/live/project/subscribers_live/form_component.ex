@@ -1,4 +1,4 @@
-defmodule NewnixWeb.Project.SubscribersLive.FormComponent do
+defmodule NewnixWeb.Live.Project.SubscribersLive.FormComponent do
   use NewnixWeb, :live_component
 
   alias Newnix.Subscribers

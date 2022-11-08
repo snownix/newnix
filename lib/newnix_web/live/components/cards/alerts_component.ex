@@ -1,4 +1,4 @@
-defmodule NewnixWeb.Components.AlertsComponent do
+defmodule NewnixWeb.Live.Components.AlertsComponent do
   use NewnixWeb, :live_component
 
   def render(assigns) do

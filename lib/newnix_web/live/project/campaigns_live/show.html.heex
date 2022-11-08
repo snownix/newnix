@@ -4,7 +4,7 @@
       description="A list of all the subscribers in your project, with their name, description, start and end dates." 
       icon="user-group">
       <:action>
-        <.ui_button theme="primary" size="small" href={Routes.campaigns_show_path(@socket, :new_subscriber, @campaign)}>
+        <.ui_button theme="primary" size="small" href={Routes.project_campaigns_show_path(@socket, :new_subscriber, @campaign)}>
           <.ui_icon icon="plus"/>
           <span><%= gettext "New Subscriber" %></span>
         </.ui_button>
@@ -51,7 +51,7 @@
                     class="cursor-pointer hover:text-orange-500" >
                     <%= subscribe_action(subscriber) %>
                   </button>
-                  <.link skl navigate={Routes.campaigns_show_path(@socket, :edit_subscriber, @campaign.id, subscriber.id)}>
+                  <.link skl navigate={Routes.project_campaigns_show_path(@socket, :edit_subscriber, @campaign.id, subscriber.id)}>
                     <.ui_icon class="w-6 h-6" icon="pencil-square" />
                   </.link>
                   <.link skl navigate="#" phx-click="delete" phx-value-id={subscriber.id} data={[confirm: "Are you sure?"]}>
@@ -66,26 +66,26 @@
         <div class="flex items-center justify-center h-full">
           <.live_component 
             id="empty-subscribers"
-            module={NewnixWeb.Components.Cards.EmptyStateComponent}
+            module={NewnixWeb.Live.Components.Cards.EmptyStateComponent}
             title="Subscriber"
             icon="user-group"
-            href={Routes.campaigns_show_path(@socket, :new_subscriber, @campaign.id)}
+            href={Routes.project_campaigns_show_path(@socket, :new_subscriber, @campaign.id)}
             />
         </div>
       <% end %>
     </div>
   </div>
 <%= if @live_action in [:new_subscriber, :edit_subscriber] do %>
-  <.rightbar_modal return_to={Routes.campaigns_show_path(@socket, :show, @campaign.id)}>
+  <.rightbar_modal return_to={Routes.project_campaigns_show_path(@socket, :show, @campaign.id)}>
     <.live_component
-      module={NewnixWeb.Project.SubscribersLive.FormComponent}
+      module={NewnixWeb.Live.Project.SubscribersLive.FormComponent}
       id={@subscriber.id || :new}
       title={@page_title}
       action={:new_subscriber == @live_action && :new || :edit}
       project={@project}
       campaign={@campaign}
       subscriber={@subscriber}
-      return_to={Routes.campaigns_show_path(@socket, :show, @campaign.id)}
+      return_to={Routes.project_campaigns_show_path(@socket, :show, @campaign.id)}
     />
   </.rightbar_modal>
 <% end %>

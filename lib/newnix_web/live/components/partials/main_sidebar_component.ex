@@ -1,4 +1,4 @@
-defmodule NewnixWeb.Components.Partials.MainSidebarComponent do
+defmodule NewnixWeb.Live.Components.Partials.MainSidebarComponent do
   use NewnixWeb, :live_component
 
   attr :project, :map

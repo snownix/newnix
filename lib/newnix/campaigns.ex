@@ -23,10 +23,9 @@ defmodule Newnix.Campaigns do
     limit = Keyword.get(opts, :limit, 50)
 
     from(c in Campaign,
-      join: cs in CampaignSubscriber,
-      where:
-        c.project_id == ^project.id and
-          cs.campaign_id == c.id,
+      left_join: cs in CampaignSubscriber,
+      on: cs.campaign_id == c.id,
+      where: c.project_id == ^project.id,
       select_merge: %{
         unsubscribers_count: count(cs.unsubscribed_at),
         subscribers_count:
@@ -157,9 +156,8 @@ defmodule Newnix.Campaigns do
     from(
       s in Subscriber,
       join: cs in CampaignSubscriber,
-      where:
-        cs.campaign_id == ^campaign.id and
-          cs.subscriber_id == s.id,
+      on: cs.subscriber_id == s.id,
+      where: cs.campaign_id == ^campaign.id,
       select_merge: %{
         firstname: coalesce(cs.firstname, s.firstname),
         lastname: coalesce(cs.lastname, s.lastname),
@@ -211,6 +209,7 @@ defmodule Newnix.Campaigns do
       s in Subscriber,
       join: cs in CampaignSubscriber,
       join: c in Campaign,
+      on: cs.subscriber_id == s.id and cs.campaign_id == c.id,
       where: ^with_project_campaigns(project, campaignsIds, start_date),
       select: %{
         unsubscribers: count(cs.unsubscribed_at),
@@ -231,8 +230,6 @@ defmodule Newnix.Campaigns do
       [s, cs, c],
       cs.campaign_id in ^campaignsIds and
         c.project_id == ^project.id and
-        cs.subscriber_id == s.id and
-        cs.campaign_id == c.id and
         ^with_start_date(start_date)
     )
   end
@@ -245,6 +242,7 @@ defmodule Newnix.Campaigns do
       s in Subscriber,
       join: cs in CampaignSubscriber,
       join: c in Campaign,
+      on: cs.subscriber_id == s.id and cs.campaign_id == c.id,
       where: ^with_project_campaigns(project, campaignsIds, start_date),
       select: %{
         unsubscribers: count(cs.unsubscribed_at),

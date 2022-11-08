@@ -1,4 +1,4 @@
-defmodule NewnixWeb.AuthLive.ResetPassword do
+defmodule NewnixWeb.Live.AuthLive.ResetPassword do
   use NewnixWeb, :live_auth
 
   alias Newnix.Accounts
