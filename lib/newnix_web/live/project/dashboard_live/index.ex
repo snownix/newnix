@@ -4,11 +4,11 @@ defmodule NewnixWeb.Live.Project.DashboardLive.Index do
   alias Newnix.Campaigns
 
   @periods [
-    %{value: :all, label: "All time", selected: false, days: nil, type: :months},
-    %{value: :day, label: "Last day", selected: false, days: 1, type: :hours},
-    %{value: :seven_day, label: "Last 7 days", selected: true, days: 7, type: :days},
-    %{value: :month, label: "Last month", selected: false, days: 30, type: :days},
-    %{value: :two_months, label: "Last 60 days", selected: false, days: 60, type: :days}
+    %{value: "all", label: "All time", selected: false, days: nil, type: :months},
+    %{value: "day", label: "Last day", selected: false, days: 1, type: :hours},
+    %{value: "seven_day", label: "Last 7 days", selected: true, days: 7, type: :days},
+    %{value: "month", label: "Last month", selected: false, days: 30, type: :days},
+    %{value: "two_months", label: "Last 60 days", selected: false, days: 60, type: :days}
   ]
 
   @green_color "bg-purpo-400"
@@ -28,15 +28,20 @@ defmodule NewnixWeb.Live.Project.DashboardLive.Index do
 
     send(self(), :update)
 
+    custom_params = get_connect_params(socket)
+
     socket
     |> assign(:loading, true)
-    |> assign(:periods, @periods)
     |> assign(:levels, [])
     |> assign(
       :campaigns,
       Enum.map(project_campaigns, fn [id, value] ->
-        %{label: value, value: id, selected: false}
+        %{label: value, value: id, selected: company_selected(id, custom_params)}
       end)
+    )
+    |> assign(
+      :periods,
+      Enum.map(@periods, &%{&1 | selected: period_selected(&1.value, custom_params)})
     )
     |> assign(:stats, %{
       rate: 0,
@@ -45,6 +50,11 @@ defmodule NewnixWeb.Live.Project.DashboardLive.Index do
     })
     |> assign(:chart_stats, [])
   end
+
+  defp company_selected(id, %{"save_states" => %{"campaign" => cid}}) when cid === id, do: true
+  defp company_selected(_id, _), do: false
+  defp period_selected(id, %{"save_states" => %{"period" => cid}}) when cid === id, do: true
+  defp period_selected(_id, _), do: false
 
   def put_new_stats(%{assigns: assigns} = socket) do
     %{stats: stats, project: project, campaigns: campaigns} = assigns
@@ -128,43 +138,51 @@ defmodule NewnixWeb.Live.Project.DashboardLive.Index do
   def all_or_many_campaigns([], campaigns), do: campaigns |> Enum.map(& &1.value)
   def all_or_many_campaigns(many, _campaigns), do: many
 
-  def handle_event("select-period", %{"period" => value}, %{assigns: assigns} = socket) do
-    value = String.to_atom(value)
-
-    %{periods: periods} = assigns
-
-    periods =
-      periods
-      |> Enum.map(fn per ->
-        %{per | selected: per.value == value}
-      end)
-
+  def handle_event("select-period", %{"period" => value}, socket) do
     send(self(), :update)
 
     {:noreply,
      socket
      |> assign(:loading, true)
-     |> assign(:periods, periods)}
+     |> switch_period(value)}
   end
 
-  def handle_event("select-campaign", %{"campaign" => value}, %{assigns: assigns} = socket) do
-    %{campaigns: campaigns} = assigns
-
-    campaigns =
-      campaigns
-      |> Enum.map(fn c ->
-        %{c | selected: c.value == value}
-      end)
-
+  def handle_event("select-campaign", %{"campaign" => value}, socket) do
     send(self(), :update)
 
     {:noreply,
      socket
      |> assign(:loading, true)
-     |> assign(:campaigns, campaigns)}
+     |> switch_campaign(value)}
   end
 
   def handle_info(:update, socket) do
     {:noreply, socket |> put_new_stats()}
+  end
+
+  defp switch_period(%{assigns: assigns} = socket, value) do
+    %{periods: periods} = assigns
+
+    socket
+    |> assign(
+      :periods,
+      periods
+      |> Enum.map(fn per ->
+        %{per | selected: per.value == value}
+      end)
+    )
+  end
+
+  defp switch_campaign(%{assigns: assigns} = socket, value) do
+    %{campaigns: campaigns} = assigns
+
+    socket
+    |> assign(
+      :campaigns,
+      campaigns
+      |> Enum.map(fn c ->
+        %{c | selected: c.value == value}
+      end)
+    )
   end
 end

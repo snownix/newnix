@@ -4,14 +4,18 @@
             <h2 class="text-2xl font-bold">Analytics</h2>
         </div>
         <div class="flex items-center space-x-4 justify-between">
-            <select class="select" name="campaign" phx-change="select-campaign">
+            <select 
+                class="select" name="campaign" phx-change="select-campaign"
+                phx-hook="SaveState" id="select-campaign">
                 <option>All Campaigns</option>
                 <option :for={campaign <- @campaigns} value={campaign.value} selected={campaign.selected}>
                     <%= campaign.label %>
                 </option>
             </select>
 
-            <select class="select" name="period" phx-change="select-period">
+            <select 
+                class="select" name="period" phx-change="select-period" 
+                phx-hook="SaveState" id="select-period">
                 <option :for={period <- @periods} value={period.value} selected={period.selected}>
                     <%= period.label %>
                 </option>

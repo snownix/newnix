@@ -6,17 +6,11 @@ defmodule NewnixWeb.Plugs.SetLocale do
   def init(_options), do: nil
 
   def call(conn, _options) do
-    case fetch_locale_from(conn) do
-      nil ->
-        conn
-
-      locale ->
-        conn |> set_locale_to(locale)
-    end
+    conn |> set_locale_to(fetch_locale_from(conn))
   end
 
-  defp fetch_locale_from(conn) do
-    (conn.params["locale"] || conn.cookies["locale"] || get_session(conn, :locale))
+  defp fetch_locale_from(%{params: params, cookies: cookies} = conn) do
+    (params["locale"] || cookies["locale"] || get_session(conn, :locale))
     |> check_locale
   end
 

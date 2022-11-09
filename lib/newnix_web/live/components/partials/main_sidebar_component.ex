@@ -38,7 +38,7 @@ defmodule NewnixWeb.Live.Components.Partials.MainSidebarComponent do
 
   def logo(assigns) do
     ~H"""
-      <.link patch={"/"} class="flex items-center justify-center py-8 text-white h-20">
+      <.link navigate={"/"} class="flex items-center justify-center py-8 text-white h-20">
         <.ui_icon class="w-12 h-12 text-primary-500" icon="logo"/>
       </.link>
     """
@@ -71,7 +71,7 @@ defmodule NewnixWeb.Live.Components.Partials.MainSidebarComponent do
 
   def menu_button(assigns) do
     ~H"""
-      <.link patch={@link}
+      <.link navigate={@link}
         class={"w-full h-12 flex-shrink-0 flex bg-gray-50 justify-center items-center  font-medium hover:text-white hover:bg-primary-500 dark:text-white rounded-md dark:bg-dark-900 space-x-4 " <> (if @active, do: "bg-primary-500 text-white", else: "text-gray-500")}>
           <%= render_slot(@inner_block) %>
       </.link>

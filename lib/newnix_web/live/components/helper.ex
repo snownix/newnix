@@ -192,7 +192,7 @@ defmodule NewnixWeb.Live.Components.Helper do
     assigns = assigns |> assign(:count, Enum.count(assigns.items))
 
     ~H"""
-      <div class="chart__bar relative">
+      <div class={"chart__bar "  <> (@count <= 5 && "large" || "")}>
           <div
             :for={level <- @levels}
             class="absolute w-full border-t border-gray-100"

@@ -70,7 +70,7 @@ defmodule NewnixWeb.Live.Components.Partials.ProjectSidebarComponent do
 
   def menu_item(assigns) do
     ~H"""
-      <.link patch={@link}
+      <.link navigate={@link}
         class="w-full h-10 px-4 font-medium flex-shrink-0 inline-flex items-center text-dark-50 hover:text-primary-500 hover:bg-gray-100 dark:text-white rounded-md dark:bg-dark-900 space-x-4">
           <span>
             <.ui_icon class="w-6 h-6" icon={@icon}/>
