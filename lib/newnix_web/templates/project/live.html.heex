@@ -1,29 +1,29 @@
-<div class="h-full min-h-screen flex flex-col flex-1">
+<div class="h-full flex flex-col flex-1">
   <div class="min-h-0 flex-1 flex overflow-hidden">
     <!-- Sidebar -->
-    <.live_component 
-      id="sidebar" 
+    <.live_component
+      id="sidebar"
       sidebar={@sidebar}
       project={@project}
       projects={@projects}
       module={NewnixWeb.Live.Components.Partials.MainSidebarComponent}
        />
 
-    <.live_component 
-      id="sidebar" 
+    <.live_component
+      id="sidebar"
       sidebar={@sidebar}
       project={@project}
       campaign={assigns[:campaign]}
       projects={@projects}
       campaigns={@project_campaigns}
-      module={NewnixWeb.Live.Components.Partials.ProjectSidebarComponent} 
+      module={NewnixWeb.Live.Components.Partials.ProjectSidebarComponent}
        />
 
     <div class="flex flex-1 flex-col">
       <.live_component module={NewnixWeb.Live.Components.AlertsComponent} flash={@flash} id="alerts" />
       <!-- Main area -->
-      <section 
-        class="flex-1 flex flex-col overflow-y-auto lg:order-last">
+      <section
+        class="flex-1 flex-col w-full h-full overflow-y-auto">
         <%= @inner_content %>
       </section>
     </div>

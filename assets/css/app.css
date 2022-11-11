@@ -10,7 +10,9 @@
 @import "./table.css";
 @import "./buttons.css";
 @import "./skeleton.css";
+@import "./checkbox.css";
 @import "./charts.css";
+@import "./card.css";
 
 @import "./scrollbar.css";
 
@@ -21,11 +23,15 @@ body {
 }
 
 [data-phx-main] {
-	@apply flex flex-1 min-h-full;
+	@apply flex flex-1 h-full;
 }
 
 .flex-center {
 	@apply flex items-center space-x-2;
+}
+
+.inline-flex-center {
+	@apply inline-flex items-center space-x-2;
 }
 
 .absolute-center {

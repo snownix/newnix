@@ -234,6 +234,18 @@ defmodule Newnix.Campaigns do
     )
   end
 
+  @doc """
+    Returns the stats of campaign subscribers in a period of time.
+
+    ## Examples
+
+        iex> subscribers_chart_stats(%Project{} = project, ["aaaaa-bbbbb-ccccc-ddddd"])
+        [%{
+          unsubscribers: 10,
+          subscribers: 10,
+          day_date: "01-12-2022"
+        }, ...]
+  """
   def subscribers_chart_stats(%Project{} = project, campaignsIds \\ [], opts \\ []) do
     start_date = Keyword.get(opts, :start_date, nil)
     date_format = to_char_format(Keyword.get(opts, :format_date, :days))
@@ -264,7 +276,7 @@ defmodule Newnix.Campaigns do
   def with_start_date(nil), do: true
   def with_start_date(start_date), do: dynamic([s, cs, c], cs.subscribed_at >= ^start_date)
 
-  def to_char_format(:hours), do: "HH DD-MM-YYYY"
+  def to_char_format(:hours), do: "HH"
   def to_char_format(:days), do: "DD-MM-YYYY"
   def to_char_format(:months), do: "MM-YYYY"
 end

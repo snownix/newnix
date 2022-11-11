@@ -1,74 +1,129 @@
-<div class={"p-6 space-y-6 " <> skeleton_class(@loading)}>
-    <form class="flex flex-col md:flex-row md:items-center space-y-3 md:space-y-0 justify-between">
-        <div>
-            <h2 class="text-2xl font-bold">Analytics</h2>
-        </div>
-        <div class="flex items-center space-x-4 justify-between">
-            <select 
-                class="select" name="campaign" phx-change="select-campaign"
-                phx-hook="SaveState" id="select-campaign">
-                <option>All Campaigns</option>
-                <option :for={campaign <- @campaigns} value={campaign.value} selected={campaign.selected}>
-                    <%= campaign.label %>
-                </option>
-            </select>
+<div class={"p-6 lg:p-8 space-y-6 #{skeleton_class(@loading)}"}>
+    <div>
+        <form class="flex flex-col md:flex-row md:items-center space-y-3 md:space-y-0 justify-between">
+            <div>
+                <h2 class="text-2xl font-bold">Analytics</h2>
+            </div>
+            <div class="flex items-center space-x-4 justify-between">
+                <select class="select" name="campaign" phx-change="select-campaign" phx-hook="SaveState"
+                    id="select-campaign">
+                    <option>All Campaigns</option>
+                    <option :for={campaign <- @campaigns} value={campaign.value} selected={campaign.selected}>
+                        <%= campaign.label %>
+                    </option>
+                </select>
 
-            <select 
-                class="select" name="period" phx-change="select-period" 
-                phx-hook="SaveState" id="select-period">
-                <option :for={period <- @periods} value={period.value} selected={period.selected}>
-                    <%= period.label %>
-                </option>
-            </select>
-        </div>
-    </form>
-    <section
-        class="flex flex-col md:flex-row text-sm md:text-lg divide-y md:items-center bg-gray-50 bg-opacity-50 w-full rounded-lg border border-opacity-5 md:divide-y-0 md:divide-x">
-        <div class="flex-1 py-3 md:py-5 px-4">
-            <p clsas="font-semibold">
-                <span skl>Subscribers</span>
-            </p>
-            <div class="font-bold text-2xl md:text-3xl">
-                <div skl><%= @stats.subscribers %></div>
+                <select class="select" name="period" phx-change="select-period" phx-hook="SaveState" id="select-period">
+                    <option :for={period <- @periods} value={period.value} selected={period.selected}>
+                        <%= period.label %>
+                    </option>
+                </select>
             </div>
-            <div class="text-sm text-gray-400">
-                <span skl>Emails</span>
-            </div>
-        </div>
-        <div class="flex-1 py-3 md:py-5 px-4">
-            <p clsas="font-semibold">
-                <span skl>Unsubscribers</span>
-            </p>
-            <div class="font-bold text-2xl md:text-3xl">
-                <div skl><%= @stats.unsubscribers %></div>
-            </div>
-            <div class="text-sm text-gray-400">
-                <span skl>Emails</span>
-            </div>
-        </div>
-        <div class="flex-1 py-3 md:py-5 px-4">
-            <p clsas="font-semibold">
-                <span skl>Rate</span>
-            </p>
-            <div class="font-bold text-2xl md:text-3xl">
-                <div skl>
-                    <%= @stats.rate %> %
+        </form>
+    </div>
+    <div class="flex flex-col space-y-4  lg:flex-row lg:space-y-0 lg:space-x-6">
+        <div class="flex-1 space-y-4">
+            <section
+                class="flex flex-col md:flex-row text-sm md:text-lg divide-y md:items-center card-bg w-full-lg border border-opacity-5 md:divide-y-0 md:divide-x">
+                <div class="flex-1 py-3 md:py-5 px-4">
+                    <p clsas="font-semibold">
+                        <span skl>Subscribers</span>
+                    </p>
+                    <div class="font-bold text-2xl md:text-3xl">
+                        <div skl>
+                            <%= @stats.subscribers %>
+                        </div>
+                    </div>
+                    <div class="text-sm text-gray-400">
+                        <span skl>Emails</span>
+                    </div>
                 </div>
-            </div>
-            <div class="text-sm text-gray-400">-</div>
+                <div class="flex-1 py-3 md:py-5 px-4">
+                    <p clsas="font-semibold">
+                        <span skl>Unsubscribers</span>
+                    </p>
+                    <div class="font-bold text-2xl md:text-3xl">
+                        <div skl>
+                            <%= @stats.unsubscribers %>
+                        </div>
+                    </div>
+                    <div class="text-sm text-gray-400">
+                        <span skl>Emails</span>
+                    </div>
+                </div>
+            </section>
+            <section class="card-bg">
+                <div class="p-4 w-full md:p-6 lg:p-8">
+                    <div class="text-xl font-semibold">
+                        <span skl>Subscription</span>
+                    </div>
+                    <p class="mb-10 text-grai">
+                        <span skl>
+                            Track subscriptions to your campaigns in real-time.
+                        </span>
+                    </p>
+                    <.ui_chart_bar items={@chart_stats} levels={@levels} />
+                </div>
+            </section>
         </div>
-    </section>
-    <section class="bg-gray-50 bg-opacity-50">
-        <div class="p-4 w-full rounded border border-gray-200 shadow md:p-6 dark:border-gray-700">
-            <div class="text-xl font-semibold">
-                <span skl>Subscription</span>
-            </div>
-            <p class="mb-10 text-grai">
-                <span skl>
-                    Track subscriptions to your campaigns in real-time.
-                </span>
-            </p>
-            <.ui_chart_bar items={@chart_stats} levels={@levels} />
+        <div class="flex flex-col space-y-6 w-full lg:w-80">
+            <section class="semicircle__ card-bg p-6 lg:p-8">
+                <div class="w-full">
+                    <div class="relative w-64 h-32 overflow-hidden mt-4 m-auto">
+                        <div style={"width: #{@stats.rate}%;"}
+                            class="absolute transition-all duration-1000 left-0 top-0 overflow-hidden">
+                            <div class="aboslute left-0 top-0 border-[2em] rounded-t-full border-primary-300 w-64 h-80">
+                            </div>
+                        </div>
+                        <div class="aboslute left-0 top-0 border-[2em] rounded-t-full border-gray-300 w-64 h-80">
+                            <div
+                                class="absolute bottom-0 rounded-t-full pt-4 px-4 z-0 bg-gray-50 left-1/2 -translate-x-1/2 text-center">
+                                <p clsas="font-semibold">
+                                    <span skl>% Rate</span>
+                                </p>
+                                <div class="font-bold text-2xl md:text-3xl">
+                                    <div skl>
+                                        <%= @stats.rate %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex space-x-2 text-xs mt-2 justify-between">
+                    <div class="flex-center">
+                        <div class="w-4 h-4 rounded bg-primary-300"></div>
+                        <span skl>Subscribers</span>
+                    </div>
+                    <div class="flex-center">
+                        <span skl>Unsubscribers</span>
+                        <div class="w-4 h-4 rounded bg-gray-300"></div>
+                    </div>
+                </div>
+            </section>
+            <section class="latest__ card-bg flex-1 p-6 md:p-8 space-y-4">
+                <h4>
+                    <span skl>Latest subscribers</span>
+                </h4>
+                <div class="flex flex-col space-y-3 w-full">
+                    <.link
+                        :for={subscriber <- @latest_subscribers}
+                        navigate={Routes.project_subscribers_index_path(@socket, :show, subscriber.id)}
+                        skl>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-400">
+                                <%= subscriber.firstname %>
+                                    <%= subscriber.lastname %>
+                            </span>
+                            <.ui_time_ago class="font-normal" time={subscriber.subscribed_at ||
+                                subscriber.inserted_at} />
+                        </div>
+                        <p class="font-semibold text-gray-500 text-sm truncate">
+                            <%= subscriber.email %>
+                        </p>
+                    </.link>
+                </div>
+            </section>
         </div>
-    </section>
+    </div>
 </div>

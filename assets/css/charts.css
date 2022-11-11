@@ -1,26 +1,30 @@
-.chart__bar {
+.chart_bar__ {
 	@apply relative;
 	@apply flex items-baseline mt-4 h-64 border-b mb-4;
 }
 
-.chart__bar .bar__container {
+.chart_bar__ .bar__container {
 	@apply w-full h-full;
 	@apply bg-gray-50 bg-opacity-20;
 	@apply flex self-end items-end justify-center;
-	@apply lg:px-1;
+	@apply lg:px-0.5;
 }
 
-.chart__bar.large .bar__container {
+.chart_bar__.large .bar__container {
+	@apply lg:px-1;
 	@apply lg:space-x-0.5;
 }
-.chart__bar .bar__container:hover {
+.chart_bar__ .bar__container:hover {
 	@apply bg-gray-300 bg-opacity-20;
 }
 
-.chart__bar .bar {
+.chart_bar__ .bar {
+	@apply transition-all;
 	@apply w-full max-w-[3em] h-0 relative;
 }
-
-.chart__bar .bar {
+.chart_bar__ .bar {
 	@apply rounded-t-sm;
+}
+.chart_bar__.large .bar {
+	@apply rounded-t-md;
 }

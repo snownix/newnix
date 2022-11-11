@@ -1,7 +1,7 @@
-  <div class="flex flex-col h-screen pt-6 space-y-8">
-    <.ui_page_head 
+  <div class="flex flex-col pt-6 space-y-8">
+    <.ui_page_head
       title="Subscribers"
-      description="A list of all the subscribers in your project, with their name, description, start and end dates." 
+      description="A list of all the subscribers in your project, with their name, description, start and end dates."
       icon="user-group">
       <:action>
         <.ui_button theme="primary" size="small" href={Routes.project_subscribers_index_path(@socket, :new)}>
@@ -33,7 +33,7 @@
                 </td>
                 <td class="actions">
                     <.link skl patch={Routes.project_subscribers_index_path(@socket, :show, subscriber)}>
-                      <.ui_icon class="w-6 h-6" icon="inbox" />
+                      <.ui_icon class="w-6 h-6" icon="eye" />
                     </.link>
                     <.link skl patch={Routes.project_subscribers_index_path(@socket, :edit, subscriber)}>
                       <.ui_icon class="w-6 h-6" icon="pencil-square" />
@@ -48,7 +48,7 @@
         </.ui_table>
       <% else %>
         <div class="flex items-center justify-center h-full">
-          <.live_component 
+          <.live_component
             id="empty-subscribers"
             module={NewnixWeb.Live.Components.Cards.EmptyStateComponent}
             title="Subscriber"

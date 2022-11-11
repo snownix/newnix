@@ -1,0 +1,5 @@
+.card-bg {
+    @apply border border-gray-200;
+    @apply bg-gray-50 bg-opacity-50;
+    @apply rounded-lg;
+}

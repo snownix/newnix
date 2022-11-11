@@ -2,18 +2,18 @@ defmodule NewnixWeb.Live.Project.DashboardLive.Index do
   use NewnixWeb, :live_project
 
   alias Newnix.Campaigns
+  alias Newnix.Subscribers
 
-  @periods [
-    %{value: "all", label: "All time", selected: false, days: nil, type: :months},
-    %{value: "day", label: "Last day", selected: false, days: 1, type: :hours},
-    %{value: "seven_day", label: "Last 7 days", selected: true, days: 7, type: :days},
-    %{value: "month", label: "Last month", selected: false, days: 30, type: :days},
-    %{value: "two_months", label: "Last 60 days", selected: false, days: 60, type: :days}
-  ]
-
-  @green_color "bg-purpo-400"
-  @red_color "bg-redo-400"
   @bar_levels 10
+  @red_color "bg-redo-400"
+  @green_color "bg-purpo-400"
+  @periods [
+    %{value: "all", label: "All time", selected: false, items: nil, unit: :months},
+    %{value: "day", label: "Last day", selected: false, items: 24, unit: :hours},
+    %{value: "seven_day", label: "Last 7 days", selected: true, items: 7, unit: :days},
+    %{value: "month", label: "Last month", selected: false, items: 30, unit: :days},
+    %{value: "two_months", label: "Last 60 days", selected: false, items: 60, unit: :days}
+  ]
 
   def mount(_params, _session, socket) do
     {:ok, socket |> put_initial_assigns()}
@@ -49,12 +49,20 @@ defmodule NewnixWeb.Live.Project.DashboardLive.Index do
       unsubscribers: 0
     })
     |> assign(:chart_stats, [])
+    |> assign(:latest_subscribers, [])
   end
 
   defp company_selected(id, %{"save_states" => %{"campaign" => cid}}) when cid === id, do: true
   defp company_selected(_id, _), do: false
   defp period_selected(id, %{"save_states" => %{"period" => cid}}) when cid === id, do: true
   defp period_selected(_id, _), do: false
+
+  def put_latest_subscribers(%{assigns: assigns} = socket) do
+    %{project: project} = assigns
+
+    %Paginator.Page{entries: entries} = Subscribers.list_subscribers(project, limit: 5)
+    socket |> assign(:latest_subscribers, entries)
+  end
 
   def put_new_stats(%{assigns: assigns} = socket) do
     %{stats: stats, project: project, campaigns: campaigns} = assigns
@@ -74,8 +82,9 @@ defmodule NewnixWeb.Live.Project.DashboardLive.Index do
     {chart_stats, levels} =
       Campaigns.subscribers_chart_stats(project, campaigns,
         start_date: calc_period(period),
-        format_date: period.type
+        format_date: period.unit
       )
+      |> ensure_period_interval(period)
       |> map_chart_stats()
 
     socket
@@ -83,6 +92,20 @@ defmodule NewnixWeb.Live.Project.DashboardLive.Index do
     |> assign(:levels, levels)
     |> assign(:chart_stats, chart_stats)
     |> assign(:loading, false)
+  end
+
+  defp ensure_period_interval(chart_stats, %{items: nil}), do: chart_stats
+
+  defp ensure_period_interval(chart_stats, %{unit: unit, items: items} = period) do
+    generate_period_interval(unit, items, start_date: calc_period(period))
+    |> Enum.map(fn {:ok, date} ->
+      Enum.find(chart_stats, &(&1.day_date == date)) ||
+        %{
+          subscribers: 0,
+          unsubscribers: 0,
+          day_date: date
+        }
+    end)
   end
 
   defp map_chart_stats(nil), do: {[], []}
@@ -95,12 +118,15 @@ defmodule NewnixWeb.Live.Project.DashboardLive.Index do
       end)
 
     maxSubs = maxRecord.subscribers + maxRecord.unsubscribers
+    maxSubs = if maxSubs !== 0, do: maxSubs, else: 1
 
-    level_val = 100 / @bar_levels
+    max_levels = if maxSubs > @bar_levels, do: @bar_levels, else: maxSubs
+    level_val = 100 / max_levels
 
     levels =
-      Enum.map(1..@bar_levels, fn i ->
-        %{pos: level_val * (i - 1), value: maxSubs / @bar_levels * i}
+      Enum.map(1..max_levels, fn i ->
+        value = trunc(maxSubs / max_levels * i)
+        %{pos: level_val * i, value: value}
       end)
 
     stats =
@@ -124,10 +150,14 @@ defmodule NewnixWeb.Live.Project.DashboardLive.Index do
     {stats, levels}
   end
 
-  defp calc_period(%{days: nil}), do: nil
+  defp calc_period(%{items: nil}), do: nil
 
-  defp calc_period(%{days: days}) when days > 0 do
-    Timex.shift(DateTime.utc_now(), days: -days)
+  defp calc_period(%{items: items, unit: unit}) when items > 0 do
+    Timex.shift(DateTime.utc_now(), [{unit, -items}])
+  end
+
+  def semi_cercle_deg(perc) do
+    180 * perc / 100
   end
 
   defp selected_period(%{periods: periods}), do: Enum.find(periods, & &1.selected) || %{days: nil}
@@ -157,7 +187,7 @@ defmodule NewnixWeb.Live.Project.DashboardLive.Index do
   end
 
   def handle_info(:update, socket) do
-    {:noreply, socket |> put_new_stats()}
+    {:noreply, socket |> put_new_stats() |> put_latest_subscribers()}
   end
 
   defp switch_period(%{assigns: assigns} = socket, value) do

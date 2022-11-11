@@ -114,6 +114,7 @@ defmodule NewnixWeb.Live.Components.Helper do
   end
 
   attr :time, :string
+  attr :class, :string, default: ""
   attr :rest, :global, include: ~w(skl)
 
   def ui_datetime_display(%{time: time} = assigns) do
@@ -121,12 +122,31 @@ defmodule NewnixWeb.Live.Components.Helper do
       ~H"""
       """
     else
-      timeFormated = Calendar.strftime(time, "%Y-%m-%d %H:%M:%S")
+      timeFormated = Timex.format!(time, "%Y-%m-%d %H:%M:%S", :strftime)
 
       assigns = assigns |> assign(:timeFormated, timeFormated)
 
       ~H"""
-        <time {@rest} class="font-semibold text-gray-500" datetime={@time}><%= @timeFormated %></time>
+        <time {@rest} class={"font-semibold text-gray-500 #{@class}"} datetime={@time}><%= @timeFormated %></time>
+      """
+    end
+  end
+
+  attr :time, :string
+  attr :class, :string, default: ""
+  attr :rest, :global, include: ~w(skl)
+
+  def ui_time_ago(%{time: time} = assigns) do
+    if is_nil(time) do
+      ~H"""
+      """
+    else
+      timeFormated = time |> Timex.format!("{relative}", :relative)
+
+      assigns = assigns |> assign(:timeFormated, timeFormated)
+
+      ~H"""
+        <time {@rest} class={"font-semibold text-gray-500 #{@class}"} datetime={@time}><%= @timeFormated %></time>
       """
     end
   end
@@ -147,6 +167,31 @@ defmodule NewnixWeb.Live.Components.Helper do
         <%= render_slot(@tbody) %>
       </tbody>
     </table>
+    """
+  end
+
+  slot(:inner_block, required: true)
+  attr :name, :string, required: true
+  attr :form, :string, default: nil
+  attr :checked, :boolean, default: false
+  attr :position, :atom, default: :right
+  attr :rest, :global
+
+  def ui_toggle(assigns) do
+    ~H"""
+      <label class="checkbox_toggle__" {@rest}>
+        <span :if={@position === :left} class="checkbox_name__">
+          <%= render_slot(@inner_block) %>
+        </span>
+        <div class="relative">
+          <input type="checkbox" name={@name} checked={@checked} class={"sr-only peer"} />
+          <div toggle class="peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 peer peer-checked:after:translate-x-full peer-checked:after:border-white peer-checked:bg-blue-600"></div>
+        </div>
+        <span :if={@position === :right} class="checkbox_name__">
+          <%= render_slot(@inner_block) %>
+        </span>
+      </label>
+
     """
   end
 
@@ -185,6 +230,16 @@ defmodule NewnixWeb.Live.Components.Helper do
     """
   end
 
+  attr :class, :string, default: ""
+  attr :color, :string, default: "#fff"
+  attr :rest, :global, include: ~w(skl)
+
+  def ui_square_color(assigns) do
+    ~H"""
+      <div class={"w-4 h-4 rounded flex-shrink-0 #{@class}"} style={"background-color: #{@color};"}></div>
+    """
+  end
+
   attr :items, :map, default: []
   attr :levels, :map, default: []
 
@@ -192,12 +247,12 @@ defmodule NewnixWeb.Live.Components.Helper do
     assigns = assigns |> assign(:count, Enum.count(assigns.items))
 
     ~H"""
-      <div class={"chart__bar "  <> (@count <= 5 && "large" || "")}>
+      <div class={"chart_bar__ #{chart_size_class(@count)}"}>
           <div
             :for={level <- @levels}
-            class="absolute w-full border-t border-gray-100"
+            class="absolute w-full border-t border-gray-100 h-0"
             style={"bottom: #{level.pos}%;"}>
-            <div class="text-gray-400 text-sm bottom-0"><%= trunc(level.value) %></div>
+            <div class="text-gray-400 text-sm bottom-0"><%= level.value %></div>
           </div>
           <div class="h-full pr-10"></div>
           <div class="bar__container relative group"
@@ -213,6 +268,9 @@ defmodule NewnixWeb.Live.Components.Helper do
       </div>
     """
   end
+
+  def chart_size_class(count) when count > 5, do: ""
+  def chart_size_class(_count), do: "large"
 
   def chart_display_all(count) when count < 10, do: ""
   def chart_display_all(_), do: "hidden group-hover:block"

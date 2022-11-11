@@ -97,6 +97,13 @@ defmodule NewnixWeb.Live.Project.CampaignsLive.Show do
     |> assign(:subscriber, fetch_subscriber(campaign, sub_id))
   end
 
+  defp apply_action(socket, :show_subscriber, %{"sub_id" => sub_id} = _params) do
+    %{campaign: campaign} = socket.assigns
+
+    socket
+    |> assign(:subscriber, fetch_subscriber(campaign, sub_id))
+  end
+
   defp assign_subscribers(socket, campaign) do
     socket
     |> assign(:subscribers, fetch_subscribers(campaign))
@@ -114,6 +121,7 @@ defmodule NewnixWeb.Live.Project.CampaignsLive.Show do
 
   defp fetch_subscriber(campaign, id) do
     Campaigns.get_campaign_subscriber!(campaign, id)
+    |> Subscribers.fetch_campaigns()
   end
 
   defp fetch_subscribers(campaign, opts \\ []) do
@@ -130,4 +138,5 @@ defmodule NewnixWeb.Live.Project.CampaignsLive.Show do
   defp page_title(:edit, campaign), do: "Edit Campaign #{campaign.name}"
   defp page_title(:new_subscriber, campaign), do: "New Subscriber - #{campaign.name}"
   defp page_title(:edit_subscriber, campaign), do: "Edit Subscriber - #{campaign.name}"
+  defp page_title(:show_subscriber, campaign), do: "Show Subscriber - #{campaign.name}"
 end

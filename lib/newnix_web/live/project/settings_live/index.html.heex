@@ -1,7 +1,7 @@
 <main class="text-dark-50 py-6 space-y-12">
-    <.ui_page_head 
+    <.ui_page_head
       title="Project Settings"
-      description="Modify your project informations here." 
+      description="Modify your project informations here."
       icon="settings" />
     <div class="space-y-4  sm:px-6 lg:px-8">
         <section class="flex flex-1">
@@ -58,13 +58,13 @@
                             <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                                 Date Added
                             </th>
-                            <th :if={true} scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                            <th :if={false} scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
                                 <span class="sr-only">Edit</span>
                             </th>
                         </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 bg-white">
-                            <.user_row :for={user <- @project.users} admin={true} user={user} />
+                            <.user_row :for={user <- @project.users} admin={false} user={user} />
                         </tbody>
                     </table>
                     </div>

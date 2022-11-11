@@ -98,7 +98,7 @@ defmodule NewnixWeb.Live.Components.Partials.ProjectSidebarComponent do
               <.ui_icon class="w-full h-full" icon={@icon} />
             </div>
           <% else %>
-            <div class={"w-4 h-4 rounded flex-shrink-0"} style={"background-color: #{@color};"}></div>
+            <.ui_square_color color={@color} />
           <% end %>
           <div class="truncate text-ellipsis">
             <%= render_slot(@inner_block) %>

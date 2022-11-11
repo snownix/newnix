@@ -25,8 +25,6 @@ defmodule Newnix.Subscribers.Subscriber do
       on_delete: :delete_all,
       on_replace: :delete
 
-    field :subscribers, :integer, virtual: true
-    field :unsubscribers, :integer, virtual: true
     field :subscribed_at, :utc_datetime_usec, virtual: true
     field :unsubscribed_at, :utc_datetime_usec, virtual: true
 

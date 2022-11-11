@@ -27,7 +27,15 @@ defmodule Newnix.Subscribers do
     query =
       from(
         s in Subscriber,
-        where: s.project_id == ^project.id
+        distinct: s.id,
+        left_join: cs in CampaignSubscriber,
+        on: cs.subscriber_id == s.id,
+        where: s.project_id == ^project.id,
+        select_merge: %{
+          subscribed_at: cs.subscribed_at,
+          unsubscribed_at: cs.unsubscribed_at
+        },
+        order_by: [{:desc, s.inserted_at}, {:desc, cs.subscribed_at}]
       )
 
     Repo.paginate(
@@ -92,7 +100,9 @@ defmodule Newnix.Subscribers do
 
   """
   def fetch_campaigns(%Subscriber{} = subscriber) do
-    subscriber |> Repo.preload(:campaigns)
+    subscriber
+    |> Repo.preload(:campaign_subscribers)
+    |> Repo.preload(:campaigns)
   end
 
   @doc """
@@ -116,7 +126,9 @@ defmodule Newnix.Subscribers do
   end
 
   def create_subscriber(%Project{} = project, campaign = %Campaign{}, attrs) do
-    campaign_subscriber_assoc = Map.merge(%{campaign: campaign}, take_names(attrs))
+    campaign_subscriber_assoc =
+      Map.merge(%{campaign: campaign}, take_names(attrs))
+      |> Map.merge(%{subscribed_at: DateTime.utc_now()})
 
     %Subscriber{}
     |> Subscriber.changeset(attrs)

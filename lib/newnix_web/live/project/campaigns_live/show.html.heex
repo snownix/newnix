@@ -1,7 +1,7 @@
-  <div class="flex flex-col h-screen pt-6 space-y-8">
-    <.ui_page_head 
+  <div class="flex flex-col pt-6 space-y-8">
+    <.ui_page_head
       title={"#{@campaign.name} Subscribers"}
-      description="A list of all the subscribers in your project, with their name, description, start and end dates." 
+      description="A list of all the subscribers in your project, with their name, description, start and end dates."
       icon="user-group">
       <:action>
         <.ui_button theme="primary" size="small" href={Routes.project_campaigns_show_path(@socket, :new_subscriber, @campaign)}>
@@ -10,7 +10,7 @@
         </.ui_button>
       </:action>
     </.ui_page_head>
-    
+
     <div class="flex-1 overflow-y-auto">
       <%= if Enum.count(@subscribers.entries) > 0 do %>
         <.ui_table>
@@ -43,7 +43,7 @@
                   <% end %>
                 </td>
                 <td class="actions space-x-2">
-                  <button 
+                  <button
                     skl
                     type="button"
                     phx-click="toggle-subscribe"
@@ -51,6 +51,9 @@
                     class="cursor-pointer hover:text-orange-500" >
                     <%= subscribe_action(subscriber) %>
                   </button>
+                  <.link skl patch={Routes.project_campaigns_show_path(@socket, :show_subscriber, @campaign.id, subscriber)}>
+                    <.ui_icon class="w-6 h-6" icon="eye" />
+                  </.link>
                   <.link skl patch={Routes.project_campaigns_show_path(@socket, :edit_subscriber, @campaign.id, subscriber.id)}>
                     <.ui_icon class="w-6 h-6" icon="pencil-square" />
                   </.link>
@@ -64,7 +67,7 @@
         </.ui_table>
       <% else %>
         <div class="flex items-center justify-center h-full">
-          <.live_component 
+          <.live_component
             id="empty-subscribers"
             module={NewnixWeb.Live.Components.Cards.EmptyStateComponent}
             title="Subscriber"
@@ -83,6 +86,20 @@
       title={@page_title}
       action={:new_subscriber == @live_action && :new || :edit}
       project={@project}
+      campaign={@campaign}
+      subscriber={@subscriber}
+      return_to={Routes.project_campaigns_show_path(@socket, :show, @campaign.id)}
+    />
+  </.rightbar_modal>
+<% end %>
+
+
+
+<%= if @live_action === :show_subscriber do %>
+  <.rightbar_modal return_to={Routes.project_campaigns_show_path(@socket, :show, @campaign.id)}>
+    <.live_component
+      module={NewnixWeb.Live.Project.SubscribersLive.ShowComponent}
+      id={@subscriber.id}
       campaign={@campaign}
       subscriber={@subscriber}
       return_to={Routes.project_campaigns_show_path(@socket, :show, @campaign.id)}

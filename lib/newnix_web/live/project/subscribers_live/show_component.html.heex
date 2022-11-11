@@ -1,3 +1,111 @@
-<div>
-Show 
-</div>
+<section class="space-y-8">
+    <div>
+        <h2 class="text-lg font-semibold">
+            Subscriber
+        </h2>
+        <p class="flex text-sm group space-x-2">
+            <span class="text-gray">Show id</span>
+            <span class="hidden group-hover:block">
+                <%= @subscriber.id %>
+            </span>
+        </p>
+    </div>
+    <div class="flex flex-col space-y-4">
+        <div class="flex">
+            <div class="w-full">
+                <dt class="text-sm font-medium text-gray-500">First name</dt>
+                <dd class="mt-1 text-sm font-semibold text-gray-900 sm:col-span-2">
+                    <%= @subscriber.firstname %>
+                </dd>
+            </div>
+            <div class="w-full">
+                <dt class="text-sm font-medium text-gray-500">Last name</dt>
+                <dd class="mt-1 text-sm font-semibold text-gray-900 sm:col-span-2">
+                    <%= @subscriber.lastname %>
+                </dd>
+            </div>
+        </div>
+        <div>
+            <dt class="text-sm font-medium text-gray-500">Email</dt>
+            <dd class="mt-1 text-sm font-semibold text-gray-900 sm:col-span-2">
+                <%= @subscriber.email %>
+            </dd>
+        </div>
+        <div>
+            <dt class="text-sm font-medium text-gray-500">Joined Date</dt>
+            <dd class="mt-1 text-sm font-semibold text-gray-900 sm:col-span-2">
+                <.ui_datetime_display time={@subscriber.inserted_at} />
+            </dd>
+        </div>
+        <div>
+            <dt class="text-sm font-medium text-gray-500 flex-center justify-between">
+                <span>Campaigns</span>
+                <form phx-target={@myself} phx-change="toggle-active-camp">
+                    <.ui_toggle 
+                        name={:camp}
+                        position={:left}
+                        checked={@all_camps}>
+                        Unsubscribes
+                    </.ui_toggle>
+                </form>
+            </dt>
+            <dd class="mt-2 text-sm font-semibold text-gray-900 sm:col-span-2">
+                <div class="flex flex-wrap space-x-2">
+                    <.link
+                        :for={c <- @campaigns}
+                        class={"inline-flex-center p-1 px-2 rounded #{c.unsubscribed_at && "bg-red-400 text-white" ||"bg-primary-100 text-gray-800 "}"}
+                        navigate={Routes.project_campaigns_show_path(@socket, :show, c.campaign_id)}>
+                        <.ui_square_color class="w-2 h-2" color={string_to_color_hash(c.campaign_id)} />
+                        <span><%= Enum.find(@subscriber.campaigns, &(&1.id == c.campaign_id)).name %></span>
+                    </.link>
+                </div>
+            </dd>
+        </div>
+    </div>
+    <div class="w-full h-1 bg-gray-50"></div>
+    <div>
+        <h2 class="text-lg font-semibold">
+            Events
+        </h2>
+        <p class="flex text-sm space-x-1">
+            <span class="text-gray">
+                <%= Enum.count(@events) %>
+            </span>
+            <span>actions</span>
+        </p>
+    </div>
+    <ul role="list" class="-mb-8">
+        <li :for={event <- @events}>
+            <div class="relative pb-8">
+                <span class="absolute bottom-5 left-5 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
+                <div class="relative flex items-start space-x-3">
+                    <div>
+                        <div class="relative px-1">
+                            <div
+                                class="h-8 w-8 bg-gray-100 rounded-full ring-8 ring-white flex items-center justify-center relative">
+                                <.ui_icon icon={event.icon} style={"color: #{event_color(event.action)}"} />
+                                <span class="absolute bottom-0 right-0">
+                                    <.ui_square_color class="w-2 h-2" color={string_to_color_hash(event.id || "default")} />
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="min-w-0 flex-1 py-1.5 flex flex-wrap justify-between">
+                        <div class="flex-center text-sm text-gray-500">
+                            <span class="font-medium text-gray-900">
+                                <%= event.who %>
+                            </span>
+                            <span><%= event.action %></span>
+                            <.link :if={event.target}
+                                navigate={Routes.project_campaigns_show_path(@socket, :show, event.target.id)}
+                                class="font-medium text-gray-900 flex-center space-x-1">
+                                <%= event.target.name %>
+                            </.link>
+                        </div>
+                        <.ui_time_ago class="font-normal text-sm" time={@subscriber.inserted_at} />
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ul>
+</section>
