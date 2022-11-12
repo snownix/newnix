@@ -11,7 +11,7 @@
   <section class="space-y-5 flex-wrap p-6 md:p-8 space-between">
     <div :for={form <- @forms.entries} class="card-bg relative flex space-x-4">
       <div class="flex lg:space-x-6 p-6 lg:p-2 w-full">
-        <div skl-aimate class="hidden text-xs lg:flex flex-shrink-0 justify-center p-4 w-40 h-40 border rounded skeleton flex-col space-y-2">
+        <div skl-aimate class="hidden text-xs lg:flex flex-shrink-0 overflow-hidden justify-center p-4 w-40 h-40 border rounded skeleton flex-col space-y-2">
           <div class="flex space-x-1 w-full">
             <span :if={form.firstname} class="rounded bg-gray-100 border p-1 w-full block">
               First
@@ -20,8 +20,8 @@
               Last
             </span>
           </div>
-          <div class="rounded bg-gray-100 border p-1"><%= form.email_text %></div>
-          <span class="p-1 rounded bg-gray-100 text-center border"><%= form.button_text %></span>
+          <div class="rounded bg-gray-100 border p-1 truncate"><%= form.email_text %></div>
+          <span class="p-1 rounded bg-gray-100 text-center border truncate"><%= form.button_text %></span>
         </div>
         <div class="space-y-2 py-2 place-self-center w-full">
           <div skl class="inline-flex-center text-sm">
