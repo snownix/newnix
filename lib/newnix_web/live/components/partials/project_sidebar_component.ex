@@ -28,6 +28,9 @@ defmodule NewnixWeb.Live.Components.Partials.ProjectSidebarComponent do
                 <.menu_item link={Routes.project_subscribers_index_path(@socket, :index)} icon="user-group">
                   Subscribers
                 </.menu_item>
+                <.menu_item link={Routes.project_forms_index_path(@socket, :index)} icon="window">
+                  Forms
+                </.menu_item>
                 <.menu_item link={Routes.live_path(@socket, NewnixWeb.Live.Project.SettingsLive.Index)} icon="settings">
                   Settings
                 </.menu_item>

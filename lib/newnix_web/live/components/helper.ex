@@ -221,12 +221,12 @@ defmodule NewnixWeb.Live.Components.Helper do
   end
 
   attr :icon, :string, default: ""
-  attr :class, :string, default: "w-5 h-5"
+  attr :class, :string, default: ""
   attr :rest, :global, include: ~w(skl)
 
   def ui_icon(assigns) do
     ~H"""
-    <svg class={@class} {@rest}><use href={"/images/icons.svg#icon-#{@icon}"}/></svg>
+    <svg class={"w-5 h-5 #{@class}"} {@rest}><use href={"/images/icons.svg#icon-#{@icon}"}/></svg>
     """
   end
 

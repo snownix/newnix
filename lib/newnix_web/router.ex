@@ -78,6 +78,14 @@ defmodule NewnixWeb.Router do
         live "/:id/edit", Index, :edit
         live "/:id/show", Index, :show
       end
+
+      scope "/forms", Live.Project.FormsLive do
+        live "/", Index, :index
+        live "/new", Index, :new
+
+        # live "/:id/edit", Index, :edit
+        # live "/:id/show", Index, :show
+      end
     end
   end
 

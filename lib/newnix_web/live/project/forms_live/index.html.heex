@@ -1,0 +1,58 @@
+<main class="text-dark-50 py-6">
+  <.ui_page_head title="Forms Builder" description="Modify your campaigns forms here." icon="window">
+    <:action>
+      <.ui_button href={Routes.project_forms_index_path(@socket, :new)} theme="dark" size="small">
+        <.ui_icon icon="plus" />
+        <span>New Form</span>
+      </.ui_button>
+    </:action>
+  </.ui_page_head>
+
+  <section class="space-y-5 flex-wrap p-6 md:p-8 space-between">
+    <div :for={i <- 1..10} class="card-bg relative flex space-x-4">
+      <div class="flex lg:space-x-6 p-6 lg:p-2">
+        <div class="hidden lg:flex flex-shrink-0 justify-center items-center w-40 h-40 border rounded">
+          <.ui_icon icon="loading" class="animate-spin" />
+        </div>
+        <div class="space-y-2 place-self-center">
+          <div class="inline-flex-center font-bold">
+            <.ui_square_color color={"#566"} />
+            <h2 class="Newsletter">
+              <%= i %> Updates
+            </h2>
+          </div>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum a obcaecati explicabo recusandae, ipsum
+            asperiores quibusdam perferendis ad. Ex qui assumenda nobis cum soluta non nulla quod, id fuga debitis!
+          </p>
+          <div>
+            <.ui_datetime_display time={DateTime.utc_now()} />
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col justify-between right-0 divide-y top-0 border-l">
+        <div class="flex items-center justify-center w-full h-full px-8 hover:bg-gray-100 cursor-pointer">
+          <.ui_icon icon="eye" />
+        </div>
+        <div class="flex items-center justify-center w-full h-full px-8 hover:bg-gray-100 cursor-pointer">
+          <.ui_icon icon="cog" />
+        </div>
+        <div class="flex items-center justify-center w-full h-full px-8 hover:bg-gray-100 cursor-pointer">
+          <.ui_icon icon="trash" />
+        </div>
+      </div>
+    </div>
+
+  </section>
+</main>
+
+
+<%= if @live_action in [:new, :edit] do %>
+  <.rightbar_modal return_to={Routes.project_forms_index_path(@socket, :index)}>
+    <.live_component module={NewnixWeb.Live.Project.FormsLive.FormComponent} 
+      id={@form.id || :new}
+      title={@page_title} 
+      action={@live_action} 
+      return_to={Routes.project_forms_index_path(@socket, :index)} />
+  </.rightbar_modal>
+<% end %>
