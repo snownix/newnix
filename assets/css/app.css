@@ -18,6 +18,8 @@
 
 @import "./pages/auth.css";
 
+@import "./builder/form.css";
+
 body {
 	@apply font-primary;
 }

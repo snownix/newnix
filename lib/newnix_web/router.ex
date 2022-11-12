@@ -83,8 +83,7 @@ defmodule NewnixWeb.Router do
         live "/", Index, :index
         live "/new", Index, :new
 
-        # live "/:id/edit", Index, :edit
-        # live "/:id/show", Index, :show
+        live "/:id/edit", Index, :edit
       end
     end
   end

@@ -6,6 +6,7 @@ defmodule Newnix.Campaigns.CampaignSubscriber do
   alias Newnix.Subscribers.Subscriber
   alias Newnix.Campaigns.Campaign
 
+  @timestamps_opts [type: :utc_datetime_usec]
   @primary_key {:id, :binary_id, autogenerate: true}
 
   schema "campaign_subscribers" do

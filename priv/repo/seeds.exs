@@ -18,7 +18,8 @@ defmodule Newnix.Seeds do
   alias Newnix.Repo
   alias Newnix.Accounts.User
   alias Newnix.Projects.Project
-  alias Newnix.Campaigns.Campaign
+  alias Newnix.Builder
+  alias Newnix.Builder.Form
 
   def insert_demo() do
     IO.inspect("Insert users....")
@@ -34,10 +35,14 @@ defmodule Newnix.Seeds do
     |> Enum.each(fn p ->
       IO.inspect("new project #{p["name"]}")
 
-      Project.changeset(%Project{}, p)
-      |> Project.owner_changeset(select_random_user())
-      |> Repo.insert!(timeout: :infinity)
-      |> update_campaigns_subscribers()
+      p =
+        Project.changeset(%Project{}, p)
+        |> Project.owner_changeset(select_random_user())
+        |> Repo.insert!(timeout: :infinity)
+
+      camp = update_campaigns_subscribers(p)
+
+      p |> insert_rand_forms(camp)
     end)
   end
 
@@ -54,6 +59,16 @@ defmodule Newnix.Seeds do
         updated_at: datetime_patch(Faker.DateTime.forward(1))
       }
     ])
+  end
+
+  def insert_rand_forms(project, campaigns) do
+    many_rands(&generate_rand_form/0, 5, 2)
+    |> Enum.each(fn form ->
+      Builder.change_form(form, %{})
+      |> Form.campaign_assoc(Enum.random(campaigns))
+      |> Form.project_assoc(project)
+      |> Repo.insert!()
+    end)
   end
 
   def generate_rand_project() do
@@ -75,7 +90,27 @@ defmodule Newnix.Seeds do
       "description" => Faker.Lorem.Shakespeare.En.hamlet(),
       "start_at" => datetime_patch(Faker.DateTime.backward(4)),
       "expire_at" => datetime_patch(Faker.DateTime.forward(4)),
-      "subscribers" => many_rands(&generate_rand_subscriber/0, 20_000, 10_000)
+      "subscribers" => many_rands(&generate_rand_subscriber/0, 1_000, 500)
+    }
+  end
+
+  def generate_rand_form() do
+    IO.inspect("rand form")
+
+    %Form{
+      name: Faker.Company.En.buzzword_prefix(),
+      description: Faker.Lorem.Shakespeare.En.hamlet(),
+      email_text:
+        Enum.random(["Email", "Your Email", "Email"]) <>
+          " " <>
+          Enum.random(["Here", "Address", "Address Here"]),
+      thanks_text:
+        Enum.random(["Thanks you", "Thanks", "We appreciate"]) <>
+          " " <>
+          Enum.random(["For the interest", "About signin up", "Your sign up"]),
+      button_text: Enum.random(["Notify Me", "Send Email", "Send", "Join", "Notify", "Alert Me"]),
+      firstname: Enum.random([true, false]),
+      lastname: Enum.random([true, false])
     }
   end
 
@@ -112,6 +147,8 @@ defmodule Newnix.Seeds do
         Repo.update(change(cs.subscriber, project_id: project.id))
       end)
     end)
+
+    campaigns
   end
 
   defp select_random_user() do
@@ -129,7 +166,7 @@ defmodule Newnix.Seeds do
     for _i <- 0..take, do: call.()
   end
 
-  defp datetime_patch(datetime), do: datetime |> DateTime.truncate(:microsecond)
+  defp datetime_patch(datetime), do: datetime
 end
 
 # dev/test branch

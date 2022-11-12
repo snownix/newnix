@@ -6,7 +6,9 @@ defmodule Newnix.Projects.UserProject do
   alias Newnix.Accounts.User
   alias Newnix.Projects.Project
 
+  @timestamps_opts [type: :utc_datetime_usec]
   @primary_key false
+
   schema "users_projects" do
     field :role, :string, default: "user"
 

@@ -1,8 +1,6 @@
 defmodule NewnixWeb.Live.Components.Form.MultiSelectComponent do
   use NewnixWeb, :live_component
 
-  alias Phoenix.LiveView.JS
-
   def update(assigns, socket) do
     %{
       id: _id,

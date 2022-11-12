@@ -30,13 +30,15 @@ defmodule Newnix.Campaigns do
         unsubscribers_count: count(cs.unsubscribed_at),
         subscribers_count:
           fragment(
-            "COUNT(DISTINCT(CASE WHEN ? IS NULL THEN (?,?) ELSE NULL END))",
+            "COUNT(DISTINCT(CASE WHEN ? IS NULL AND ? IS NOT NULL THEN (?,?) ELSE NULL END))",
             cs.unsubscribed_at,
+            cs.campaign_id,
             cs.subscriber_id,
             cs.campaign_id
           )
       },
-      group_by: c.id
+      group_by: c.id,
+      order_by: {:desc, c.inserted_at}
     )
     |> Repo.paginate(
       cursor_fields: [:inserted_at, :id],
@@ -48,7 +50,8 @@ defmodule Newnix.Campaigns do
     from(
       p in Campaign,
       where: p.project_id == ^project.id,
-      select: [p.id, p.name]
+      select: [p.id, p.name],
+      order_by: {:desc, p.inserted_at}
     )
     |> Repo.all()
   end
@@ -163,7 +166,8 @@ defmodule Newnix.Campaigns do
         lastname: coalesce(cs.lastname, s.lastname),
         unsubscribed_at: cs.unsubscribed_at,
         subscribed_at: cs.subscribed_at
-      }
+      },
+      order_by: {:desc, s.inserted_at}
     )
     |> Repo.paginate(
       cursor_fields: [:inserted_at, :id],

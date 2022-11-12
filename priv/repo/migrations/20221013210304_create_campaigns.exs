@@ -14,7 +14,7 @@ defmodule Newnix.Repo.Migrations.CreateCampaigns do
 
       add :project_id, references(:projects, type: :uuid)
 
-      timestamps()
+      timestamps(type: :utc_datetime_usec)
     end
 
     create table(:campaign_tokens, primary_key: false) do
@@ -25,7 +25,7 @@ defmodule Newnix.Repo.Migrations.CreateCampaigns do
 
       add :campaign_id, references(:campaigns, type: :uuid)
 
-      timestamps()
+      timestamps(type: :utc_datetime_usec)
     end
   end
 end

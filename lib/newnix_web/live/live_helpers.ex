@@ -4,6 +4,7 @@ defmodule NewnixWeb.LiveHelpers do
 
   alias Phoenix.LiveView.JS
 
+  @spec rightbar_modal(any) :: Phoenix.LiveView.Rendered.t()
   @doc """
   Renders a live component inside a modal.
 
@@ -29,7 +30,7 @@ defmodule NewnixWeb.LiveHelpers do
       <div class="absolute w-full h-full top-0 left-0" phx-click={JS.dispatch("click", to: "#close")}></div>
       <div
         id="modal-content"
-        class="phx-rightbar-modal-content fade-in-scale"
+        class={"phx-rightbar-modal-content fade-in-scale #{assigns[:class]}"}
         phx-window-keydown={JS.dispatch("click", to: "#close")}
         phx-key="escape"
       >

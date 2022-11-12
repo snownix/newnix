@@ -14,7 +14,7 @@ defmodule Newnix.Repo.Migrations.CreateSubscribers do
 
       add :project_id, references(:projects, type: :uuid)
 
-      timestamps()
+      timestamps(type: :utc_datetime_usec)
     end
 
     create unique_index(:subscribers, [:email, :project_id])
@@ -31,7 +31,7 @@ defmodule Newnix.Repo.Migrations.CreateSubscribers do
       add :subscribed_at, :utc_datetime_usec
       add :unsubscribed_at, :utc_datetime_usec
 
-      timestamps()
+      timestamps(type: :utc_datetime_usec)
     end
 
     create(unique_index(:campaign_subscribers, [:campaign_id, :subscriber_id]))

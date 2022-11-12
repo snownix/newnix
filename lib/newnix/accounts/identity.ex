@@ -1,5 +1,6 @@
 defmodule Newnix.Accounts.Identity do
   use Ecto.Schema
+  @timestamps_opts [type: :utc_datetime_usec]
 
   import Ecto.Changeset
 

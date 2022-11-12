@@ -1,3 +1,67 @@
-<div>
-    New Form
-</div>
+<section class="flex flex-col lg:flex-row lg:space-x-12 w-full">
+  <.live_component
+    id="preview"
+    done={@done}
+    parent={@myself}
+    changeset={@changeset}
+    module={NewnixWeb.Live.Project.FormsLive.PreviewComponent}
+  />
+
+  <div class="flex flex-col space-y-4 max-w-screen-sm w-full">
+    <h2 class="text-lg font-semibold">
+      <%= @title %>
+    </h2>
+
+    <.form let={f} for={@changeset} id="campaign-form" phx-target={@myself} phx-change="validate" phx-submit="save"
+      class="flex flex-col space-y-4">
+
+      <div>
+        <.ui_select form={f} name={:campaign_id} options={@options} title="Campaign" />
+      </div>
+
+      <div>
+        <.ui_input form={f} name={:name} title="Form Name" />
+      </div>
+
+      <div>
+        <.ui_textarea form={f} name={:description} title="Description" />
+      </div>
+
+      <details class="space-y-4" phx-update="ignore" id="advanced">
+        <summary>Advanced Settings</summary>
+
+        <section class="flex space-x-2">
+          <div class="w-full">
+            <.ui_checkbox_toggle form={f} name={:firstname}>
+              Show First name
+            </.ui_checkbox_toggle>
+          </div>
+          <div class="w-full">
+            <.ui_checkbox_toggle form={f} name={:lastname}>
+              Show Last name
+            </.ui_checkbox_toggle>
+          </div>
+        </section>
+
+        <section class="flex space-x-2">
+          <div class="w-full">
+            <.ui_input form={f} name={:email_text} title="Email Text" />
+          </div>
+          <div class="w-full">
+            <.ui_input form={f} name={:button_text} title="Button Text" />
+          </div>
+        </section>
+
+        <div>
+          <.ui_textarea form={f} name={:thanks_text} title="Thanks Message" />
+        </div>
+      </details>
+
+      <div>
+        <.ui_button phx_disable_with="Saving...">
+          Save
+        </.ui_button>
+      </div>
+    </.form>
+  </div>
+</section>

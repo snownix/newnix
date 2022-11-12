@@ -8,7 +8,7 @@ defmodule Newnix.Repo.Migrations.CreateUsersProjects do
       add :user_id, references(:users, type: :binary_id)
       add :project_id, references(:projects, type: :binary_id)
 
-      timestamps()
+      timestamps(type: :utc_datetime_usec)
     end
 
     create index(:users_projects, [:project_id, :user_id])

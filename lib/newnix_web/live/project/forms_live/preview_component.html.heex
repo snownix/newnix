@@ -1,0 +1,43 @@
+<section class="hidden md:flex flex-1 w-1/2 bg-white justify-center items-center border-r pr-8 min-h-screen">
+    <form phx-submit="done" phx-target={@parent} class="newnix_form">
+
+        <div class="space-y-2">
+            <h2 class="title">
+                <%= get_field_by_name(@changeset, :name) %>
+            </h2>
+            <%= if @done do %>
+                <p class="description">
+                    <%= get_field_by_name(@changeset, :thanks_text) %>
+                </p>
+            <% else %>
+                <p class="description">
+                    <%= get_field_by_name(@changeset, :description) %>
+                </p>
+            <% end %>
+        </div>
+        <%= if !@done do %>
+            <div class="form">
+                <%= if get_field_boolean(@changeset, :firstname, false) or get_field_boolean(@changeset, :lastname, false) do  %>
+                    <div class="group">
+                        <%= if get_field_boolean(@changeset, :firstname, false) do %>
+                            <input class="input" type="text" placeholder="First name">
+                        <% end %>
+                        <%= if get_field_boolean(@changeset, :lastname, false) do %>
+                            <input class="input" type="text" placeholder="Last name">
+                        <% end %>
+                    </div>
+                <% end %>
+
+                <div class="group">
+                    <input type="email" class="input" placeholder={get_field_by_name(@changeset,
+                        :email_text, "Email Address")}>
+
+                </div>
+
+                <button class="button">
+                    <%= get_field_by_name(@changeset, :button_text, "Subscribe" ) %>
+                </button>
+            </div>
+        <% end %>
+    </form>
+</section>

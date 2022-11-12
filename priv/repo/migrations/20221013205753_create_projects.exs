@@ -10,7 +10,7 @@ defmodule Newnix.Repo.Migrations.CreateProjects do
 
       add :logo, :text
 
-      timestamps()
+      timestamps(type: :utc_datetime_usec)
     end
   end
 end

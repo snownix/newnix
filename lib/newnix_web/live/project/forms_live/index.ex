@@ -1,9 +1,22 @@
 defmodule NewnixWeb.Live.Project.FormsLive.Index do
   use NewnixWeb, :live_project
 
-  # alias Newnix.Forms
-  # alias Newnix.Forms.Form
-  # alias Newnix.Campaigns
+  alias Newnix.Builder
+  alias Newnix.Campaigns
+  alias Newnix.Builder.Form
+
+  @skeleton_struct %Form{
+    id: "",
+    name: "loading",
+    description: "loading",
+    campaign_id: "",
+    campaign: %{
+      id: "",
+      name: "loading"
+    },
+    inserted_at: DateTime.utc_now(),
+    updated_at: DateTime.utc_now()
+  }
 
   @impl true
   def mount(_params, _session, socket) do
@@ -13,16 +26,16 @@ defmodule NewnixWeb.Live.Project.FormsLive.Index do
   defp put_initial_assigns(socket) do
     socket
     |> assign(:loading, true)
+    |> assign(:campaigns, %{entries: []})
     |> assign(:forms, %{
       meta: nil,
       entries:
-        skeleton_fake_data(%{
-          id: "loading",
-          name: "Loading",
-          inserted_at: DateTime.utc_now(),
-          updated_at: DateTime.utc_now()
-        })
+        skeleton_fake_data(
+          @skeleton_struct,
+          3
+        )
     })
+    |> fetch_campaigns()
   end
 
   @impl true
@@ -30,71 +43,68 @@ defmodule NewnixWeb.Live.Project.FormsLive.Index do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
-  # @impl true
-  # def handle_info(:update, %{assigns: assigns} = socket) do
-  #   %{project: project} = assigns
+  @impl true
+  def handle_info(:update, %{assigns: assigns} = socket) do
+    %{project: project} = assigns
 
-  #   campaigns = list_campaigns(project)
-  #   forms = list_forms(project)
+    forms = list_forms(project)
 
-  #   {:noreply,
-  #    socket
-  #    |> assign(:forms, forms)
-  #    |> assign(:campaigns, campaigns)
-  #    |> assign(:loading, false)}
-  # end
+    {:noreply,
+     socket
+     |> assign(:forms, forms)
+     |> assign(:loading, false)}
+  end
 
-  # defp fetch_records(socket) do
-  #   send(self(), :update)
+  defp fetch_campaigns(%{assigns: assigns} = socket) do
+    %{project: project} = assigns
+    campaigns = list_campaigns(project)
+    socket |> assign(:campaigns, campaigns)
+  end
 
-  #   socket |> assign(:loading, true)
-  # end
+  defp fetch_records(socket) do
+    send(self(), :update)
+
+    socket |> assign(:loading, true)
+  end
 
   defp apply_action(socket, :index, _params) do
     socket
     |> assign(:page_title, "Listing Forms")
     |> assign(:form, nil)
+    |> fetch_records()
   end
 
   defp apply_action(socket, :new, _params) do
     socket
     |> assign(:page_title, "New Form")
-    |> assign(:form, %{id: nil})
+    |> assign(:form, %Form{})
   end
 
-  # defp apply_action(socket, :edit, %{"id" => id}) do
-  #   form =
-  #     Forms.get_form!(socket.assigns.project, id)
-  #     |> Forms.fetch_campaigns()
+  defp apply_action(%{assigns: assigns} = socket, :edit, %{"id" => id}) do
+    %{project: project} = assigns
 
-  #   socket
-  #   |> assign(:page_title, "Edit Form")
-  #   |> assign(:form, form)
-  # end
+    form = Builder.get_form!(project, id)
 
-  # defp apply_action(socket, :show, %{"id" => id}) do
-  #   form =
-  #     Forms.get_form!(socket.assigns.project, id)
-  #     |> Forms.fetch_campaigns()
+    socket
+    |> assign(:page_title, "Edit Form")
+    |> assign(:form, form)
+  end
 
-  #   socket
-  #   |> assign(:page_title, "Show Form")
-  #   |> assign(:form, form)
-  # end
+  @impl true
+  def handle_event("delete", %{"id" => id}, %{assigns: assigns} = socket) do
+    %{project: project} = assigns
 
-  # @impl true
-  # def handle_event("delete", %{"id" => id}, socket) do
-  #   form = Forms.get_form!(socket.assigns.project, id)
-  #   {:ok, _} = Forms.delete_form(form)
+    form = Builder.get_form!(project, id)
+    {:ok, _} = Builder.delete_form(form)
 
-  #   {:noreply, assign(socket, :forms, list_forms(socket.assigns.project))}
-  # end
+    {:noreply, socket |> fetch_records()}
+  end
 
-  # defp list_forms(project) do
-  #   Forms.list_forms(project)
-  # end
+  defp list_forms(project) do
+    Builder.list_forms(project)
+  end
 
-  # defp list_campaigns(project) do
-  #   Campaigns.list_campaigns(project)
-  # end
+  defp list_campaigns(project) do
+    Campaigns.list_campaigns(project)
+  end
 end

@@ -1,0 +1,39 @@
+.newnix_form {
+	@apply bg-white block m-auto p-8 space-y-8;
+}
+
+.newnix_form .title {
+	@apply font-semibold text-2xl;
+}
+
+.newnix_form .description {
+	@apply text-gray-600;
+}
+
+.newnix_form .form {
+	@apply flex flex-col space-y-2;
+}
+
+.newnix_form .group {
+	@apply flex space-x-2 items-center;
+}
+
+.newnix_form .form .input {
+	@apply w-full bg-gray-100 text-dark-500;
+}
+
+.newnix_form .form .input,
+.newnix_form .form .button {
+	@apply rounded-none px-4 py-2;
+}
+
+.newnix_form .form .button {
+	@apply min-w-fit bg-gray-500 text-white border-gray-500;
+}
+
+.newnix_form {
+}
+.newnix_form {
+}
+.newnix_form {
+}

@@ -59,6 +59,28 @@ defmodule NewnixWeb.Live.Components.Helper do
     """
   end
 
+  attr :name, :string, required: true
+  attr :form, :string, required: true
+  attr :title, :string, required: true
+  attr :type, :string, default: "text"
+  attr :class, :string, default: ""
+  attr :options, :map, default: []
+  attr :show_error, :boolean, default: false
+  attr :rest, :global, include: ~w(form required value)
+
+  def ui_select(assigns) do
+    ~H"""
+      <label class={"input_group #{@class}"} field-error={tag_has_error(@form, @name)} {@rest}
+        field-fill={is_fill(@form, @name)}>
+        <%= select @form, @name, @options, type: @type %>
+        <%= label @form, @name, @title, class: "label" %>
+        <%= if @show_error do %>
+          <%= error_tag @form , @name %>
+        <% end %>
+      </label>
+    """
+  end
+
   slot(:inner_block, required: true)
   attr :rest, :global, include: ~w(form required)
   attr :theme, :string, default: "simple"
@@ -77,23 +99,6 @@ defmodule NewnixWeb.Live.Components.Helper do
           <%= render_slot(@inner_block) %>
         </button>
       <% end %>
-    """
-  end
-
-  slot(:inner_block, required: true)
-  attr :rest, :global, include: ~w(form required value)
-  attr :name, :string, required: true
-  attr :form, :string, required: true
-  attr :title, :string, required: true
-  attr :class, :string, default: ""
-  attr :options, :map, default: []
-
-  def ui_multi_select(%{options: _options} = assigns) do
-    ~H"""
-      <label class={"input_group #{@class}"} field-error={tag_has_error(@form, @name)} {@rest}
-        field-fill={is_fill(@form, @name)}>
-        <%= render_slot(@inner_block) %>
-      </label>
     """
   end
 
@@ -174,6 +179,22 @@ defmodule NewnixWeb.Live.Components.Helper do
   attr :name, :string, required: true
   attr :form, :string, default: nil
   attr :checked, :boolean, default: false
+  attr :rest, :global
+
+  def ui_checkbox_toggle(assigns) do
+    ~H"""
+      <label class="input_group checkbox__" {@rest}>
+        <.ui_toggle form={@form} name={@name} checked={@checked}>
+        <%= if assigns[:inner_block] do %><%= render_slot(@inner_block) %><% end %>
+        </.ui_toggle>
+      </label>
+    """
+  end
+
+  slot(:inner_block, required: true)
+  attr :name, :string, required: true
+  attr :form, :string, default: nil
+  attr :checked, :boolean, default: false
   attr :position, :atom, default: :right
   attr :rest, :global
 
@@ -181,17 +202,16 @@ defmodule NewnixWeb.Live.Components.Helper do
     ~H"""
       <label class="checkbox_toggle__" {@rest}>
         <span :if={@position === :left} class="checkbox_name__">
-          <%= render_slot(@inner_block) %>
+          <%= if assigns[:inner_block] do %><%= render_slot(@inner_block) %><% end %>
         </span>
         <div class="relative">
-          <input type="checkbox" name={@name} checked={@checked} class={"sr-only peer"} />
+          <%= checkbox @form, @name, value: (if is_nil(@form), do: @checked, else: input_value(@form, @name)), class: "sr-only peer" %>
           <div toggle class="peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 peer peer-checked:after:translate-x-full peer-checked:after:border-white peer-checked:bg-blue-600"></div>
         </div>
         <span :if={@position === :right} class="checkbox_name__">
-          <%= render_slot(@inner_block) %>
+          <%= if assigns[:inner_block] do %><%= render_slot(@inner_block) %><% end %>
         </span>
       </label>
-
     """
   end
 
@@ -201,7 +221,7 @@ defmodule NewnixWeb.Live.Components.Helper do
 
   def ui_page_head(assigns) do
     ~H"""
-      <div class="px-6 lg:px-8 sm:flex sm:items-center sm:space-y-2" >
+      <div class="px-6 lg:px-8 sm:flex sm:items-center space-y-2" >
         <div class="sm:flex-auto">
           <h1 class="text-xl flex-center font-semibold text-gray-900">
             <%= if @icon do %>
@@ -236,7 +256,7 @@ defmodule NewnixWeb.Live.Components.Helper do
 
   def ui_square_color(assigns) do
     ~H"""
-      <div class={"w-4 h-4 rounded flex-shrink-0 #{@class}"} style={"background-color: #{@color};"}></div>
+      <div class={"w-4 h-4 rounded flex-shrink-0 #{@class}"} style={"background-color: #{@color};"} {@rest}></div>
     """
   end
 
@@ -325,5 +345,5 @@ defmodule NewnixWeb.Live.Components.Helper do
   def subscribers_icon(1), do: "user"
   def subscribers_icon(2), do: "user-group"
   def subscribers_icon(_count), do: "users"
-  def skeleton_fake_data(schema, repeat \\ 1..20), do: repeat |> Enum.map(fn _ -> schema end)
+  def skeleton_fake_data(schema, repeat \\ 20), do: 1..repeat |> Enum.map(fn _ -> schema end)
 end

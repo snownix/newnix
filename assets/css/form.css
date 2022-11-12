@@ -15,6 +15,7 @@
 	@apply text-gray-500 font-medium;
 }
 
+.input_group select,
 .input_group input[type="email"],
 .input_group input[type="text"],
 .input_group input[type="datetime-local"],
@@ -29,6 +30,23 @@
 	@apply m-auto;
 }
 
+/** Checkbox **/
+.input_group.checkbox__ {
+	@apply cursor-pointer border border-gray-50 p-4;
+}
+
+.input_group.checkbox__ .label {
+	@apply relative top-0 left-0;
+}
+
+.input_group.checkbox__:has(:checked) {
+	@apply select-none bg-primary-50 border-primary-500;
+}
+
+.input_group.checkbox__ input {
+	@apply hidden;
+}
+
 /** Filled **/
 .input_group input[type="datetime-local"] + .label,
 .input_group input[type="date"] + .label,
@@ -39,25 +57,24 @@
 	@apply top-2;
 }
 
-
 .input_multi_select {
 	@apply min-h-fit;
 }
 
-.input_multi_select .options{
+.input_multi_select .options {
 	@apply py-3 px-3;
 }
 
-.input_multi_select .options .item{
+.input_multi_select .options .item {
 	@apply block p-2 px-4 border w-fit rounded;
 }
 
-.input_multi_select .options .item:has(:checked){
+.input_multi_select .options .item:has(:checked) {
 	@apply bg-primary-500 text-white;
 }
-.input_multi_select .options .item:has(:checked) input[type=checkbox]{
+.input_multi_select .options .item:has(:checked) input[type="checkbox"] {
 	@apply bg-primary-800;
 }
-.input_multi_select .options input[type=checkbox]{
+.input_multi_select .options input[type="checkbox"] {
 	@apply hidden;
 }

@@ -24,18 +24,19 @@ defmodule Newnix.Repo.Migrations.CreateUsersAuthTables do
       add :status, :string, size: 10
 
       add :confirmed_at, :utc_datetime_usec
-      timestamps()
+      timestamps(type: :utc_datetime_usec)
     end
 
     create unique_index(:users, [:email])
 
     create table(:users_tokens) do
       add :user_id, references(:users, type: :binary_id, on_delete: :delete_all), null: false
+
       add :token, :binary, null: false
       add :context, :string, null: false
       add :sent_to, :string
 
-      timestamps(updated_at: false)
+      timestamps(updated_at: false, type: :utc_datetime_usec)
     end
 
     create index(:users_tokens, [:user_id])
@@ -46,7 +47,7 @@ defmodule Newnix.Repo.Migrations.CreateUsersAuthTables do
       add :provider_id, :string, null: false
       add :provider, :string, null: false
 
-      timestamps()
+      timestamps(type: :utc_datetime_usec)
     end
 
     create unique_index(:identities, [:provider_id, :provider])
