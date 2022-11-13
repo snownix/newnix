@@ -32,12 +32,17 @@ defmodule Newnix.Subscribers.Subscriber do
     timestamps()
   end
 
-  def changeset(subscriber, attrs \\ %{}) do
+  def changeset(subscriber, attrs \\ %{}, ops \\ []) do
     subscriber
     |> cast(attrs, [:firstname, :lastname, :email, :unsubscribed])
     |> validate_required([:email])
+    |> do_validate_required(:firstname, Keyword.get(ops, :firstname, false))
+    |> do_validate_required(:lastname, Keyword.get(ops, :lastname, false))
     |> unique_constraint([:email, :project_id])
   end
+
+  def do_validate_required(changeset, field, true), do: changeset |> validate_required(field)
+  def do_validate_required(changeset, _field, false), do: changeset
 
   def project_assoc(changeset, project) do
     changeset

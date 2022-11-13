@@ -1,11 +1,18 @@
-<section class="flex flex-col lg:flex-row lg:space-x-12 w-full">
-  <.live_component
-    id="preview"
-    done={@done}
-    parent={@myself}
-    changeset={@changeset}
-    module={NewnixWeb.Live.Project.FormsLive.PreviewComponent}
-  />
+<section class="flex flex-1 flex-col lg:flex-row lg:space-x-12 w-full">
+  <div
+    class="w-full flex-1 border overflow-hidden"
+    >
+    <div class="flex w-full p-1 bg-gray-100">
+      <span class="pl-2 text-green-500 bg-white">https://</span>
+      <input
+        class="bg-white w-full focus:outline-none"
+        value={NewnixWeb.Endpoint.host() <> Routes.form_form_index_path(@socket, :index, @form.id)}
+        readonly/>
+    </div>
+    <iframe
+    class="w-full h-full"
+    src={Routes.form_form_index_path(@socket, :dev, @form.id)}></iframe>
+  </div>
 
   <div class="flex flex-col space-y-4 max-w-screen-sm w-full">
     <h2 class="text-lg font-semibold">
@@ -16,7 +23,7 @@
       class="flex flex-col space-y-4">
 
       <div>
-        <.ui_select form={f} name={:campaign_id} options={@options} title="Campaign" />
+        <.ui_select form={f} name={:campaign_id} options={@options} title="Campaign" class="filled" />
       </div>
 
       <div>
@@ -27,8 +34,12 @@
         <.ui_textarea form={f} name={:description} title="Description" />
       </div>
 
-      <details class="space-y-4" phx-update="ignore" id="advanced">
+      <details class="space-y-4" phx-update="ignore" id="advanced" open>
         <summary>Advanced Settings</summary>
+
+        <div>
+          <.ui_css_editor form={f} name={:css} title="Custom Css" />
+        </div>
 
         <section class="flex space-x-2">
           <div class="w-full">

@@ -160,7 +160,8 @@ defmodule NewnixWeb.Live.Project.DashboardLive.Index do
     180 * perc / 100
   end
 
-  defp selected_period(%{periods: periods}), do: Enum.find(periods, & &1.selected) || %{days: nil}
+  defp selected_period(%{periods: periods}),
+    do: Enum.find(periods, & &1.selected) || %{items: nil}
 
   defp selected_campaigns(%{campaigns: campaigns}),
     do: Enum.filter(campaigns, & &1.selected) |> Enum.map(& &1.value)

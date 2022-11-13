@@ -1,80 +1,39 @@
-@import "./form/select.css";
-
-.input_group {
-	@apply relative;
-	@apply flex flex-col w-full px-2 pt-4 pb-1 rounded-md;
-	@apply bg-gray-100 cursor-text;
+.newnix_form {
+	@apply bg-white block m-auto p-8 space-y-8;
 }
 
-.input_group[field-error] {
-	@apply ring ring-red-200;
+.newnix_form .title {
+	@apply font-semibold text-2xl;
 }
 
-.input_group .label {
-	@apply absolute top-5 left-5 -z-0;
-	@apply text-gray-500 font-medium;
+.newnix_form .description {
+	@apply text-gray-600;
 }
 
-.input_group select,
-.input_group input[type="email"],
-.input_group input[type="text"],
-.input_group input[type="datetime-local"],
-.input_group input[type="password"],
-.input_group input[type="time"],
-.input_group textarea {
-	@apply bg-transparent;
-	@apply w-full focus:ring-0 border-none z-0 pt-3;
+.newnix_form .form {
+	@apply flex flex-col space-y-2;
 }
 
-.input_group .icon {
-	@apply m-auto;
+.newnix_form .group {
+	@apply flex space-x-2 items-center;
 }
 
-/** Checkbox **/
-.input_group.checkbox__ {
-	@apply cursor-pointer border border-gray-50 p-4;
+.newnix_form .form .input {
+	@apply w-full bg-gray-100 text-dark-500;
 }
 
-.input_group.checkbox__ .label {
-	@apply relative top-0 left-0;
+.newnix_form .form .input,
+.newnix_form .form .button {
+	@apply rounded-none px-4 py-2;
 }
 
-.input_group.checkbox__:has(:checked) {
-	@apply select-none bg-primary-50 border-primary-500;
+.newnix_form .form .button {
+	@apply min-w-fit bg-gray-500 text-white border-gray-500;
 }
 
-.input_group.checkbox__ input {
-	@apply hidden;
+.newnix_form {
 }
-
-/** Filled **/
-.input_group input[type="datetime-local"] + .label,
-.input_group input[type="date"] + .label,
-.input_group input[type="time"] + .label,
-.input_group:focus-within .label,
-.input_group[field-fill] .label {
-	@apply transition-all text-xs;
-	@apply top-2;
+.newnix_form {
 }
-
-.input_multi_select {
-	@apply min-h-fit;
-}
-
-.input_multi_select .options {
-	@apply py-3 px-3;
-}
-
-.input_multi_select .options .item {
-	@apply block p-2 px-4 border w-fit rounded;
-}
-
-.input_multi_select .options .item:has(:checked) {
-	@apply bg-primary-500 text-white;
-}
-.input_multi_select .options .item:has(:checked) input[type="checkbox"] {
-	@apply bg-primary-800;
-}
-.input_multi_select .options input[type="checkbox"] {
-	@apply hidden;
+.newnix_form {
 }

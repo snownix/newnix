@@ -9,6 +9,8 @@ defmodule NewnixWeb.InitAssigns do
   alias Newnix.Projects
   alias Newnix.Campaigns
   alias Newnix.Projects.Project
+  alias Newnix.Builder
+  alias Newnix.Builder.Form
 
   def on_mount(:user, params, session, socket) do
     user = find_current_user(session)
@@ -19,6 +21,15 @@ defmodule NewnixWeb.InitAssigns do
      |> assign_locale(session, params)
      |> assign(:current_user, user)
      |> assign(:projects, Projects.list_projects(user))}
+  end
+
+  def on_mount(:form, params, session, socket) do
+    form = find_form(params)
+
+    {:cont,
+     socket
+     |> assign_locale(session, params)
+     |> assign(:form, form)}
   end
 
   def on_mount(:project, _params, session, socket) do
@@ -64,6 +75,13 @@ defmodule NewnixWeb.InitAssigns do
          %Project{} = project <-
            Projects.get_project!(user, project_id),
          do: project
+  end
+
+  defp find_form(params) do
+    with form_id when not is_nil(form_id) <- params["id"],
+         %Form{} = form <-
+           Builder.get_form!(form_id),
+         do: form
   end
 
   defp fetch_locale(socket, session) do

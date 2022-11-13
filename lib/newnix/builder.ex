@@ -7,7 +7,42 @@ defmodule Newnix.Builder do
   alias Newnix.Repo
   alias Newnix.Builder.Form
   alias Newnix.Projects.Project
-  alias Newnix.Campaigns.Campaign
+
+  @topic inspect(__MODULE__)
+
+  def subscribe do
+    Phoenix.PubSub.subscribe(Newnix.PubSub, @topic)
+  end
+
+  def subscribe(form_id) do
+    Phoenix.PubSub.subscribe(Newnix.PubSub, @topic <> "#{form_id}")
+  end
+
+  def subscribe(mode, form_id) do
+    Phoenix.PubSub.subscribe(Newnix.PubSub, "#{@topic}:#{mode}:#{form_id}")
+  end
+
+  def notify_subscribers(mode, result, event) do
+    Phoenix.PubSub.broadcast(
+      Newnix.PubSub,
+      "#{@topic}:#{mode}:#{result.id}",
+      {__MODULE__, event, result}
+    )
+  end
+
+  defp notify_subscribers({:ok, result}, event) do
+    Phoenix.PubSub.broadcast(Newnix.PubSub, @topic, {__MODULE__, event, result})
+
+    Phoenix.PubSub.broadcast(
+      Newnix.PubSub,
+      @topic <> "#{result.id}",
+      {__MODULE__, event, result}
+    )
+
+    {:ok, result}
+  end
+
+  defp notify_subscribers({:error, reason}, _), do: {:error, reason}
 
   @doc """
   Returns the list of forms.
@@ -46,7 +81,10 @@ defmodule Newnix.Builder do
       ** (Ecto.NoResultsError)
 
   """
-  def get_form!(id), do: Repo.get!(Form, id)
+  def get_form!(id),
+    do:
+      Repo.get!(Form, id)
+      |> Repo.preload(:campaign)
 
   def get_form!(project = %Project{}, id) do
     Repo.one!(
@@ -86,6 +124,7 @@ defmodule Newnix.Builder do
     |> Form.changeset(attrs)
     |> Form.project_assoc(project)
     |> Repo.insert()
+    |> notify_subscribers([:form, :created])
   end
 
   @doc """
@@ -104,6 +143,7 @@ defmodule Newnix.Builder do
     form
     |> Form.changeset(attrs)
     |> Repo.update()
+    |> notify_subscribers([:form, :updated])
   end
 
   @doc """
@@ -120,6 +160,7 @@ defmodule Newnix.Builder do
   """
   def delete_form(%Form{} = form) do
     Repo.delete(form)
+    |> notify_subscribers([:form, :deleted])
   end
 
   @doc """

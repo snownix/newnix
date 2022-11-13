@@ -44,6 +44,12 @@ defmodule Newnix.Builder.Form do
   @maxlen_css 3000
   def maxlen_css(), do: @maxlen_css
 
+  @default_email "Email address"
+  def default_email(), do: @default_email
+
+  @default_button "Join"
+  def default_button(), do: @default_button
+
   @doc false
   def changeset(form, attrs) do
     form

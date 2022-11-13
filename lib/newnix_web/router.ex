@@ -3,6 +3,7 @@ defmodule NewnixWeb.Router do
 
   import NewnixWeb.UserAuth
   import NewnixWeb.Project
+  import NewnixWeb.Form
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -22,6 +23,14 @@ defmodule NewnixWeb.Router do
   pipeline :user do
     plug :put_root_layout, {NewnixWeb.LayoutView, "root.html"}
     plug :put_layout, {NewnixWeb.UserView, "app.html"}
+  end
+
+  pipeline :form do
+    plug :fetch_form
+    plug :required_form
+
+    plug :put_root_layout, {NewnixWeb.FormView, "root.html"}
+    plug :put_layout, {NewnixWeb.FormView, "app.html"}
   end
 
   pipeline :project do
@@ -85,6 +94,17 @@ defmodule NewnixWeb.Router do
 
         live "/:id/edit", Index, :edit
       end
+    end
+  end
+
+  # Forms
+  live_session :form,
+    on_mount: {NewnixWeb.InitAssigns, :form} do
+    scope "/forms", NewnixWeb.Live do
+      pipe_through [:browser, :form]
+
+      live "/view/:id", Form.FormLive.Index, :index
+      live "/dev/:id", Form.FormLive.Index, :dev
     end
   end
 

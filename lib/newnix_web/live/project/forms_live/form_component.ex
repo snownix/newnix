@@ -1,6 +1,7 @@
 defmodule NewnixWeb.Live.Project.FormsLive.FormComponent do
   use NewnixWeb, :live_component
 
+  alias Plug.Builder
   alias Newnix.Builder
 
   @impl true
@@ -10,9 +11,9 @@ defmodule NewnixWeb.Live.Project.FormsLive.FormComponent do
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:changeset, changeset)
      |> assign(:done, false)
-     |> put_campaigns_options()}
+     |> put_campaigns_options()
+     |> assign(:changeset, changeset)}
   end
 
   def handle_event("done", _, socket) do
@@ -26,7 +27,9 @@ defmodule NewnixWeb.Live.Project.FormsLive.FormComponent do
       |> Builder.change_form(form_params)
       |> Map.put(:action, :validate)
 
-    {:noreply, assign(socket, :changeset, changeset)}
+    {:noreply,
+     assign(socket, :changeset, changeset)
+     |> notify_dev()}
   end
 
   def handle_event("save", %{"form" => form_params}, socket) do
@@ -67,5 +70,13 @@ defmodule NewnixWeb.Live.Project.FormsLive.FormComponent do
     %{campaigns: campaigns} = assigns
 
     socket |> assign(:options, Enum.map(campaigns.entries, &{&1.name, &1.id}))
+  end
+
+  defp notify_dev(%{assigns: %{changeset: changeset, form: form}} = socket) do
+    result = Map.merge(form, changeset.changes)
+
+    Builder.notify_subscribers(:dev, result, [:form, :dev])
+
+    socket
   end
 end

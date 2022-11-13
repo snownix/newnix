@@ -1,4 +1,4 @@
-defmodule DateHelper do
+defmodule Test do
   def generate_period_interval(unit, n, ops \\ []) do
     date = start_date(ops)
 
@@ -19,8 +19,8 @@ defmodule DateHelper do
   def start_date(_), do: DateTime.utc_now()
 end
 
-start_date = Timex.shift(DateTime.utc_now(), days: 100)
+# start_date = Timex.shift(DateTime.utc_now(), days: 100)
 
-IO.inspect(Test.generate_period_interval(:days, 31, start_date))
-IO.inspect(Test.generate_period_interval(:months, 12, start_date))
-IO.inspect(Test.generate_period_interval(:hours, 24, start_date))
+# IO.inspect(Test.generate_period_interval(:days, 31, start_date))
+# IO.inspect(Test.generate_period_interval(:months, 12, start_date))
+# IO.inspect(Test.generate_period_interval(:hours, 24, start_date))

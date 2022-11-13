@@ -118,11 +118,16 @@ defmodule Newnix.Subscribers do
 
   """
 
-  def create_subscriber(%Project{} = project, attrs \\ %{}) do
+  def create_subscriber(%Project{} = project, attrs) do
     %Subscriber{}
     |> Subscriber.changeset(attrs)
     |> Subscriber.project_assoc(project)
     |> insert_or_modify(project)
+  end
+
+  def create_subscriber(%Campaign{} = campaign, attrs) do
+    campaign = campaign |> Repo.preload(:project)
+    create_subscriber(campaign.project, campaign, attrs)
   end
 
   def create_subscriber(%Project{} = project, campaign = %Campaign{}, attrs) do
@@ -306,16 +311,22 @@ defmodule Newnix.Subscribers do
       {:ok, subscriber} ->
         {:ok, subscriber}
 
-      {:error, error} ->
+      {:error, _error} ->
         email = get_field(changeset, :email)
 
-        subscriber = get_subscriber_by_email!(project, email)
-        campaigns = Map.get(subscriber, :campaign_subscribers, [])
+        case email do
+          nil ->
+            {:error, "Email required"}
 
-        subscriber
-        |> Subscriber.changeset()
-        |> Subscriber.campaigns_assoc(list_campaign_subscriber ++ campaigns)
-        |> Repo.update()
+          email ->
+            subscriber = get_subscriber_by_email!(project, email)
+            campaigns = Map.get(subscriber, :campaign_subscribers, [])
+
+            subscriber
+            |> Subscriber.changeset()
+            |> Subscriber.campaigns_assoc(list_campaign_subscriber ++ campaigns)
+            |> Repo.update()
+        end
     end
   end
 end

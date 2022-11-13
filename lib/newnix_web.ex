@@ -78,6 +78,15 @@ defmodule NewnixWeb do
     end
   end
 
+  def live_form do
+    quote do
+      use Phoenix.LiveView,
+        layout: {NewnixWeb.FormView, "live.html"}
+
+      unquote(view_helpers())
+    end
+  end
+
   def live_component do
     quote do
       use Phoenix.LiveComponent

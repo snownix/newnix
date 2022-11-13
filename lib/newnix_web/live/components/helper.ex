@@ -59,6 +59,25 @@ defmodule NewnixWeb.Live.Components.Helper do
     """
   end
 
+  attr :rest, :global, include: ~w(form required value)
+  attr :name, :string, required: true
+  attr :form, :string, required: true
+  attr :title, :string, required: true
+  attr :class, :string, default: ""
+
+  CssEditor
+
+  def ui_css_editor(assigns) do
+    ~H"""
+      <label class={"input_group #{@class}"} field-error={tag_has_error(@form, @name)}
+        field-fill={is_fill(@form, @name)} id={@name} phx-hook="CssEditor">
+        <%= textarea @form, @name, hidden: true %>
+        <code id="css-editor"></code>
+        <%= label @form, @name, @title, class: "label" %>
+      </label>
+    """
+  end
+
   attr :name, :string, required: true
   attr :form, :string, required: true
   attr :title, :string, required: true

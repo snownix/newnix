@@ -118,7 +118,9 @@ defmodule Newnix.Seeds do
     %{
       firstname: Faker.Person.first_name(),
       lastname: Faker.Person.last_name(),
-      email: Faker.Internet.free_email() |> String.replace("@", "#{System.os_time()}@")
+      email:
+        Faker.Internet.free_email()
+        |> String.replace("@", String.slice("#{System.os_time()}", -5..-1) <> "@")
     }
   end
 

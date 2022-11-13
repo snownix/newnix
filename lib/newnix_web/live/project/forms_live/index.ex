@@ -55,10 +55,8 @@ defmodule NewnixWeb.Live.Project.FormsLive.Index do
      |> assign(:loading, false)}
   end
 
-  defp fetch_campaigns(%{assigns: assigns} = socket) do
-    %{project: project} = assigns
-    campaigns = list_campaigns(project)
-    socket |> assign(:campaigns, campaigns)
+  defp fetch_campaigns(%{assigns: %{project: project}} = socket) do
+    socket |> assign(:campaigns, list_campaigns(project))
   end
 
   defp fetch_records(socket) do
@@ -80,9 +78,7 @@ defmodule NewnixWeb.Live.Project.FormsLive.Index do
     |> assign(:form, %Form{})
   end
 
-  defp apply_action(%{assigns: assigns} = socket, :edit, %{"id" => id}) do
-    %{project: project} = assigns
-
+  defp apply_action(%{assigns: %{project: project}} = socket, :edit, %{"id" => id}) do
     form = Builder.get_form!(project, id)
 
     socket
@@ -91,9 +87,7 @@ defmodule NewnixWeb.Live.Project.FormsLive.Index do
   end
 
   @impl true
-  def handle_event("delete", %{"id" => id}, %{assigns: assigns} = socket) do
-    %{project: project} = assigns
-
+  def handle_event("delete", %{"id" => id}, %{assigns: %{project: project}} = socket) do
     form = Builder.get_form!(project, id)
     {:ok, _} = Builder.delete_form(form)
 

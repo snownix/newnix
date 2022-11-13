@@ -1,6 +1,25 @@
+import createCssEditor from '../vendor/css-editor';
+
 const statePrefix = '_nx';
 
 module.exports = {
+    CssEditor: {
+        freeze: false,
+        observer: null,
+        mounted() {
+            const code = this.el.querySelector('code');
+            const textarea = this.el.querySelector('textarea');
+
+            createCssEditor(
+                code,
+                textarea,
+                (value) => {
+                    textarea.value = value;
+                    this.el.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            );
+        }
+    },
     SaveState: {
         stateKey: null,
         stateName: null,

@@ -11,18 +11,24 @@
   <section class="space-y-5 flex-wrap p-6 md:p-8 space-between">
     <div :for={form <- @forms.entries} class="card-bg relative flex space-x-4">
       <div class="flex lg:space-x-6 p-6 lg:p-2 w-full">
-        <div skl-aimate class="hidden text-xs lg:flex flex-shrink-0 overflow-hidden justify-center p-4 w-40 h-40 border rounded skeleton flex-col space-y-2">
-          <div class="flex space-x-1 w-full">
-            <span :if={form.firstname} class="rounded bg-gray-100 border p-1 w-full block">
-              First
+        <!-- Form Preview Block -->
+        <div skl-aimate class="hidden text-xs lg:flex flex-shrink-0 overflow-hidden justify-center p-4 w-40 h-40 border rounded flex-col space-y-2">
+          <div skl class="text-center font-semibold">
+            <%= form.name %>
+          </div>
+          <div skl-full class="flex space-x-1 w-full">
+            <span :if={form.firstname} class="truncate rounded bg-gray-200 border p-1 w-full block">
+              First Name
             </span>
-            <span :if={form.lastname} class="rounded bg-gray-100 border p-1 w-full block">
-              Last
+            <span :if={form.lastname} class="truncate rounded bg-gray-200 border p-1 w-full block">
+              Last Name
             </span>
           </div>
-          <div class="rounded bg-gray-100 border p-1 truncate"><%= form.email_text %></div>
-          <span class="p-1 rounded bg-gray-100 text-center border truncate"><%= form.button_text %></span>
+          <div skl-full class="rounded bg-gray-200 border p-1 truncate"><%= form.email_text || Form.default_email() %></div>
+          <span skl-full class="p-1 rounded bg-gray-200 text-center border truncate"><%= form.button_text || Form.default_button() %></span>
         </div>
+
+        <!-- Form Info -->
         <div class="space-y-2 py-2 place-self-center w-full">
           <div skl class="inline-flex-center text-sm">
             <.ui_square_color color={string_to_color_hash(form.campaign.id)} />
@@ -46,12 +52,15 @@
           </div>
         </div>
       </div>
+
+      <!-- Form Actions -->
       <div class="flex flex-col justify-between right-0 divide-y top-0 border-l">
-        <div class="flex items-center justify-center w-full h-full px-8 hover:bg-gray-100 cursor-pointer">
+        <.link href={Routes.form_form_index_path(@socket, :index, form.id)} target="_blank"
+          class="flex items-center justify-center w-full h-full px-8 hover:bg-gray-100 cursor-pointer">
           <span skl-full skl-rounded>
             <.ui_icon icon="eye" />
           </span>
-        </div>
+        </.link>
         <.link patch={Routes.project_forms_index_path(@socket, :edit, form.id)}
           class="flex items-center justify-center w-full h-full px-8 hover:bg-gray-100 cursor-pointer">
           <span skl-full skl-rounded>

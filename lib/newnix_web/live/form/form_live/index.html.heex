@@ -1,0 +1,47 @@
+<section class="hidden md:flex flex-1 w-1/2 bg-white justify-center items-center border-r pr-8 min-h-screen">
+    <.form
+        let={f}
+        for={@changeset}
+        id="campaign-form"
+        class="newnix_form"
+        phx-change="validate"
+        phx-submit="save">
+        <div class="space-y-2">
+            <h2 class="title">
+                <%= @form.name %>
+            </h2>
+            <%= if @success do %>
+                <p class="description">
+                    <%= @form.thanks_text %>
+                </p>
+            <% else %>
+                <p class="description">
+                    <%= @form.description %>
+                </p>
+            <% end %>
+        </div>
+        <%= if !@success do %>
+            <div class="form">
+                <%= if get_form_value(@form.firstname, false) or get_form_value(@form.lastname, false) do  %>
+                    <div class="group">
+                        <%= if get_form_value(@form.firstname, false) do %>
+                            <%= text_input f, :firstname, placeholder: "First name",  class: "input" %>
+                        <% end %>
+                        <%= if get_form_value(@form.lastname, false) do %>
+                            <%= text_input f, :lastname, placeholder: "Last name", class: "input" %>
+                        <% end %>
+                    </div>
+                <% end %>
+
+                <div class="group">
+                    <%= email_input f, :email, placeholder: get_form_value(@form.email_text, "Email Address"), class: "input" %>
+                </div>
+
+                <button class="button">
+                    <%= get_form_value(@form.button_text, "Subscribe") %>
+                </button>
+            </div>
+        <% end %>
+    </.form>
+    <style><%= @form.css %></style>
+</section>
