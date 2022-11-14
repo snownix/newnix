@@ -13,16 +13,27 @@ defmodule NewnixWeb.Live.Form.FormLive.Index do
     {:noreply, apply_action(socket, live_action, form)}
   end
 
-  def handle_info({Builder, [:form, _], form}, socket) do
-    {:noreply, socket |> assign(:form, form)}
+  def handle_info({Builder, [:form, event], form}, socket) do
+    {:noreply,
+     case event do
+       :deleted ->
+         socket |> assign(:form, nil)
+
+       _ ->
+         socket |> assign(:form, form)
+     end}
   end
 
   # handle_info({Newnix.Builder, :form, %Newnix.Builder.Form{... })
 
   def handle_event("validate", %{"subscriber" => subscriber_params}, socket) do
+    %{assigns: %{form: form}} = socket
+
+    opts = [firstname: form.firstname, lastname: form.lastname]
+
     changeset =
       %Subscriber{}
-      |> Subscribers.change_subscriber(subscriber_params)
+      |> Subscribers.change_subscriber(subscriber_params, opts)
       |> Map.put(:action, :validate)
 
     {:noreply, assign(socket, :changeset, changeset)}
@@ -50,11 +61,13 @@ defmodule NewnixWeb.Live.Form.FormLive.Index do
     value || default
   end
 
-  defp put_initial_assigns(socket) do
+  defp put_initial_assigns(%{assigns: %{form: form}} = socket) do
+    opts = [firstname: form.firstname, lastname: form.lastname]
+
     socket
     |> assign(
       :changeset,
-      Subscribers.change_subscriber(%Subscriber{})
+      Subscribers.change_subscriber(%Subscriber{}, %{}, opts)
     )
     |> assign(:success, false)
   end

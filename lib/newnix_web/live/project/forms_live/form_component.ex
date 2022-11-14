@@ -8,6 +8,8 @@ defmodule NewnixWeb.Live.Project.FormsLive.FormComponent do
   def update(%{form: form, campaigns: _campaigns, project: _project} = assigns, socket) do
     changeset = Builder.change_form(form)
 
+    if connected?(socket), do: Builder.subscribe(form.id)
+
     {:ok,
      socket
      |> assign(assigns)

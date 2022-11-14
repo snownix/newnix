@@ -1,5 +1,46 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+body {
+	--textColor: #252525;
+
+	--buttonTextColor: #fff;
+	--buttonBgColor: #0f121f;
+	--buttonBgHoverColor: #0f122f;
+
+	--inputBgColor: #25252505;
+	--inputTextColor: #0f121f;
+
+	@apply flex flex-col min-h-screen;
+}
+
+[data-phx-main] {
+	@apply flex flex-1;
+}
+
+.newnix_expired {
+	@apply flex-1 flex items-center justify-center relative;
+}
+
+.newnix_expired .img {
+	@apply animate-pulse w-80 h-80 absolute -z-10 mb-14;
+}
+
+.newnix_expired .title {
+	@apply text-2xl font-semibold italic bg-gray-100 px-4 py-1;
+}
+
 .newnix_form {
+	color: var(--textColor);
 	@apply bg-white block m-auto p-8 space-y-8;
+	@apply w-full max-w-screen-sm;
+}
+
+.newnix_form .invalid-feedback {
+	@apply px-2 py-0.5 text-red-800  block w-full;
+	@apply border border-gray-500 bg-red-100;
+	@apply border-t-0;
 }
 
 .newnix_form .title {
@@ -17,23 +58,28 @@
 .newnix_form .group {
 	@apply flex space-x-2 items-center;
 }
+.newnix_form .form_group {
+	@apply w-full;
+}
 
 .newnix_form .form .input {
-	@apply w-full bg-gray-100 text-dark-500;
+	@apply w-full border;
+	border-color: var(--inputBorderColor);
+	background-color: var(--inputBgColor);
 }
 
 .newnix_form .form .input,
 .newnix_form .form .button {
-	@apply rounded-none px-4 py-2;
+	@apply rounded-none px-4 py-3;
 }
 
 .newnix_form .form .button {
-	@apply min-w-fit bg-gray-500 text-white border-gray-500;
+	@apply min-w-fit border;
+	color: var(--buttonTextColor);
+	border-color: var(--buttonBorderColor);
+	background-color: var(--buttonBgColor);
 }
 
-.newnix_form {
-}
-.newnix_form {
-}
-.newnix_form {
+.newnix_form .form .button:hover {
+	--buttonBgColor: var(--buttonBgHoverColor);
 }

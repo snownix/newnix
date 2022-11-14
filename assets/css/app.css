@@ -19,8 +19,6 @@
 
 @import "./pages/auth.css";
 
-@import "./form.css";
-
 body {
 	@apply font-primary;
 }

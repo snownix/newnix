@@ -161,7 +161,7 @@ defmodule NewnixWeb.Live.Project.DashboardLive.Index do
   end
 
   defp selected_period(%{periods: periods}),
-    do: Enum.find(periods, & &1.selected) || %{items: nil}
+    do: Enum.find(periods, & &1.selected) || %{items: nil, unit: :months}
 
   defp selected_campaigns(%{campaigns: campaigns}),
     do: Enum.filter(campaigns, & &1.selected) |> Enum.map(& &1.value)

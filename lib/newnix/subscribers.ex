@@ -117,7 +117,6 @@ defmodule Newnix.Subscribers do
       {:error, %Ecto.Changeset{}}
 
   """
-
   def create_subscriber(%Project{} = project, attrs) do
     %Subscriber{}
     |> Subscriber.changeset(attrs)
@@ -126,14 +125,25 @@ defmodule Newnix.Subscribers do
   end
 
   def create_subscriber(%Campaign{} = campaign, attrs) do
-    campaign = campaign |> Repo.preload(:project)
+    campaign =
+      campaign
+      |> Repo.preload(:project)
+
     create_subscriber(campaign.project, campaign, attrs)
   end
 
   def create_subscriber(%Project{} = project, campaign = %Campaign{}, attrs) do
+    attrs =
+      Map.merge(
+        %{
+          "subscribed_at" => DateTime.utc_now()
+        },
+        Map.take(attrs, ["firstname", "lastname"])
+      )
+
     campaign_subscriber_assoc =
-      Map.merge(%{campaign: campaign}, take_names(attrs))
-      |> Map.merge(%{subscribed_at: DateTime.utc_now()})
+      CampaignSubscriber.changeset(%CampaignSubscriber{}, attrs)
+      |> CampaignSubscriber.campaign_assoc(campaign)
 
     %Subscriber{}
     |> Subscriber.changeset(attrs)
@@ -142,20 +152,6 @@ defmodule Newnix.Subscribers do
   end
 
   def create_subscriber(%Project{} = project, nil, attrs), do: create_subscriber(project, attrs)
-
-  defp take_names(%{"firstname" => firstname, "lastname" => lastname} = _attrs),
-    do: %{firstname: empty_string_patch(firstname), lastname: empty_string_patch(lastname)}
-
-  defp take_names(%{"lastname" => lastname} = _attrs),
-    do: %{lastname: empty_string_patch(lastname)}
-
-  defp take_names(%{"firstname" => firstname} = _attrs),
-    do: %{firstname: empty_string_patch(firstname)}
-
-  defp take_names(_), do: %{}
-
-  defp empty_string_patch(""), do: nil
-  defp empty_string_patch(val), do: val
 
   @doc """
   Updates a subscriber.
@@ -182,7 +178,7 @@ defmodule Newnix.Subscribers do
       Map.get(subscriber, :campaign_subscribers, [])
       |> Enum.map(fn ca ->
         if ca.campaign_id == campaign.id do
-          Map.merge(%{campaign: campaign}, take_names(attrs))
+          Map.merge(%{campaign: campaign}, Map.take(attrs, ["firstname", "lastname"]))
         else
           ca
         end
@@ -227,8 +223,8 @@ defmodule Newnix.Subscribers do
       %Ecto.Changeset{data: %Subscriber{}}
 
   """
-  def change_subscriber(%Subscriber{} = subscriber, attrs \\ %{}) do
-    Subscriber.changeset(subscriber, attrs)
+  def change_subscriber(%Subscriber{} = subscriber, attrs \\ %{}, opts \\ []) do
+    Subscriber.changeset(subscriber, attrs, opts)
   end
 
   @doc """
@@ -305,28 +301,32 @@ defmodule Newnix.Subscribers do
 
   def insert_or_modify(changeset, %Project{} = project, list_campaign_subscriber \\ []) do
     changeset
+    |> Subscriber.project_assoc(project)
     |> Subscriber.campaigns_assoc(list_campaign_subscriber)
     |> Repo.insert()
     |> case do
       {:ok, subscriber} ->
         {:ok, subscriber}
 
-      {:error, _error} ->
-        email = get_field(changeset, :email)
+      {:error, error} ->
+        {:error, error}
+        # email = get_field(changeset, :email)
 
-        case email do
-          nil ->
-            {:error, "Email required"}
+        # IO.inspect(error)
 
-          email ->
-            subscriber = get_subscriber_by_email!(project, email)
-            campaigns = Map.get(subscriber, :campaign_subscribers, [])
+        # case email do
+        #   nil ->
+        #     {:error, "Email required"}
 
-            subscriber
-            |> Subscriber.changeset()
-            |> Subscriber.campaigns_assoc(list_campaign_subscriber ++ campaigns)
-            |> Repo.update()
-        end
+        #   email ->
+        #     subscriber = get_subscriber_by_email!(project, email)
+        #     campaigns = Map.get(subscriber, :campaign_subscribers, [])
+
+        #     subscriber
+        #     |> Subscriber.changeset()
+        #     |> Subscriber.campaigns_assoc(list_campaign_subscriber ++ campaigns)
+        #     |> Repo.update()
+        # end
     end
   end
 end

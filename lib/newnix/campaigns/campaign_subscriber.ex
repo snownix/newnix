@@ -27,4 +27,10 @@ defmodule Newnix.Campaigns.CampaignSubscriber do
     |> cast(attrs, [:unsubscribed_at, :firstname, :lastname, :subscribed_at])
     |> unique_constraint([:campaign_id, :subscriber_id])
   end
+
+  def campaign_assoc(changeset, campaign) do
+    changeset
+    |> change()
+    |> put_assoc(:campaign, campaign)
+  end
 end

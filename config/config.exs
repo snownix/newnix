@@ -31,11 +31,19 @@ config :swoosh, :api_client, false
 
 config :tailwind,
   version: "3.1.6",
-  default: [
+  app: [
     args: ~w(
       --config=tailwind.config.js
       --input=css/app.css
       --output=../priv/static/assets/app.css
+    ),
+    cd: Path.expand("../assets", __DIR__)
+  ],
+  form: [
+    args: ~w(
+      --config=tailwind.config.js
+      --input=css/form.css
+      --output=../priv/static/assets/form.css
     ),
     cd: Path.expand("../assets", __DIR__)
   ]

@@ -30,3 +30,11 @@
 .button.dark {
 	@apply bg-dark-500 text-white;
 }
+
+.button.danger {
+	@apply bg-red-500 border-red-500 text-white;
+}
+
+.button.danger.inversed {
+	@apply bg-white border-red-300 text-red-500;
+}

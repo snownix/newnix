@@ -31,8 +31,8 @@
         <!-- Form Info -->
         <div class="space-y-2 py-2 place-self-center w-full">
           <div skl class="inline-flex-center text-sm">
-            <.ui_square_color color={string_to_color_hash(form.campaign.id)} />
-            <h2 class="Newsletter">
+            <.ui_square_color :if={form.campaign} color={string_to_color_hash(form.campaign.id)} />
+            <h2  :if={form.campaign} class="Newsletter">
               <%= form.campaign.name %>
             </h2>
           </div>

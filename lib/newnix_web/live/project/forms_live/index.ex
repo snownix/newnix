@@ -55,6 +55,18 @@ defmodule NewnixWeb.Live.Project.FormsLive.Index do
      |> assign(:loading, false)}
   end
 
+  def handle_info({Builder, [:form, event], form}, socket) do
+    {:noreply,
+     case event do
+       :deleted ->
+         socket
+         |> push_redirect(to: Routes.project_forms_index_path(socket, :index))
+
+       _ ->
+         socket |> assign(:form, form)
+     end}
+  end
+
   defp fetch_campaigns(%{assigns: %{project: project}} = socket) do
     socket |> assign(:campaigns, list_campaigns(project))
   end
@@ -72,10 +84,24 @@ defmodule NewnixWeb.Live.Project.FormsLive.Index do
     |> fetch_records()
   end
 
-  defp apply_action(socket, :new, _params) do
-    socket
-    |> assign(:page_title, "New Form")
-    |> assign(:form, %Form{})
+  defp apply_action(%{assigns: %{project: project}} = socket, :new, _params) do
+    form_draft_params = %{
+      "name" => "#{Date.utc_today()} Draft",
+      "css" =>
+        "body {\n  --textColor: #252525;\n\n  --buttonTextColor: #fff;\n  --buttonBgColor: #0f121f;\n  --buttonBgHoverColor: #0f122f;\n\n  --inputBgColor: #25252505;\n  --inputTextColor: #0f121f;\n}",
+      "firstname" => true,
+      "lastname" => true
+    }
+
+    case Builder.create_form(project, form_draft_params) do
+      {:ok, form} ->
+        socket
+        |> put_flash(:info, "Form created successfully")
+        |> push_redirect(to: Routes.project_forms_index_path(socket, :edit, form.id))
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        assign(socket, changeset: changeset)
+    end
   end
 
   defp apply_action(%{assigns: %{project: project}} = socket, :edit, %{"id" => id}) do
