@@ -20,7 +20,7 @@ body {
 }
 
 .newnix_expired {
-	@apply flex-1 flex items-center justify-center relative;
+	@apply flex-1 flex items-center justify-center relative text-center;
 }
 
 .newnix_expired .img {

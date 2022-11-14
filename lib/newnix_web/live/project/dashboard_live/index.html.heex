@@ -111,10 +111,15 @@
                         navigate={Routes.project_subscribers_index_path(@socket, :show, subscriber.id)}
                         skl>
                         <div class="flex justify-between text-sm">
-                            <span class="text-gray-400">
-                                <%= subscriber.firstname %>
-                                    <%= subscriber.lastname %>
-                            </span>
+                            <div class="flex-center text-gray-400">
+                                <.ui_square_color
+                                    :if={subscriber.campaign_id}
+                                    color={string_to_color_hash(subscriber.campaign_id)}
+                                    class="w-3 h-3" />
+                                <span>
+                                <%= subscriber.firstname %> <%= subscriber.lastname %>
+                                </span>
+                            </div>
                             <.ui_time_ago class="font-normal" time={subscriber.subscribed_at ||
                                 subscriber.inserted_at} />
                         </div>

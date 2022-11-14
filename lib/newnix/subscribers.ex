@@ -12,6 +12,38 @@ defmodule Newnix.Subscribers do
   alias Newnix.Campaigns.Campaign
   alias Newnix.Campaigns.CampaignSubscriber
 
+  @topic inspect(__MODULE__)
+
+  def subscribe(project_id) do
+    Phoenix.PubSub.subscribe(Newnix.PubSub, "#{@topic}:#{project_id}")
+  end
+
+  def subscribe(project_id, id) do
+    Phoenix.PubSub.subscribe(Newnix.PubSub, "#{@topic}:#{project_id}:#{id}")
+  end
+
+  def notify_subscribers({:ok, %{project_id: project_id} = result}, event) do
+    notify_subscribers(project_id, result, event)
+  end
+
+  def notify_subscribers({:error, reason}, _), do: {:error, reason}
+
+  def notify_subscribers(project_id, result, event) do
+    Phoenix.PubSub.broadcast(
+      Newnix.PubSub,
+      "#{@topic}:#{project_id}",
+      {__MODULE__, event, result}
+    )
+
+    Phoenix.PubSub.broadcast(
+      Newnix.PubSub,
+      "#{@topic}:#{project_id}:#{result.id}",
+      {__MODULE__, event, result}
+    )
+
+    {:ok, result}
+  end
+
   @doc """
   Returns the list of subscribers.
 
@@ -27,15 +59,19 @@ defmodule Newnix.Subscribers do
     query =
       from(
         s in Subscriber,
-        distinct: s.id,
         left_join: cs in CampaignSubscriber,
         on: cs.subscriber_id == s.id,
         where: s.project_id == ^project.id,
         select_merge: %{
           subscribed_at: cs.subscribed_at,
-          unsubscribed_at: cs.unsubscribed_at
+          unsubscribed_at: cs.unsubscribed_at,
+          campaign_id: cs.campaign_id
         },
-        order_by: [{:desc, s.inserted_at}, {:desc, cs.subscribed_at}]
+        order_by: [
+          {:desc_nulls_last, cs.subscribed_at},
+          {:desc_nulls_last, cs.inserted_at},
+          {:desc_nulls_last, s.inserted_at}
+        ]
       )
 
     Repo.paginate(
@@ -133,7 +169,7 @@ defmodule Newnix.Subscribers do
   end
 
   def create_subscriber(%Project{} = project, campaign = %Campaign{}, attrs) do
-    attrs =
+    cs_attrs =
       Map.merge(
         %{
           "subscribed_at" => DateTime.utc_now()
@@ -142,7 +178,7 @@ defmodule Newnix.Subscribers do
       )
 
     campaign_subscriber_assoc =
-      CampaignSubscriber.changeset(%CampaignSubscriber{}, attrs)
+      CampaignSubscriber.changeset(%CampaignSubscriber{}, cs_attrs)
       |> CampaignSubscriber.campaign_assoc(campaign)
 
     %Subscriber{}
@@ -169,6 +205,7 @@ defmodule Newnix.Subscribers do
     subscriber
     |> Subscriber.changeset(attrs)
     |> Repo.update()
+    |> notify_subscribers([:subscriber, :updated])
   end
 
   def update_subscriber(%Subscriber{} = subscriber, %Campaign{} = campaign, attrs) do
@@ -193,6 +230,7 @@ defmodule Newnix.Subscribers do
     |> Subscriber.changeset(attrs)
     |> Subscriber.campaigns_assoc(campaigns)
     |> Repo.update()
+    |> notify_subscribers([:subscriber, :updated])
   end
 
   def update_subscriber(%Subscriber{} = subscriber, nil, attrs),
@@ -212,6 +250,7 @@ defmodule Newnix.Subscribers do
   """
   def delete_subscriber(%Subscriber{} = subscriber) do
     Repo.delete(subscriber)
+    |> notify_subscribers([:subscriber, :deleted])
   end
 
   @doc """
@@ -247,6 +286,7 @@ defmodule Newnix.Subscribers do
     subscriber
     |> Subscriber.campaigns_assoc(campaigns)
     |> Repo.update()
+    |> notify_subscribers([:subscriber, :deleted])
   end
 
   @doc """
@@ -306,27 +346,25 @@ defmodule Newnix.Subscribers do
     |> Repo.insert()
     |> case do
       {:ok, subscriber} ->
-        {:ok, subscriber}
+        {:ok, subscriber} |> notify_subscribers([:subscriber, :created])
 
       {:error, error} ->
-        {:error, error}
-        # email = get_field(changeset, :email)
+        email = get_field(changeset, :email)
 
-        # IO.inspect(error)
+        case email do
+          nil ->
+            {:error, error}
 
-        # case email do
-        #   nil ->
-        #     {:error, "Email required"}
+          email ->
+            subscriber = get_subscriber_by_email!(project, email)
+            campaigns = Map.get(subscriber, :campaign_subscribers, [])
 
-        #   email ->
-        #     subscriber = get_subscriber_by_email!(project, email)
-        #     campaigns = Map.get(subscriber, :campaign_subscribers, [])
-
-        #     subscriber
-        #     |> Subscriber.changeset()
-        #     |> Subscriber.campaigns_assoc(list_campaign_subscriber ++ campaigns)
-        #     |> Repo.update()
-        # end
+            subscriber
+            |> Subscriber.changeset()
+            |> Subscriber.campaigns_assoc(list_campaign_subscriber ++ campaigns)
+            |> Repo.update()
+            |> notify_subscribers([:subscriber, :updated])
+        end
     end
   end
 end

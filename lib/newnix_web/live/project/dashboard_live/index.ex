@@ -15,7 +15,9 @@ defmodule NewnixWeb.Live.Project.DashboardLive.Index do
     %{value: "two_months", label: "Last 60 days", selected: false, items: 60, unit: :days}
   ]
 
-  def mount(_params, _session, socket) do
+  def mount(_params, _session, %{assigns: %{project: project}} = socket) do
+    if connected?(socket), do: Subscribers.subscribe(project.id)
+
     {:ok, socket |> put_initial_assigns()}
   end
 
@@ -61,6 +63,7 @@ defmodule NewnixWeb.Live.Project.DashboardLive.Index do
     %{project: project} = assigns
 
     %Paginator.Page{entries: entries} = Subscribers.list_subscribers(project, limit: 5)
+
     socket |> assign(:latest_subscribers, entries)
   end
 
@@ -188,6 +191,10 @@ defmodule NewnixWeb.Live.Project.DashboardLive.Index do
   end
 
   def handle_info(:update, socket) do
+    {:noreply, socket |> put_new_stats() |> put_latest_subscribers()}
+  end
+
+  def handle_info({Subscribers, [:subscriber, _event], _result}, socket) do
     {:noreply, socket |> put_new_stats() |> put_latest_subscribers()}
   end
 
