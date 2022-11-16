@@ -12,18 +12,22 @@ defmodule Newnix.Repo.Migrations.CreateSubscribers do
 
       add :email, :citext, null: false
 
-      add :project_id, references(:projects, type: :uuid)
+      add :project_id,
+          references(:projects, type: :uuid, on_delete: :delete_all)
 
       timestamps(type: :utc_datetime_usec)
     end
 
     create unique_index(:subscribers, [:email, :project_id])
 
-    create table(:campaign_subscribers, primary_key: false) do
+    create table(:campaign_subscriber, primary_key: false) do
       add :id, :uuid, primary_key: true
 
-      add :campaign_id, references(:campaigns, type: :uuid)
-      add :subscriber_id, references(:subscribers, type: :uuid)
+      add :campaign_id,
+          references(:campaigns, type: :uuid, on_delete: :delete_all)
+
+      add :subscriber_id,
+          references(:subscribers, type: :uuid, on_delete: :delete_all)
 
       add :firstname, :string, size: 100
       add :lastname, :string, size: 100
@@ -34,6 +38,6 @@ defmodule Newnix.Repo.Migrations.CreateSubscribers do
       timestamps(type: :utc_datetime_usec)
     end
 
-    create(unique_index(:campaign_subscribers, [:campaign_id, :subscriber_id]))
+    create(unique_index(:campaign_subscriber, [:campaign_id, :subscriber_id]))
   end
 end

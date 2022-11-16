@@ -5,8 +5,11 @@ defmodule Newnix.Repo.Migrations.CreateUsersProjects do
     create table(:users_projects, primary_key: false) do
       add :role, :string, default: "user"
 
-      add :user_id, references(:users, type: :binary_id)
-      add :project_id, references(:projects, type: :binary_id)
+      add :user_id,
+          references(:users, type: :binary_id, on_delete: :delete_all)
+
+      add :project_id,
+          references(:projects, type: :binary_id, on_delete: :delete_all)
 
       timestamps(type: :utc_datetime_usec)
     end

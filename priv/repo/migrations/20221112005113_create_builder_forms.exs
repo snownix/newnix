@@ -22,8 +22,11 @@ defmodule Newnix.Repo.Migrations.CreateBuilderForms do
       add :css, :text
       add :status, :string
 
-      add :project_id, references(:projects, on_delete: :nothing, type: :binary_id)
-      add :campaign_id, references(:campaigns, on_delete: :nothing, type: :binary_id)
+      add :project_id,
+          references(:projects, type: :binary_id, on_delete: :delete_all)
+
+      add :campaign_id,
+          references(:campaigns, type: :binary_id, on_delete: :delete_all)
 
       timestamps(type: :utc_datetime_usec)
     end

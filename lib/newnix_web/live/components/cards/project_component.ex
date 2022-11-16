@@ -11,8 +11,8 @@ defmodule NewnixWeb.Live.Components.Cards.ProjectComponent do
                   </div>
                   <div class="min-w-0 flex-1 px-4 md:grid md:grid-cols-3 md:gap-4">
                     <div class="col-span-2">
-                        <p class="font-medium text-primary-500 truncate"><%= @project.name %></p>
-                        <p class="text-sm font-medium text-gray-500 truncate">
+                        <p class="font-medium text-primary-500"><%= @project.name %></p>
+                        <p class="text-sm font-medium text-gray-500">
                           <%= @project.description %>
                         </p>
                     </div>

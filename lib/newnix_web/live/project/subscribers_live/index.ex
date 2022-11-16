@@ -92,6 +92,7 @@ defmodule NewnixWeb.Live.Project.SubscribersLive.Index do
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
     subscriber = Subscribers.get_subscriber!(socket.assigns.project, id)
+
     {:ok, _} = Subscribers.delete_subscriber(subscriber)
 
     {:noreply, assign(socket, :subscribers, list_subscribers(socket.assigns.project))}

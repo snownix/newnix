@@ -57,7 +57,7 @@
                   <.link skl patch={Routes.project_campaigns_show_path(@socket, :edit_subscriber, @campaign.id, subscriber.id)}>
                     <.ui_icon class="w-6 h-6" icon="pencil-square" />
                   </.link>
-                  <.link skl navigate="#" phx-click="delete" phx-value-id={subscriber.id} data={[confirm: "Are you sure?"]}>
+                  <.link skl phx-click="delete" phx-value-id={subscriber.id} data={[confirm: "Are you sure?"]}>
                     <.ui_icon class="w-6 h-6" icon="trash" />
                   </.link>
                 </td>

@@ -12,7 +12,7 @@ defmodule Newnix.Repo.Migrations.CreateCampaigns do
 
       add :status, :string
 
-      add :project_id, references(:projects, type: :uuid)
+      add :project_id, references(:projects, type: :uuid, on_delete: :delete_all)
 
       timestamps(type: :utc_datetime_usec)
     end
@@ -23,7 +23,7 @@ defmodule Newnix.Repo.Migrations.CreateCampaigns do
       add :read, :boolean
       add :write, :boolean
 
-      add :campaign_id, references(:campaigns, type: :uuid)
+      add :campaign_id, references(:campaigns, type: :uuid, on_delete: :delete_all)
 
       timestamps(type: :utc_datetime_usec)
     end

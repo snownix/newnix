@@ -116,7 +116,17 @@ defmodule Newnix.Subscribers do
     query =
       from c in Subscriber,
         where: c.email == ^email and c.project_id == ^project.id,
-        preload: [:campaigns, :campaign_subscribers]
+        preload: [:campaigns, :campaign_subscriber]
+
+    Repo.one!(query)
+  end
+
+  def get_subscription_by_email!(campaign = %Campaign{}, email) do
+    query =
+      from cs in CampaignSubscriber,
+        join: s in Subscriber,
+        on: s.id == cs.subscriber_id,
+        where: s.email == ^email and cs.campaign_id == ^campaign.id
 
     Repo.one!(query)
   end
@@ -137,7 +147,7 @@ defmodule Newnix.Subscribers do
   """
   def fetch_campaigns(%Subscriber{} = subscriber) do
     subscriber
-    |> Repo.preload(:campaign_subscribers)
+    |> Repo.preload(:campaign_subscriber)
     |> Repo.preload(:campaigns)
   end
 
@@ -184,7 +194,7 @@ defmodule Newnix.Subscribers do
     %Subscriber{}
     |> Subscriber.changeset(attrs)
     |> Subscriber.project_assoc(project)
-    |> insert_or_modify(project, [campaign_subscriber_assoc])
+    |> insert_or_modify(project, campaign_subscriber_assoc)
   end
 
   def create_subscriber(%Project{} = project, nil, attrs), do: create_subscriber(project, attrs)
@@ -209,10 +219,10 @@ defmodule Newnix.Subscribers do
   end
 
   def update_subscriber(%Subscriber{} = subscriber, %Campaign{} = campaign, attrs) do
-    subscriber = subscriber |> Repo.preload(:campaign_subscribers)
+    subscriber = subscriber |> Repo.preload(:campaign_subscriber)
 
     campaigns =
-      Map.get(subscriber, :campaign_subscribers, [])
+      Map.get(subscriber, :campaign_subscriber, [])
       |> Enum.map(fn ca ->
         if ca.campaign_id == campaign.id do
           Map.merge(%{campaign: campaign}, Map.take(attrs, ["firstname", "lastname"]))
@@ -339,31 +349,47 @@ defmodule Newnix.Subscribers do
     )
   end
 
-  def insert_or_modify(changeset, %Project{} = project, list_campaign_subscriber \\ []) do
+  def insert_or_modify(changeset, %Project{} = project, list_campaign_subscriber \\ nil) do
     changeset
     |> Subscriber.project_assoc(project)
-    |> Subscriber.campaigns_assoc(list_campaign_subscriber)
+    |> Subscriber.campaigns_assoc([list_campaign_subscriber])
     |> Repo.insert()
     |> case do
       {:ok, subscriber} ->
         {:ok, subscriber} |> notify_subscribers([:subscriber, :created])
 
-      {:error, error} ->
+      {:error, _error} ->
         email = get_field(changeset, :email)
+        campaign = get_field(list_campaign_subscriber, :campaign)
 
-        case email do
+        case get_subscription_by_email!(campaign, email) do
           nil ->
-            {:error, error}
-
-          email ->
             subscriber = get_subscriber_by_email!(project, email)
-            campaigns = Map.get(subscriber, :campaign_subscribers, [])
 
             subscriber
             |> Subscriber.changeset()
-            |> Subscriber.campaigns_assoc(list_campaign_subscriber ++ campaigns)
+            |> Subscriber.campaigns_assoc([
+              list_campaign_subscriber | subscriber.campaign_subscriber
+            ])
             |> Repo.update()
             |> notify_subscribers([:subscriber, :updated])
+
+          subscription ->
+            CampaignSubscriber.changeset(subscription, %{
+              "subscribed_at" => DateTime.utc_now(),
+              "unsubscribed_at" => nil
+            })
+            |> Repo.update()
+            |> case do
+              {:ok, subscription} ->
+                subscription
+                |> Repo.preload(:subscriber)
+                |> then(&{:ok, &1.subscriber})
+                |> notify_subscribers([:subscriber, :updated])
+
+              other ->
+                other
+            end
         end
     end
   end

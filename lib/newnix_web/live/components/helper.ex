@@ -349,7 +349,7 @@ defmodule NewnixWeb.Live.Components.Helper do
   end
 
   def calc_success_rate(a, b) when is_number(a) and a > 0,
-    do: Float.round((a - b) / a * 100, 2)
+    do: Float.round(a / (a + b) * 100, 2)
 
   def calc_success_rate(_a, _b), do: 0
 

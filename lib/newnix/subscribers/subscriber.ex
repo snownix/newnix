@@ -19,7 +19,9 @@ defmodule Newnix.Subscribers.Subscriber do
 
     belongs_to :project, Project, type: :binary_id
 
-    has_many :campaign_subscribers, CampaignSubscriber, on_replace: :delete
+    has_many :campaign_subscriber, CampaignSubscriber,
+      on_replace: :delete,
+      on_delete: :delete_all
 
     many_to_many :campaigns, Campaign,
       join_through: CampaignSubscriber,
@@ -54,6 +56,6 @@ defmodule Newnix.Subscribers.Subscriber do
   def campaigns_assoc(changeset, campaigns \\ []) do
     changeset
     |> change()
-    |> put_assoc(:campaign_subscribers, campaigns)
+    |> put_assoc(:campaign_subscriber, campaigns)
   end
 end

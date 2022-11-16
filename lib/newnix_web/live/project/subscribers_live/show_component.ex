@@ -29,7 +29,7 @@ defmodule NewnixWeb.Live.Project.SubscribersLive.ShowComponent do
     %{subscriber: subscriber, all_camps: all_camps} = assigns
 
     campaigns =
-      subscriber.campaign_subscribers
+      subscriber.campaign_subscriber
       |> Enum.filter(fn cs ->
         all_camps || is_nil(cs.unsubscribed_at)
       end)
@@ -42,7 +42,7 @@ defmodule NewnixWeb.Live.Project.SubscribersLive.ShowComponent do
 
     events =
       Enum.reduce(
-        subscriber.campaign_subscribers,
+        subscriber.campaign_subscriber,
         [
           %{
             id: nil,

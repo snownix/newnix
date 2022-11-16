@@ -129,11 +129,11 @@ defmodule Newnix.Seeds do
       project
       |> Repo.preload(:campaigns)
       |> then(& &1.campaigns)
-      |> Repo.preload(:campaign_subscribers)
+      |> Repo.preload(:campaign_subscriber)
 
     campaigns
     |> Enum.each(fn c ->
-      Enum.each(c.campaign_subscribers, fn cs ->
+      Enum.each(c.campaign_subscriber, fn cs ->
         Repo.update(
           change(cs,
             unsubscribed_at:

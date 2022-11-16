@@ -22,8 +22,13 @@ defmodule Newnix.Campaigns.Campaign do
     belongs_to :project, Project, type: :binary_id
     has_many :tokens, CampaignToken
 
-    many_to_many :subscribers, Subscriber, join_through: CampaignSubscriber
-    has_many :campaign_subscribers, CampaignSubscriber, on_replace: :delete
+    many_to_many :subscribers, Subscriber,
+      join_through: CampaignSubscriber,
+      on_delete: :delete_all
+
+    has_many :campaign_subscriber, CampaignSubscriber,
+      on_replace: :delete,
+      on_delete: :delete_all
 
     field :subscribers_count, :integer, virtual: true, default: 0
     field :unsubscribers_count, :integer, virtual: true, default: 0
@@ -35,7 +40,7 @@ defmodule Newnix.Campaigns.Campaign do
     campaign
     |> cast(attrs, [:name, :description, :start_at, :expire_at, :status])
     |> cast_assoc(:subscribers)
-    |> cast_assoc(:campaign_subscribers)
+    |> cast_assoc(:campaign_subscriber)
     |> validate_required([:name])
   end
 
