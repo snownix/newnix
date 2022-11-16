@@ -40,10 +40,10 @@
         <.ui_textarea form={f} name={:description} title="Description" />
       </div>
 
-      <details id="advanced" class="space-y-4" phx-update="ignore">
-        <summary>Advanced Settings</summary>
+      <details id="advanced" class="space-y-4" open={@advanced}>
+        <summary class="cursor-pointer" phx-click="open-advanced" phx-target={@myself}>Advanced Settings</summary>
 
-        <div>
+        <div id="custom-css" phx-update="ignore">
           <.ui_css_editor form={f} name={:css} title="Custom Css" class="filled" />
         </div>
 

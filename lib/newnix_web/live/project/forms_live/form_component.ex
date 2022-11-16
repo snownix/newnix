@@ -14,12 +14,19 @@ defmodule NewnixWeb.Live.Project.FormsLive.FormComponent do
      socket
      |> assign(assigns)
      |> assign(:done, false)
+     |> assign(:advanced, false)
      |> put_campaigns_options()
      |> assign(:changeset, changeset)}
   end
 
+  @impl true
   def handle_event("done", _, socket) do
     {:noreply, socket |> assign(:done, true)}
+  end
+
+  @impl true
+  def handle_event("open-advanced", _, socket) do
+    {:noreply, socket |> assign(:advanced, !socket.assigns.advanced)}
   end
 
   @impl true

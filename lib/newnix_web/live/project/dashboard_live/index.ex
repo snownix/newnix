@@ -18,7 +18,7 @@ defmodule NewnixWeb.Live.Project.DashboardLive.Index do
   def mount(_params, _session, %{assigns: %{project: project}} = socket) do
     if connected?(socket), do: Subscribers.subscribe(project.id)
 
-    {:ok, socket |> put_initial_assigns()}
+    {:ok, socket |> put_initial_assigns() |> update_info()}
   end
 
   def handle_params(_params, _uri, socket) do
@@ -191,11 +191,11 @@ defmodule NewnixWeb.Live.Project.DashboardLive.Index do
   end
 
   def handle_info(:update, socket) do
-    {:noreply, socket |> put_new_stats() |> put_latest_subscribers()}
+    {:noreply, socket |> update_info()}
   end
 
   def handle_info({Subscribers, [:subscriber, _event], _result}, socket) do
-    {:noreply, socket |> put_new_stats() |> put_latest_subscribers()}
+    {:noreply, socket |> update_info()}
   end
 
   defp switch_period(%{assigns: assigns} = socket, value) do
@@ -209,6 +209,10 @@ defmodule NewnixWeb.Live.Project.DashboardLive.Index do
         %{per | selected: per.value == value}
       end)
     )
+  end
+
+  defp update_info(socket) do
+    socket |> put_new_stats() |> put_latest_subscribers
   end
 
   defp switch_campaign(%{assigns: assigns} = socket, value) do

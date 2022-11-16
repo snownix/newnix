@@ -6,7 +6,7 @@ defmodule NewnixWeb.Live.Project.CampaignsLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, socket |> put_initial_assigns()}
+    {:ok, socket |> put_initial_assigns() |> update_info()}
   end
 
   defp put_initial_assigns(socket) do
@@ -43,15 +43,16 @@ defmodule NewnixWeb.Live.Project.CampaignsLive.Index do
   end
 
   @impl true
-  def handle_info(:update, %{assigns: assigns} = socket) do
-    %{project: project} = assigns
+  def handle_info(:update, socket) do
+    {:noreply, update_info(socket)}
+  end
 
+  defp update_info(%{assigns: %{project: project}} = socket) do
     campaigns = Campaigns.list_campaigns(project)
 
-    {:noreply,
-     socket
-     |> assign(:campaigns, campaigns)
-     |> assign(:loading, false)}
+    socket
+    |> assign(:campaigns, campaigns)
+    |> assign(:loading, false)
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
