@@ -18,7 +18,7 @@ defmodule NewnixWeb.Live.AuthLive.Register do
   end
 
   def handle_params(params, _uri, socket) do
-    {:noreply, assign(socket, show_form?: params["form"] == "true")}
+    {:noreply, assign(socket, show_form?: is_nil(params["o"]) or params["o"] == "false")}
   end
 
   def handle_event("toggle-form", _, socket) do
