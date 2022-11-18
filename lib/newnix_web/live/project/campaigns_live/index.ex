@@ -79,7 +79,7 @@ defmodule NewnixWeb.Live.Project.CampaignsLive.Index do
     socket |> assign(:loading, true)
   end
 
-  def current_status(_campaign) do
-    "-"
+  def current_status(campaign) do
+    Campaign.campaign_status(campaign)
   end
 end

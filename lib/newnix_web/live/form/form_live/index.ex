@@ -1,6 +1,8 @@
 defmodule NewnixWeb.Live.Form.FormLive.Index do
   use NewnixWeb, :live_form
 
+  alias Newnix.Campaigns
+  alias Newnix.Campaigns.Campaign
   alias Newnix.Builder
   alias Newnix.Subscribers
   alias Newnix.Subscribers.Subscriber
@@ -24,8 +26,6 @@ defmodule NewnixWeb.Live.Form.FormLive.Index do
      end}
   end
 
-  # handle_info({Newnix.Builder, :form, %Newnix.Builder.Form{... })
-
   def handle_event("validate", %{"subscriber" => subscriber_params}, socket) do
     %{assigns: %{form: form}} = socket
 
@@ -47,18 +47,22 @@ defmodule NewnixWeb.Live.Form.FormLive.Index do
     save_subscriber(socket, live_action, subscriber_params)
   end
 
-  def apply_action(socket, :index, form) do
+  def get_form_value(value, default \\ nil) do
+    value || default
+  end
+
+  def campaign_status(%{campaign: campaign} = form) do
+    Campaign.campaign_status(campaign)
+  end
+
+  defp apply_action(socket, :index, form) do
     if connected?(socket), do: Newnix.Builder.subscribe(form.id)
     socket
   end
 
-  def apply_action(socket, :dev, form) do
+  defp apply_action(socket, :dev, form) do
     if connected?(socket), do: Newnix.Builder.subscribe(:dev, form.id)
     socket
-  end
-
-  def get_form_value(value, default \\ nil) do
-    value || default
   end
 
   defp put_initial_assigns(%{assigns: %{form: form}} = socket) do
@@ -70,6 +74,10 @@ defmodule NewnixWeb.Live.Form.FormLive.Index do
       Subscribers.change_subscriber(%Subscriber{}, %{}, opts)
     )
     |> assign(:success, false)
+  end
+
+  defp put_success_message(socket) do
+    socket |> assign(:success, true)
   end
 
   defp save_subscriber(socket, :dev, _subscriber_params) do
@@ -84,9 +92,5 @@ defmodule NewnixWeb.Live.Form.FormLive.Index do
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset: changeset)}
     end
-  end
-
-  defp put_success_message(socket) do
-    socket |> assign(:success, true)
   end
 end

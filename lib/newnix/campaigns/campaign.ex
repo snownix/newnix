@@ -5,7 +5,7 @@ defmodule Newnix.Campaigns.Campaign do
 
   alias Newnix.Projects.Project
   alias Newnix.Subscribers.Subscriber
-  alias Newnix.Campaigns.{CampaignToken, CampaignSubscriber}
+  alias Newnix.Campaigns.{Campaign, CampaignToken, CampaignSubscriber}
 
   @primary_key {:id, :binary_id, autogenerate: true}
 
@@ -50,7 +50,45 @@ defmodule Newnix.Campaigns.Campaign do
   end
 
   # "TODO:: check if between start & end(time left/progress), after end(expired), before start(ago),"
-  def campaign_status(_campaign) do
-    ""
+
+  def campaign_status(%Campaign{} = campaign) do
+    %{start_at: start_at, expire_at: expire_at} = campaign
+
+    today = DateTime.utc_now()
+
+    case {start_at, expire_at} do
+      {nil, nil} ->
+        :active
+
+      {nil, end_date} ->
+        if Timex.Comparable.compare(today, end_date) > -1 do
+          :expired
+        else
+          :active
+        end
+
+      {start_date, nil} ->
+        if Timex.Comparable.compare(start_date, today) > -1 do
+          :future
+        else
+          :active
+        end
+
+      {start_date, end_date} ->
+        cond do
+          Timex.Comparable.compare(today, start_date) > -1 and
+              Timex.Comparable.compare(end_date, today) > -1 ->
+            :active
+
+          Timex.Comparable.compare(start_date, today) > -1 ->
+            :future
+
+          Timex.Comparable.compare(today, end_date) > -1 ->
+            :expired
+
+          true ->
+            :draft
+        end
+    end
   end
 end

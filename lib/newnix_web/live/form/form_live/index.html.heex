@@ -1,4 +1,4 @@
-<%= if is_nil(@form) do %>
+<%= if is_nil(@form) or campaign_status(@form) !== :active do %>
 <div class="newnix_expired">
     <div class="img">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
@@ -29,7 +29,7 @@
         </svg>
     </div>
     <h2 class="title">
-        <%= gettext ("Ops, this form may have been deleted by the author.") %>
+        <%= gettext ("Ops, this form may have been expired/deleted by the author.") %>
     </h2>
 </div>
 <% else %>
@@ -43,6 +43,7 @@
     <div class="space-y-2">
         <h2 class="title">
             <%= @form.name %>
+            <%= campaign_status(@form) %>
         </h2>
         <%= if @success do %>
             <p class="description">
@@ -54,36 +55,40 @@
             </p>
         <% end %>
     </div>
-    <%= if !@success do %>
-        <div class="form">
-            <%= if get_form_value(@form.firstname, false) or get_form_value(@form.lastname, false) do  %>
+    <%= if campaign_status(@form) === :active do %>
+        <%= if !@success do %>
+            <div class="form">
+                <%= if get_form_value(@form.firstname, false) or get_form_value(@form.lastname, false) do  %>
+                    <div class="group">
+                        <%= if get_form_value(@form.firstname, false) do %>
+                            <div class="form_group">
+                                <%= text_input f, :firstname, placeholder: "First name",  class: "input" %>
+                                <%= error_tag f, :firstname %>
+                            </div>
+                        <% end %>
+                        <%= if get_form_value(@form.lastname, false) do %>
+                            <div class="form_group">
+                                <%= text_input f, :lastname, placeholder: "Last name", class: "input" %>
+                                <%= error_tag f, :lastname %>
+                            </div>
+                        <% end %>
+                    </div>
+                <% end %>
+
                 <div class="group">
-                    <%= if get_form_value(@form.firstname, false) do %>
-                        <div class="form_group">
-                            <%= text_input f, :firstname, placeholder: "First name",  class: "input" %>
-                            <%= error_tag f, :firstname %>
-                        </div>
-                    <% end %>
-                    <%= if get_form_value(@form.lastname, false) do %>
-                        <div class="form_group">
-                            <%= text_input f, :lastname, placeholder: "Last name", class: "input" %>
-                            <%= error_tag f, :lastname %>
-                        </div>
-                    <% end %>
+                    <div class="form_group">
+                        <%= email_input f, :email, placeholder: get_form_value(@form.email_text, "Email Address"), class: "input" %>
+                        <%= error_tag f, :email %>
+                    </div>
                 </div>
-            <% end %>
 
-            <div class="group">
-                <div class="form_group">
-                    <%= email_input f, :email, placeholder: get_form_value(@form.email_text, "Email Address"), class: "input" %>
-                    <%= error_tag f, :email %>
-                </div>
+                <button class="button">
+                    <%= get_form_value(@form.button_text, "Subscribe") %>
+                </button>
             </div>
+        <% end %>
+    <% else %>
 
-            <button class="button">
-                <%= get_form_value(@form.button_text, "Subscribe") %>
-            </button>
-        </div>
     <% end %>
 </.form>
 <style><%= @form.css %></style>
