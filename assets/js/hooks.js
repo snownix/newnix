@@ -1,5 +1,9 @@
 import createCssEditor from '../vendor/css-editor';
 
+const COMPONENT_EVENTS = {
+    ADD_ITEM: 'add-item'
+};
+
 const statePrefix = '_nx';
 
 module.exports = {
@@ -60,6 +64,34 @@ module.exports = {
             }
 
             return vals;
+        }
+    },
+    InputTags: {
+        input: null,
+        target: null,
+        inputEventName: 'keyup',
+        inputEvent: null,
+        mounted() {
+            this.target = this.el.getAttribute('phx-target');
+            this.input = this.el.querySelector('input');
+
+            this.inputEvent = () => {
+                const value = this.input.value;
+
+                if (value[value.length - 1] === ",") {
+                    this.pushEventTo(this.target, COMPONENT_EVENTS.ADD_ITEM, {
+                        v: value.slice(0, -1)
+                    });
+                    this.input.value = "";
+                }
+            };
+
+            this.input.addEventListener(this.inputEventName, this.inputEvent);
+        },
+        destroyed() {
+            if (this.input) {
+                this.input.removeEventListener(this.inputEventName, this.inputEvent);
+            }
         }
     }
 }

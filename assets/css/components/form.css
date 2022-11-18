@@ -77,3 +77,30 @@
 .input_multi_select .options input[type="checkbox"] {
 	@apply hidden;
 }
+
+/** tag */
+.input_group .input_tags {
+	@apply flex flex-wrap;
+}
+.input_group .input_tags li {
+	@apply flex items-center hover:bg-red-100 hover:cursor-pointer;
+	@apply m-1 py-0.5 pl-5 pr-4 rounded-full bg-gray-200 text-dark-500;
+	@apply after:hover:opacity-100 hover:pl-3 hover:pr-2 after:hover:w-4;
+}
+
+.input_group .input_tags li::after {
+	content: "";
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor' %3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M6 18L18 6M6 6l12 12' /%3E%3C/svg%3E%0A");
+	background-size: 80%;
+	background-position: center;
+	@apply text-xs text-center opacity-0;
+	@apply block w-0 h-4 ml-2;
+	@apply rounded-full bg-white;
+}
+
+.input_group .input_tags li[demo] {
+	@apply pl-3 pr-2 text-gray-500 bg-gray-200 cursor-help;
+}
+.input_group .input_tags li[demo]::after {
+	@apply hidden;
+}

@@ -15,8 +15,8 @@ defmodule NewnixWeb.Live.Project.FormsLive.FormComponent do
      |> assign(assigns)
      |> assign(:done, false)
      |> assign(:advanced, false)
-     |> put_campaigns_options()
-     |> assign(:changeset, changeset)}
+     |> assign(:changeset, changeset)
+     |> put_campaigns_options()}
   end
 
   @impl true

@@ -124,7 +124,7 @@ defmodule NewnixWeb.Live.Components.Partials.ProjectSidebarComponent do
           <span class="font-semibold truncate text-ellipsis text-gray-900">
             <%= @project.name %>
           </span>
-          <span class="text-gray-500 text-sm">Team free</span>
+          <span class="text-gray-500 text-sm">Free plan</span>
         </div>
       </div>
     """

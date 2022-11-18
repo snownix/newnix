@@ -3,11 +3,8 @@ import { EditorState, Compartment } from "@codemirror/state"
 import { css } from "@codemirror/lang-css"
 
 export default function createCssEditor(el, textarea, cbChanges = () => { }) {
-    let language = new Compartment,
+    const language = new Compartment,
         tabSize = new Compartment;
-
-    console.log('textarea:');
-    console.log(textarea);
 
     const state = EditorState.create({
         doc: textarea.value,

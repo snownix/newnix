@@ -47,7 +47,7 @@
           <.ui_css_editor form={f} name={:css} title="Custom Css" class="filled" />
         </div>
 
-        <section class="flex space-x-2">
+        <div class="flex space-x-2">
           <div class="w-full">
             <.ui_checkbox_toggle form={f} name={:firstname}>
               Show First name
@@ -58,20 +58,29 @@
               Show Last name
             </.ui_checkbox_toggle>
           </div>
-        </section>
+        </div>
 
-        <section class="flex space-x-2">
+        <div class="flex space-x-2">
           <div class="w-full">
             <.ui_input form={f} name={:email_text} title="Email Text" />
           </div>
           <div class="w-full">
             <.ui_input form={f} name={:button_text} title="Button Text" />
           </div>
-        </section>
+        </div>
 
         <div>
           <.ui_textarea form={f} name={:thanks_text} title="Thanks Message" />
         </div>
+
+        <.live_component
+          id="domains"
+          form={f}
+          title="Allowed Domains"
+          name={:domains}
+          value={input_value(f, :domains)}
+          module={NewnixWeb.Live.Components.Form.InputTagsComponent}
+        />
       </details>
 
       <div class="inline-flex-center justify-between">
