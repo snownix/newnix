@@ -102,7 +102,8 @@ defmodule NewnixWeb.Live.Project.CampaignsLive.Show do
       sort: :desc,
       order: :inserted_at,
       pages: 0,
-      allowed_orders: [:inserted_at, :email, :firstname, :lastname]
+      allowed_orders: [:inserted_at, :email, :firstname, :lastname],
+      all: false
     })
   end
 

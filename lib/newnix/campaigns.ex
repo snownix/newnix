@@ -176,9 +176,17 @@ defmodule Newnix.Campaigns do
           subscribed_at: cs.subscribed_at
         }
       )
+      |> all_subscribers(Keyword.get(opts, :all, true))
       |> order_subscribers(Keyword.get(opts, :sort, :desc), Keyword.get(opts, :order))
 
     Pagination.all(query, opts)
+  end
+
+  defp all_subscribers(query, true), do: query
+
+  defp all_subscribers(query, false) do
+    query
+    |> where([_s, cs], is_nil(cs.unsubscribed_at))
   end
 
   defp order_subscribers(query, sort, :inserted_at) do

@@ -67,9 +67,17 @@ defmodule Newnix.Subscribers do
           campaign_id: cs.campaign_id
         }
       )
+      |> all_subscribers(Keyword.get(opts, :all, true))
       |> order_subscribers(Keyword.get(opts, :sort, :dsec), Keyword.get(opts, :order))
 
     Pagination.all(query, opts)
+  end
+
+  defp all_subscribers(query, true), do: query
+
+  defp all_subscribers(query, false) do
+    query
+    |> where([_s, cs], is_nil(cs.unsubscribed_at))
   end
 
   defp order_subscribers(query, sort, :inserted_at) do
@@ -383,7 +391,7 @@ defmodule Newnix.Subscribers do
             |> Repo.update()
             |> notify_subscribers([:subscriber, :updated])
 
-          {:ok, subscription} ->
+          subscription ->
             CampaignSubscriber.changeset(subscription, %{
               "subscribed_at" => DateTime.utc_now(),
               "unsubscribed_at" => nil

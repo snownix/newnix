@@ -41,7 +41,8 @@ defmodule NewnixWeb.Live.Project.SubscribersLive.Index do
       sort: :desc,
       order: :inserted_at,
       pages: 0,
-      allowed_orders: [:email, :firstname, :inserted_at]
+      allowed_orders: [:email, :firstname, :lastname, :inserted_at],
+      all: false
     })
   end
 

@@ -18,7 +18,7 @@ defmodule NewnixWeb.Live.Project.DashboardLive.Index do
   def mount(_params, _session, %{assigns: %{project: project}} = socket) do
     if connected?(socket), do: Subscribers.subscribe(project.id)
 
-    {:ok, socket |> put_initial_assigns() |> update_info()}
+    {:ok, socket |> put_initial_assigns()}
   end
 
   def handle_params(_params, _uri, socket) do
