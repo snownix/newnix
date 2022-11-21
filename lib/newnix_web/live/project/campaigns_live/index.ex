@@ -36,7 +36,7 @@ defmodule NewnixWeb.Live.Project.CampaignsLive.Index do
       sort: :desc,
       order: :inserted_at,
       pages: 0,
-      allowed_orders: [:inserted_at, :name, :subscribers_count, :start_at]
+      allowed_orders: [:inserted_at, :name, :start_at]
     })
   end
 

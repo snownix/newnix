@@ -16,9 +16,10 @@
       <section class="h-full overflow-y-auto">
         <.ui_table>
           <:thead class="bg-gray-50">
-            <th>Full name</th>
-            <th class="min-w-fit">Email</th>
-            <th>Subscribed Date</th>
+            <.ui_table_sort active={@paginator.order == :firstname} sort={@paginator.sort} name={:firstname} title="First name" />
+            <.ui_table_sort active={@paginator.order == :lastname} sort={@paginator.sort} name={:lastname} title="Last name" />
+            <.ui_table_sort active={@paginator.order == :email} sort={@paginator.sort} name={:email} title="Email" />
+            <.ui_table_sort active={@paginator.order == :inserted_at} sort={@paginator.sort} name={:inserted_at} title="Date" />
             <th>
               <span class="sr-only">Actions</span>
             </th>
@@ -26,16 +27,14 @@
           <:body>
             <%= for subscriber <- @table.entries do %>
               <tr class={skeleton_class(@loading)}>
+                <td><p skl><%= subscriber.firstname %></p></td>
                 <td>
-                  <p skl>
-                    <%= subscriber.firstname %>
-                      <%= subscriber.lastname %>
+                  <p skl class={hide_info_on_unsubscribe(subscriber)}>
+                  <%= hide_info_on_unsubscribe(subscriber, :lastname) %>
                   </p>
                 </td>
                 <td class="hover:text-primary-800">
-                  <a skl href={"mailto:#{subscriber.email}"}>
-                    <%= subscriber.email %>
-                  </a>
+                  <a class={hide_info_on_unsubscribe(subscriber)} skl ><%= subscriber.email %></a>
                 </td>
                 <td class="low">
                   <.ui_datetime_display skl time={subscriber.inserted_at} />

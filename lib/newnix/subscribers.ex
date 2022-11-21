@@ -65,16 +65,23 @@ defmodule Newnix.Subscribers do
           subscribed_at: cs.subscribed_at,
           unsubscribed_at: cs.unsubscribed_at,
           campaign_id: cs.campaign_id
-        },
-        order_by: [
-          {:desc_nulls_last, cs.subscribed_at},
-          {:desc_nulls_last, cs.inserted_at},
-          {:desc_nulls_last, s.inserted_at}
-        ]
+        }
       )
+      |> order_subscribers(Keyword.get(opts, :sort, :dsec), Keyword.get(opts, :order))
 
     Pagination.all(query, opts)
   end
+
+  defp order_subscribers(query, sort, :inserted_at) do
+    query
+    |> order_by([s, cs], [
+      {^sort, cs.subscribed_at},
+      {^sort, cs.inserted_at},
+      {^sort, s.inserted_at}
+    ])
+  end
+
+  defp order_subscribers(query, _, _), do: query
 
   def meta_list_subscribers(project = %Project{}) do
     query =

@@ -50,12 +50,10 @@
                   </div>
                 </td>
                 <td>
-                    <span class="low" skl>
-                      <.ui_datetime_display time={campaign.start_at} />
-                    </span>
-                    <span class="low" skl>
-                      <.ui_datetime_display time={campaign.expire_at} />
-                    </span>
+                    <div class="flex flex-col low" skl>
+                        <.ui_datetime_display time={campaign.start_at} />
+                        <.ui_datetime_display time={campaign.expire_at} />
+                    </div>
                 </td>
                 <td class="actions">
                   <.link skl navigate={Routes.project_campaigns_show_path(@socket, :show, campaign)}>

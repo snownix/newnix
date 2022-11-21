@@ -26,22 +26,34 @@ defmodule Newnix.Campaigns do
         left_join: cs in CampaignSubscriber,
         on: cs.campaign_id == c.id,
         where: c.project_id == ^project.id,
-        select_merge: %{
-          unsubscribers_count: count(cs.unsubscribed_at),
-          subscribers_count:
-            fragment(
-              "COUNT(DISTINCT(CASE WHEN ? IS NULL AND ? IS NOT NULL THEN (?,?) ELSE NULL END))",
-              cs.unsubscribed_at,
-              cs.campaign_id,
-              cs.subscriber_id,
-              cs.campaign_id
-            )
-        },
+        select:
+          merge(c, %{
+            unsubscribers_count: count(cs.unsubscribed_at),
+            subscribers_count:
+              fragment(
+                "COUNT(DISTINCT(CASE WHEN ? IS NULL AND ? IS NOT NULL THEN (?,?) ELSE NULL END))",
+                cs.unsubscribed_at,
+                cs.campaign_id,
+                cs.subscriber_id,
+                cs.campaign_id
+              )
+              |> selected_as(:subscribers_count)
+          }),
         group_by: c.id
       )
+      |> order_campaigns(Keyword.get(opts, :sort, :desc), Keyword.get(opts, :order, :inserted_at))
 
     Pagination.all(query, opts)
   end
+
+  defp order_campaigns(query, sort, :subscribers_count) do
+    query
+    |> order_by([_c, _cs], [
+      {^sort, selected_as(:subscribers_count)}
+    ])
+  end
+
+  defp order_campaigns(query, _, _), do: query
 
   def meta_list_campaigns(project = %Project{}) do
     from(
@@ -164,9 +176,21 @@ defmodule Newnix.Campaigns do
           subscribed_at: cs.subscribed_at
         }
       )
+      |> order_subscribers(Keyword.get(opts, :sort, :desc), Keyword.get(opts, :order))
 
     Pagination.all(query, opts)
   end
+
+  defp order_subscribers(query, sort, :inserted_at) do
+    query
+    |> order_by([s, cs], [
+      {^sort, cs.subscribed_at},
+      {^sort, cs.inserted_at},
+      {^sort, s.inserted_at}
+    ])
+  end
+
+  defp order_subscribers(query, _, _), do: query
 
   @doc """
   Gets a single campaign.
