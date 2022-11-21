@@ -38,9 +38,10 @@ defmodule NewnixWeb.Live.Project.SubscribersLive.Index do
     |> assign(:paginator, %{
       page: 1,
       limit: 20,
-      order: :desc,
-      order_by: :inserted_at,
-      pages: 0
+      sort: :desc,
+      order: :inserted_at,
+      pages: 0,
+      allowed_orders: [:email, :firstname, :inserted_at]
     })
   end
 
@@ -112,22 +113,28 @@ defmodule NewnixWeb.Live.Project.SubscribersLive.Index do
   end
 
   # Paginator
+  def handle_event("order", %{"name" => name}, socket) do
+    sort = if socket.assigns.paginator.sort == :asc, do: :desc, else: :asc
+
+    {:noreply,
+     socket |> update_table_paginator(%{page: 1, order: String.to_atom(name), sort: sort})}
+  end
+
+  # Paginator
   def handle_event("page", %{"page" => page}, socket) do
-    {:noreply, socket |> update_table_paginator(page)}
+    {:noreply, socket |> update_table_paginator(%{page: String.to_integer(page)})}
   end
 
   # Paginator
   def handle_event("pagination", %{"pagination" => %{"page" => page, "limit" => limit}}, socket) do
-    {:noreply, socket |> update_table_paginator(page, String.to_integer(limit))}
+    {:noreply,
+     socket
+     |> update_table_paginator(%{page: String.to_integer(page), limit: String.to_integer(limit)})}
   end
 
   # Paginator
-  defp update_table_paginator(%{assigns: %{paginator: paginator}} = socket, page, limit \\ nil) do
-    paginator =
-      Map.merge(paginator, %{
-        page: String.to_integer(page),
-        limit: limit || paginator.limit
-      })
+  defp update_table_paginator(%{assigns: %{paginator: paginator}} = socket, params) do
+    paginator = Map.merge(paginator, params)
 
     socket
     |> assign(:paginator, paginator)

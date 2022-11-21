@@ -220,7 +220,14 @@ defmodule Newnix.Subscribers do
       Map.get(subscriber, :campaign_subscriber, [])
       |> Enum.map(fn ca ->
         if ca.campaign_id == campaign.id do
-          Map.merge(%{campaign: campaign}, Map.take(attrs, ["firstname", "lastname"]))
+          fields = Map.take(attrs, ["firstname", "lastname"])
+
+          CampaignSubscriber.changeset(
+            %CampaignSubscriber{
+              campaign: campaign
+            },
+            fields
+          )
         else
           ca
         end

@@ -8,12 +8,21 @@ defmodule Newnix.Pagination do
   def query(query, opts \\ []) do
     page = secure_allowed_page(Keyword.get(opts, :page, 1))
     limit = secure_allowed_limit(Keyword.get(opts, :limit, 10))
+    sort = secure_allowed_sort(Keyword.get(opts, :sort, :desc))
+    allowed_orders = Keyword.get(opts, :allowed_orders, [:inserted_at])
+    order = secure_allowed_order(allowed_orders, Keyword.get(opts, :order, :inserted_at))
+
+    order_sort = dynamic_order(sort, order)
 
     query
     |> limit(^(limit + 1))
     |> offset(^(limit * (page - 1)))
+    |> order_by(^order_sort)
     |> Repo.all()
   end
+
+  defp dynamic_order(:asc, field), do: [asc: field]
+  defp dynamic_order(:desc, field), do: [desc: field]
 
   def all(query) do
     query
@@ -50,4 +59,15 @@ defmodule Newnix.Pagination do
 
   def secure_allowed_page(page) when page > 0, do: page
   def secure_allowed_page(_page), do: @default_page
+
+  def secure_allowed_sort(:asc), do: :asc
+  def secure_allowed_sort(_), do: :desc
+
+  def secure_allowed_order(allowed_orders, order) do
+    if order in allowed_orders do
+      order
+    else
+      List.first(allowed_orders)
+    end
+  end
 end

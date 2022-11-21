@@ -20,15 +20,15 @@
             </div>
             <div class="w-full">
                 <dt class="text-sm font-medium text-gray-500">Last name</dt>
-                <dd class="mt-1 text-sm font-semibold text-gray-900 sm:col-span-2">
-                    <%= @subscriber.lastname %>
+                <dd class={"mt-1 text-sm font-semibold text-gray-900 sm:col-span-2 #{hide_info_on_unsubscribe(@subscriber)}"}>
+                    <%= hide_info_on_unsubscribe(@subscriber, :lastname) %>
                 </dd>
             </div>
         </div>
         <div>
             <dt class="text-sm font-medium text-gray-500">Email</dt>
-            <dd class="mt-1 text-sm font-semibold text-gray-900 sm:col-span-2">
-                <%= @subscriber.email %>
+            <dd class={"mt-1 text-sm font-semibold text-gray-900 sm:col-span-2 #{hide_info_on_unsubscribe(@subscriber)}"}>
+                <%= hide_info_on_unsubscribe(@subscriber, :email) %>
             </dd>
         </div>
         <div>
@@ -41,7 +41,7 @@
             <dt class="text-sm font-medium text-gray-500 flex-center justify-between">
                 <span>Campaigns</span>
                 <form phx-target={@myself} phx-change="toggle-active-camp">
-                    <.ui_toggle 
+                    <.ui_toggle
                         name={:camp}
                         position={:left}
                         checked={@all_camps}>

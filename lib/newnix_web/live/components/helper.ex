@@ -12,13 +12,15 @@ defmodule NewnixWeb.Live.Components.Helper do
   attr :type, :string, default: "text"
   attr :class, :string, default: ""
   attr :show_error, :boolean, default: false
+  attr :readonly, :boolean, default: false
 
   def ui_input(assigns) do
     ~H"""
       <label class={"input_group #{@class}"} field-error={tag_has_error(@form, @name)} {@rest}
         field-fill={is_fill(@form, @name)}>
-        <%= text_input @form, @name, type: @type %>
+        <%= text_input @form, @name, type: @type, readonly: @readonly %>
         <%= label @form, @name, @title, class: "label" %>
+        <.ui_icon :if={@readonly} icon="lock" />
         <%= if @show_error do %>
           <%= error_tag @form , @name %>
         <% end %>
@@ -32,12 +34,13 @@ defmodule NewnixWeb.Live.Components.Helper do
   attr :title, :string, required: true
   attr :type, :string, default: "text"
   attr :class, :string, default: ""
+  attr :readonly, :boolean, default: false
 
   def ui_datetime(assigns) do
     ~H"""
       <label class={"input_group #{@class}"} field-error={tag_has_error(@form, @name)} {@rest}
         field-fill={is_fill(@form, @name)}>
-        <%= datetime_local_input @form, @name, type: @type %>
+        <%= datetime_local_input @form, @name, type: @type, readonly: @readonly %>
         <%= label @form, @name, @title, class: "label" %>
       </label>
     """
@@ -49,12 +52,13 @@ defmodule NewnixWeb.Live.Components.Helper do
   attr :title, :string, required: true
   attr :show_error, :boolean, default: false
   attr :class, :string, default: ""
+  attr :readonly, :boolean, default: false
 
   def ui_textarea(assigns) do
     ~H"""
       <label class={"input_group #{@class}"} field-error={tag_has_error(@form, @name)}
         field-fill={is_fill(@form, @name)} id={@name}>
-        <%= textarea @form, @name %>
+        <%= textarea @form, @name, readonly: @readonly %>
         <%= label @form, @name, @title, class: "label" %>
         <%= if @show_error do %>
           <%= error_tag @form , @name %>
@@ -205,6 +209,26 @@ defmodule NewnixWeb.Live.Components.Helper do
     """
   end
 
+  attr :name, :atom, required: true
+  attr :title, :string, required: true
+  attr :active, :boolean, default: false
+  attr :sort, :atom, default: nil
+
+  def ui_table_sort(assigns) do
+    ~H"""
+      <th
+        phx-click="order" phx-value-name={@name}
+        class="group cursor-pointer hover:bg-gray-200">
+        <div class="flex-center justify-between pr-2">
+          <span><%= @title %></span>
+          <span class={"w-6 opacity-0 group-hover:opacity-100 #{if @active, do: "opacity-100", else: ""}"}>
+            <.ui_icon icon={@sort} />
+          </span>
+        </div>
+      </th>
+    """
+  end
+
   attr :table, :map, required: true
   attr :paginator, :map, required: true
 
@@ -314,7 +338,7 @@ defmodule NewnixWeb.Live.Components.Helper do
 
   def ui_icon(assigns) do
     ~H"""
-    <svg class={"w-5 h-5 #{@class}"} {@rest}><use href={"/images/icons.svg#icon-#{@icon}"}/></svg>
+    <svg class={"ui_icon w-5 h-5 #{@class}"} {@rest}><use href={"/images/icons.svg#icon-#{@icon}"}/></svg>
     """
   end
 
@@ -413,5 +437,16 @@ defmodule NewnixWeb.Live.Components.Helper do
   def subscribers_icon(1), do: "user"
   def subscribers_icon(2), do: "user-group"
   def subscribers_icon(_count), do: "users"
+
+  def hide_info_on_unsubscribe(%{unsubscribed_at: nil}), do: ""
+  def hide_info_on_unsubscribe(_), do: "blur"
+  def hide_info_on_unsubscribe(_, true), do: "blur"
+  def hide_info_on_unsubscribe(_, false), do: ""
+
+  def hide_info_on_unsubscribe(%{unsubscribed_at: nil} = sub, field), do: Map.get(sub, field)
+
+  def hide_info_on_unsubscribe(sub, field),
+    do: Regex.replace(~r/[a-zA-Z0-9-_.+]/, "#{Map.get(sub, field)}", "#")
+
   def skeleton_fake_data(schema, repeat \\ 20), do: 1..repeat |> Enum.map(fn _ -> schema end)
 end

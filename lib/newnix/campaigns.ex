@@ -37,8 +37,7 @@ defmodule Newnix.Campaigns do
               cs.campaign_id
             )
         },
-        group_by: c.id,
-        order_by: {:desc, c.inserted_at}
+        group_by: c.id
       )
 
     Pagination.all(query, opts)
@@ -163,8 +162,7 @@ defmodule Newnix.Campaigns do
           lastname: coalesce(cs.lastname, s.lastname),
           unsubscribed_at: cs.unsubscribed_at,
           subscribed_at: cs.subscribed_at
-        },
-        order_by: {:desc, s.inserted_at}
+        }
       )
 
     Pagination.all(query, opts)

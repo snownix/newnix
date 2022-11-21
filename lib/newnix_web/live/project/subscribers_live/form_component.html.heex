@@ -21,9 +21,9 @@
     </div>
 
     <div>
-      <.ui_input form={f} name={:email} show_error={true} type="email" title="Email" />
+      <.ui_input form={f} name={:email} readonly={@action == :edit} show_error={true} type="email" title="Email" />
     </div>
-  
+
     <div>
       <.ui_button phx_disable_with="Saving...">
         Save

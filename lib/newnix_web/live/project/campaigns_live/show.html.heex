@@ -24,9 +24,13 @@
       <section class="h-full overflow-y-auto">
         <.ui_table>
           <:thead class="bg-gray-50">
-            <th>Full name</th>
-            <th>Email</th>
-            <th>Date</th>
+            <.ui_table_sort active={@paginator.order == :firstname} sort={@paginator.sort} name={:firstname} title="First name" />
+            <.ui_table_sort active={@paginator.order == :lastname} sort={@paginator.sort} name={:lastname} title="Last name" />
+            <.ui_table_sort active={@paginator.order == :email} sort={@paginator.sort} name={:email} title="Email" />
+            <th>
+              Status
+            </th>
+            <.ui_table_sort active={@paginator.order == :inserted_at} sort={@paginator.sort} name={:inserted_at} title="Date" />
             <th>
               <span class="sr-only">Actions</span>
             </th>
@@ -34,22 +38,30 @@
           <:body>
             <%= for subscriber <- @table.entries do %>
               <tr class={skeleton_class(@loading)}>
-                <td><p skl><%= subscriber.firstname %> <%= subscriber.lastname %></p></td>
+                <td><p skl><%= subscriber.firstname %></p></td>
+                <td>
+                  <p skl class={hide_info_on_unsubscribe(subscriber)}>
+                  <%= hide_info_on_unsubscribe(subscriber, :lastname) %>
+                  </p>
+                </td>
                 <td class="hover:text-primary-800">
-                  <a skl href={"mailto:#{subscriber.email}"}><%= subscriber.email %></a>
+                  <a class={hide_info_on_unsubscribe(subscriber)} skl ><%= hide_info_on_unsubscribe(subscriber, :email) %></a>
+                </td>
+                <td>
+                  <span class="group flex-center relative">
+                    <%= if subscriber.unsubscribed_at do %>
+                      <.ui_icon icon="no-symbol" />
+                      <div class="hidden group-hover:flex flex-col absolute left-4 bg-gray-100 border border-dark-50 rounded px-2 py-1 w-max">
+                        <span class="text-xs text-gray-500">Unsubscribed</span>
+                        <.ui_datetime_display skl class="text-dark-50" time={subscriber.unsubscribed_at} />
+                      </div>
+                    <% else %>
+                        <.ui_icon icon="plus" />
+                    <% end %>
+                  </span>
                 </td>
                 <td class="low">
-                  <%= if subscriber.unsubscribed_at do %>
-                    <span class="flex-center">
-                      <.ui_icon icon="no-symbol" />
-                      <.ui_datetime_display skl time={subscriber.unsubscribed_at} />
-                    </span>
-                    <% else %>
-                    <span class="flex-center">
-                      <.ui_icon icon="plus" />
-                      <.ui_datetime_display skl time={subscriber.subscribed_at} />
-                    </span>
-                  <% end %>
+                  <.ui_datetime_display skl time={subscriber.subscribed_at} />
                 </td>
                 <td class="actions space-x-2">
                   <button
@@ -63,7 +75,7 @@
                   <.link skl patch={Routes.project_campaigns_show_path(@socket, :show_subscriber, @campaign.id, subscriber)}>
                     <.ui_icon class="w-6 h-6" icon="eye" />
                   </.link>
-                  <.link skl patch={Routes.project_campaigns_show_path(@socket, :edit_subscriber, @campaign.id, subscriber.id)}>
+                  <.link skl :if={is_nil(subscriber.unsubscribed_at)} patch={Routes.project_campaigns_show_path(@socket, :edit_subscriber, @campaign.id, subscriber.id)}>
                     <.ui_icon class="w-6 h-6" icon="pencil-square" />
                   </.link>
                   <.link skl phx-click="delete" phx-value-id={subscriber.id} data={[confirm: "Are you sure?"]}>

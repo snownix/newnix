@@ -12,7 +12,7 @@ defmodule NewnixWeb.Live.Project.CampaignsLive.Index do
   defp put_initial_assigns(socket) do
     socket
     |> assign(:loading, true)
-    |> assign(:campaigns, %{
+    |> assign(:table, %{
       meta: nil,
       entries:
         skeleton_fake_data(%Campaign{
@@ -25,6 +25,19 @@ defmodule NewnixWeb.Live.Project.CampaignsLive.Index do
         })
     })
     |> fetch_records()
+    |> put_initial_paginator()
+  end
+
+  defp put_initial_paginator(socket) do
+    socket
+    |> assign(:paginator, %{
+      page: 1,
+      limit: 20,
+      sort: :desc,
+      order: :inserted_at,
+      pages: 0,
+      allowed_orders: [:inserted_at, :name, :subscribers_count, :start_at]
+    })
   end
 
   @impl true
@@ -42,17 +55,49 @@ defmodule NewnixWeb.Live.Project.CampaignsLive.Index do
     {:noreply, socket |> fetch_records()}
   end
 
+  # Paginator
+  @impl true
+  def handle_event("order", %{"name" => name}, socket) do
+    sort = if socket.assigns.paginator.sort == :asc, do: :desc, else: :asc
+
+    {:noreply,
+     socket |> update_table_paginator(%{page: 1, order: String.to_atom(name), sort: sort})}
+  end
+
+  # Paginator
+  @impl true
+  def handle_event("page", %{"page" => page}, socket) do
+    {:noreply, socket |> update_table_paginator(%{page: String.to_integer(page)})}
+  end
+
+  # Paginator
+  @impl true
+  def handle_event("pagination", %{"pagination" => %{"page" => page, "limit" => limit}}, socket) do
+    {:noreply,
+     socket
+     |> update_table_paginator(%{page: String.to_integer(page), limit: String.to_integer(limit)})}
+  end
+
   @impl true
   def handle_info(:update, socket) do
     {:noreply, update_info(socket)}
   end
 
-  defp update_info(%{assigns: %{project: project}} = socket) do
-    campaigns = Campaigns.list_campaigns(project)
+  defp update_info(%{assigns: %{project: project, paginator: paginator}} = socket) do
+    campaigns = Campaigns.list_campaigns(project, Map.to_list(paginator))
 
     socket
-    |> assign(:campaigns, campaigns)
+    |> assign(:table, campaigns)
     |> assign(:loading, false)
+  end
+
+  # Paginator
+  defp update_table_paginator(%{assigns: %{paginator: paginator}} = socket, params) do
+    paginator = Map.merge(paginator, params)
+
+    socket
+    |> assign(:paginator, paginator)
+    |> update_info()
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
