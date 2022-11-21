@@ -54,15 +54,15 @@ defmodule NewnixWeb.Live.Project.DashboardLive.Index do
     |> assign(:latest_subscribers, [])
   end
 
-  defp company_selected(id, %{"save_states" => %{"campaign" => cid}}) when cid === id, do: true
+  defp company_selected(id, %{"states" => %{"campaign" => cid}}) when cid === id, do: true
   defp company_selected(_id, _), do: false
-  defp period_selected(id, %{"save_states" => %{"period" => cid}}) when cid === id, do: true
+  defp period_selected(id, %{"states" => %{"period" => cid}}) when cid === id, do: true
   defp period_selected(_id, _), do: false
 
   def put_latest_subscribers(%{assigns: assigns} = socket) do
     %{project: project} = assigns
 
-    %Paginator.Page{entries: entries} = Subscribers.list_subscribers(project, limit: 5)
+    %{entries: entries} = Subscribers.list_subscribers(project, limit: 5)
 
     socket |> assign(:latest_subscribers, entries)
   end
@@ -139,12 +139,12 @@ defmodule NewnixWeb.Live.Project.DashboardLive.Index do
           title: d.day_date,
           bars: [
             %{
-              value: Float.round(d.subscribers / maxSubs * 100, 2),
-              color: @green_color
-            },
-            %{
               value: Float.round(d.unsubscribers / maxSubs * 100, 2),
               color: @red_color
+            },
+            %{
+              value: Float.round(d.subscribers / maxSubs * 100, 2),
+              color: @green_color
             }
           ]
         }

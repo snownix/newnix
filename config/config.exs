@@ -10,6 +10,9 @@ import Config
 config :newnix,
   ecto_repos: [Newnix.Repo]
 
+config :flop,
+  repo: Newnix.Repo
+
 # Configures the endpoint
 config :newnix, NewnixWeb.Endpoint,
   url: [host: "localhost"],

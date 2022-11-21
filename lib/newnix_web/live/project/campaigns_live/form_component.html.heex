@@ -12,20 +12,39 @@
     phx-submit="save"
     class="flex flex-col space-y-4">
     <div>
-      <.ui_input form={f} name={:name} title="Campaign Name" />
+      <.ui_input form={f} name={:name} title="Campaign Name" show_error={true} />
     </div>
 
     <div>
-      <.ui_textarea form={f} name={:description} title="Campaign Description" />
+      <.ui_textarea form={f} name={:description} title="Campaign Description" show_error={true} />
     </div>
 
+
     <div>
-      <.ui_datetime form={f} type="datetime-local" name={:start_at} title="Start Date" />
+      <h2 class="font-semibold text-sm inline-flex-center">
+        <.ui_icon icon="clock" class="w-5 h-5" />
+        <span>Campaign Duration</span>
+      </h2>
     </div>
-    <div>
-      <.ui_datetime form={f} type="datetime-local" name={:expire_at} title="End Date" />
+    <div class="inline-flex-center">
+      <div class="w-full">
+        <.ui_datetime form={f} type="datetime-local" name={:start_at} title="Start Date" />
+      </div>
+
+      <div class="w-full">
+        <.ui_datetime form={f} type="datetime-local" name={:expire_at} title="End Date" />
+      </div>
     </div>
-  
+
+    <%= error_tag f, :start_at %>
+    <%= error_tag f, :expire_at %>
+
+    <div class="label">
+      <div class="status" type={status(@changeset)}>
+        Status: <span class="capitalize"><%= status(@changeset) %></span>
+      </div>
+    </div>
+
     <div>
       <.ui_button phx_disable_with="Saving...">
         Save

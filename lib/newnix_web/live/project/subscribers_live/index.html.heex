@@ -1,17 +1,19 @@
-  <div class="flex flex-col pt-6 space-y-8">
-    <.ui_page_head
-      title="Subscribers"
-      description="A list of all the subscribers in your project, with their name, description, start and end dates."
-      icon="user-group">
-      <:action>
-        <.ui_button theme="primary" size="small" href={Routes.project_subscribers_index_path(@socket, :new)}>
-          <.ui_icon icon="plus"/>
-          <span><%= gettext "New Subscriber" %></span>
-        </.ui_button>
-      </:action>
-    </.ui_page_head>
-    <div class="flex-1 overflow-y-auto">
-      <%= if Enum.count(@subscribers.entries) > 0 do %>
+<div class="flex flex-1 h-full max-h-screen flex-col pt-6 space-y-8">
+  <.ui_page_head title="Subscribers"
+    description="A list of all the subscribers in your project, with their name, description, start and end dates."
+    icon="user-group">
+    <:action>
+      <.ui_button theme="primary" size="small" href={Routes.project_subscribers_index_path(@socket, :new)}>
+        <.ui_icon icon="plus" />
+        <span>
+          <%= gettext "New Subscriber" %>
+        </span>
+      </.ui_button>
+    </:action>
+  </.ui_page_head>
+  <div class="flex flex-col h-full max-h-full overflow-hidden">
+    <%= if @table.metadata.pages > 0 do %>
+      <section class="h-full overflow-y-auto">
         <.ui_table>
           <:thead class="bg-gray-50">
             <th>Full name</th>
@@ -21,67 +23,60 @@
               <span class="sr-only">Actions</span>
             </th>
           </:thead>
-          <:tbody>
-            <%= for subscriber <- @subscribers.entries do %>
+          <:body>
+            <%= for subscriber <- @table.entries do %>
               <tr class={skeleton_class(@loading)}>
-                <td><p skl><%= subscriber.firstname %> <%= subscriber.lastname %></p></td>
+                <td>
+                  <p skl>
+                    <%= subscriber.firstname %>
+                      <%= subscriber.lastname %>
+                  </p>
+                </td>
                 <td class="hover:text-primary-800">
-                  <a skl href={"mailto:#{subscriber.email}"}><%= subscriber.email %></a>
+                  <a skl href={"mailto:#{subscriber.email}"}>
+                    <%= subscriber.email %>
+                  </a>
                 </td>
                 <td class="low">
                   <.ui_datetime_display skl time={subscriber.inserted_at} />
                 </td>
                 <td class="actions">
-                    <.link skl patch={Routes.project_subscribers_index_path(@socket, :show, subscriber)}>
-                      <.ui_icon class="w-6 h-6" icon="eye" />
-                    </.link>
-                    <.link skl patch={Routes.project_subscribers_index_path(@socket, :edit, subscriber)}>
-                      <.ui_icon class="w-6 h-6" icon="pencil-square" />
-                    </.link>
-                    <.link skl phx-click="delete" phx-value-id={subscriber.id} data={[confirm: "Are you sure?"]}>
-                      <.ui_icon class="w-6 h-6" icon="trash" />
-                    </.link>
-                  </td>
+                  <.link skl patch={Routes.project_subscribers_index_path(@socket, :show, subscriber)}>
+                    <.ui_icon class="w-6 h-6" icon="eye" />
+                  </.link>
+                  <.link skl patch={Routes.project_subscribers_index_path(@socket, :edit, subscriber)}>
+                    <.ui_icon class="w-6 h-6" icon="pencil-square" />
+                  </.link>
+                  <.link skl phx-click="delete" phx-value-id={subscriber.id} data={[confirm: "Are you sure?" ]}>
+                    <.ui_icon class="w-6 h-6" icon="trash" />
+                  </.link>
+                </td>
               </tr>
-            <% end %>
-          </:tbody>
+              <% end %>
+          </:body>
         </.ui_table>
+      </section>
+      <.ui_table_paginator table={@table} paginator={@paginator} />
       <% else %>
         <div class="flex items-center justify-center h-full">
-          <.live_component
-            id="empty-subscribers"
-            module={NewnixWeb.Live.Components.Cards.EmptyStateComponent}
-            title="Subscriber"
-            icon="user-group"
-            href={Routes.project_subscribers_index_path(@socket, :new)}
-            />
+          <.live_component id="empty-subscribers" module={NewnixWeb.Live.Components.Cards.EmptyStateComponent}
+            title="Subscriber" icon="user-group" href={Routes.project_subscribers_index_path(@socket, :new)} />
         </div>
       <% end %>
-    </div>
   </div>
+</div>
 <%= if @live_action in [:new, :edit] do %>
   <.rightbar_modal return_to={Routes.project_subscribers_index_path(@socket, :index)}>
-    <.live_component
-      module={NewnixWeb.Live.Project.SubscribersLive.FormComponent}
-      id={@subscriber.id || :new}
-      title={@page_title}
-      action={@live_action}
-      project={@project}
-      campaigns={@campaigns}
-      subscriber={@subscriber}
-      return_to={Routes.project_subscribers_index_path(@socket, :index)}
-    />
+    <.live_component module={NewnixWeb.Live.Project.SubscribersLive.FormComponent} id={@subscriber.id || :new}
+      title={@page_title} action={@live_action} project={@project} campaigns={@campaigns} subscriber={@subscriber}
+      return_to={Routes.project_subscribers_index_path(@socket, :index)} />
   </.rightbar_modal>
 <% end %>
 
 
-<%= if @live_action === :show do %>
+<%= if @live_action===:show do %>
   <.rightbar_modal return_to={Routes.project_subscribers_index_path(@socket, :index)}>
-    <.live_component
-      module={NewnixWeb.Live.Project.SubscribersLive.ShowComponent}
-      id={@subscriber.id}
-      subscriber={@subscriber}
-      return_to={Routes.project_subscribers_index_path(@socket, :index)}
-    />
+    <.live_component module={NewnixWeb.Live.Project.SubscribersLive.ShowComponent} id={@subscriber.id}
+      subscriber={@subscriber} return_to={Routes.project_subscribers_index_path(@socket, :index)} />
   </.rightbar_modal>
 <% end %>

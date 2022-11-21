@@ -5,6 +5,7 @@ defmodule Newnix.Campaigns do
 
   import Ecto.Query
   alias Newnix.Repo
+  alias Newnix.Pagination
   alias Newnix.Projects.Project
   alias Newnix.Campaigns.Campaign
   alias Newnix.Campaigns.CampaignSubscriber
@@ -20,30 +21,27 @@ defmodule Newnix.Campaigns do
 
   """
   def list_campaigns(project = %Project{}, opts \\ []) do
-    limit = Keyword.get(opts, :limit, 50)
+    query =
+      from(c in Campaign,
+        left_join: cs in CampaignSubscriber,
+        on: cs.campaign_id == c.id,
+        where: c.project_id == ^project.id,
+        select_merge: %{
+          unsubscribers_count: count(cs.unsubscribed_at),
+          subscribers_count:
+            fragment(
+              "COUNT(DISTINCT(CASE WHEN ? IS NULL AND ? IS NOT NULL THEN (?,?) ELSE NULL END))",
+              cs.unsubscribed_at,
+              cs.campaign_id,
+              cs.subscriber_id,
+              cs.campaign_id
+            )
+        },
+        group_by: c.id,
+        order_by: {:desc, c.inserted_at}
+      )
 
-    from(c in Campaign,
-      left_join: cs in CampaignSubscriber,
-      on: cs.campaign_id == c.id,
-      where: c.project_id == ^project.id,
-      select_merge: %{
-        unsubscribers_count: count(cs.unsubscribed_at),
-        subscribers_count:
-          fragment(
-            "COUNT(DISTINCT(CASE WHEN ? IS NULL AND ? IS NOT NULL THEN (?,?) ELSE NULL END))",
-            cs.unsubscribed_at,
-            cs.campaign_id,
-            cs.subscriber_id,
-            cs.campaign_id
-          )
-      },
-      group_by: c.id,
-      order_by: {:desc, c.inserted_at}
-    )
-    |> Repo.paginate(
-      cursor_fields: [:inserted_at, :id],
-      limit: Repo.secure_allowed_limit(limit)
-    )
+    Pagination.all(query, opts)
   end
 
   def meta_list_campaigns(project = %Project{}) do
@@ -150,29 +148,26 @@ defmodule Newnix.Campaigns do
   ## Examples
 
       iex> list_subscribers(%Campaign{}, limit: 50)
-      %{entries: [%Subscriber{}, ...], metadata: %Paginator.Page.Metadata{}}
+      %{entries: [%Subscriber{}, ...], metadata: %{}}
 
   """
   def list_subscribers(campaign = %Campaign{}, opts \\ []) do
-    limit = Keyword.get(opts, :limit, 50)
+    query =
+      from(
+        s in Subscriber,
+        join: cs in CampaignSubscriber,
+        on: cs.subscriber_id == s.id,
+        where: cs.campaign_id == ^campaign.id,
+        select_merge: %{
+          firstname: coalesce(cs.firstname, s.firstname),
+          lastname: coalesce(cs.lastname, s.lastname),
+          unsubscribed_at: cs.unsubscribed_at,
+          subscribed_at: cs.subscribed_at
+        },
+        order_by: {:desc, s.inserted_at}
+      )
 
-    from(
-      s in Subscriber,
-      join: cs in CampaignSubscriber,
-      on: cs.subscriber_id == s.id,
-      where: cs.campaign_id == ^campaign.id,
-      select_merge: %{
-        firstname: coalesce(cs.firstname, s.firstname),
-        lastname: coalesce(cs.lastname, s.lastname),
-        unsubscribed_at: cs.unsubscribed_at,
-        subscribed_at: cs.subscribed_at
-      },
-      order_by: {:desc, s.inserted_at}
-    )
-    |> Repo.paginate(
-      cursor_fields: [:inserted_at, :id],
-      limit: Repo.secure_allowed_limit(limit)
-    )
+    Pagination.all(query, opts)
   end
 
   @doc """
@@ -206,7 +201,7 @@ defmodule Newnix.Campaigns do
     |> Repo.one!()
   end
 
-  def subscribers_stats(%Project{} = project, campaignsIds \\ [], opts \\ []) do
+  def subscribers_stats(%Project{} = project, campaigns_id \\ [], opts \\ []) do
     start_date = Keyword.get(opts, :start_date, nil)
 
     from(
@@ -214,7 +209,7 @@ defmodule Newnix.Campaigns do
       join: cs in CampaignSubscriber,
       join: c in Campaign,
       on: cs.subscriber_id == s.id and cs.campaign_id == c.id,
-      where: ^with_project_campaigns(project, campaignsIds, start_date),
+      where: ^with_project_campaigns(project, campaigns_id, start_date),
       select: %{
         unsubscribers: count(cs.unsubscribed_at),
         subscribers:
@@ -229,10 +224,10 @@ defmodule Newnix.Campaigns do
     |> Repo.one()
   end
 
-  defp with_project_campaigns(project, campaignsIds, start_date) do
+  defp with_project_campaigns(project, campaigns_id, start_date) do
     dynamic(
       [s, cs, c],
-      cs.campaign_id in ^campaignsIds and
+      cs.campaign_id in ^campaigns_id and
         c.project_id == ^project.id and
         ^with_start_date(start_date)
     )
@@ -250,7 +245,7 @@ defmodule Newnix.Campaigns do
           day_date: "01-12-2022"
         }, ...]
   """
-  def subscribers_chart_stats(%Project{} = project, campaignsIds \\ [], opts \\ []) do
+  def subscribers_chart_stats(%Project{} = project, campaigns_id \\ [], opts \\ []) do
     start_date = Keyword.get(opts, :start_date, nil)
     date_format = to_char_format(Keyword.get(opts, :format_date, :days))
 
@@ -259,7 +254,7 @@ defmodule Newnix.Campaigns do
       join: cs in CampaignSubscriber,
       join: c in Campaign,
       on: cs.subscriber_id == s.id and cs.campaign_id == c.id,
-      where: ^with_project_campaigns(project, campaignsIds, start_date),
+      where: ^with_project_campaigns(project, campaigns_id, start_date),
       select: %{
         unsubscribers: count(cs.unsubscribed_at),
         subscribers:

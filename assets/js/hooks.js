@@ -26,30 +26,29 @@ module.exports = {
     },
     SaveState: {
         stateKey: null,
-        stateName: null,
         mounted() {
-            this.stateKey = statePrefix + this.el.getAttribute('id');
-            if (!this.stateKey) {
-                throw `State key ${this.stateKey} not found !`;
+            const key = this.el.getAttribute('id');
+            if (!key) {
+                throw `State key ${key} not found !`;
             }
 
-            this.stateName = this.el.getAttribute('name');
-
-            this.el.addEventListener('change', () => {
-                this.setState(this.el.value);
-            });
+            this.stateKey = statePrefix + key + this.getStateName();
+            this.el.addEventListener('change', () => this.setState(this.el.value));
+        },
+        getStateName() {
+            return this.el.getAttribute('state-name') || this.el.getAttribute('name');
         },
         readState() {
             return localStorage.getItem(this.stateKey);
         },
         setState(value) {
             localStorage.setItem(this.stateKey, JSON.stringify({
-                name: this.stateName,
+                name: this.getStateName(),
                 value: value
             }));
         },
-        all() {
-            let vals = {};
+        getAllStates() {
+            const vals = {};
 
             for (const stateKey in localStorage) {
                 try {

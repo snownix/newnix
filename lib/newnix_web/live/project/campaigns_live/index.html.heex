@@ -22,12 +22,12 @@
               <span class="sr-only">Actions</span>
             </th>
           </:thead>
-          <:tbody>
+          <:body>
             <%= for campaign <- @campaigns.entries do %>
               <tr class={skeleton_class(@loading)}>
                 <td>
                   <p class="font-semibold" skl><%= campaign.name %></p>
-                  <p class="text-grai text-sm break-words w-80" skl><%= campaign.description %></p>
+                  <p class="hidden xl:block text-grai text-sm" skl><%= campaign.description %></p>
                 </td>
                 <td>
                   <div class="flex flex-col">
@@ -43,21 +43,21 @@
                 </td>
                 <td>
                   <div skl class="capitalize">
-                    <span class="px-3 py-1 rounded-md bg-gray-100 text-dark-400 text-md"><%= current_status(campaign) %></span>
+                    <span type={current_status(campaign)} class="status">
+                      <%= current_status(campaign) %>
+                    </span>
                   </div>
                 </td>
                 <td>
-                  <div class="flex flex-col space-y-1">
-                    <span class="text-sm text-gray-700" skl>
+                    <span class="low" skl>
                       <.ui_datetime_display time={campaign.start_at} />
                     </span>
-                    <span class="text-sm text-gray-700" skl>
+                    <span class="low" skl>
                       <.ui_datetime_display time={campaign.expire_at} />
                     </span>
-                  </div>
                 </td>
                 <td class="actions">
-                  <.link skl patch={Routes.project_campaigns_show_path(@socket, :show, campaign)}>
+                  <.link skl navigate={Routes.project_campaigns_show_path(@socket, :show, campaign)}>
                     <.ui_icon class="w-6 h-6" icon="inbox" />
                   </.link>
                   <.link skl patch={Routes.project_campaigns_index_path(@socket, :edit, campaign)}>
@@ -69,7 +69,7 @@
                 </td>
               </tr>
             <% end %>
-          </:tbody>
+          </:body>
         </.ui_table>
       <% else %>
         <div class="flex h-full items-center justify-center">

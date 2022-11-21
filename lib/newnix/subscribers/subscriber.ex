@@ -58,4 +58,7 @@ defmodule Newnix.Subscribers.Subscriber do
     |> change()
     |> put_assoc(:campaign_subscriber, campaigns)
   end
+
+  def get_email(changeset), do: get_field(changeset, :email)
+  def get_campaign(changeset), do: get_field(changeset, :campaign)
 end

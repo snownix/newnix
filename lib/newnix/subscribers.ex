@@ -7,6 +7,7 @@ defmodule Newnix.Subscribers do
   import Ecto.Changeset, only: [get_field: 2]
 
   alias Newnix.Repo
+  alias Newnix.Pagination
   alias Newnix.Projects.Project
   alias Newnix.Subscribers.Subscriber
   alias Newnix.Campaigns.Campaign
@@ -54,8 +55,6 @@ defmodule Newnix.Subscribers do
 
   """
   def list_subscribers(project = %Project{}, opts \\ []) do
-    limit = Keyword.get(opts, :limit, 50)
-
     query =
       from(
         s in Subscriber,
@@ -74,11 +73,7 @@ defmodule Newnix.Subscribers do
         ]
       )
 
-    Repo.paginate(
-      query,
-      cursor_fields: [:inserted_at, :id],
-      limit: Repo.secure_allowed_limit(limit)
-    )
+    Pagination.all(query, opts)
   end
 
   def meta_list_subscribers(project = %Project{}) do
@@ -121,14 +116,14 @@ defmodule Newnix.Subscribers do
     Repo.one!(query)
   end
 
-  def get_subscription_by_email!(campaign = %Campaign{}, email) do
+  def get_subscription_by_email(campaign = %Campaign{}, email) do
     query =
       from cs in CampaignSubscriber,
         join: s in Subscriber,
         on: s.id == cs.subscriber_id,
         where: s.email == ^email and cs.campaign_id == ^campaign.id
 
-    Repo.one!(query)
+    Repo.one(query)
   end
 
   @doc """
@@ -167,7 +162,7 @@ defmodule Newnix.Subscribers do
     %Subscriber{}
     |> Subscriber.changeset(attrs)
     |> Subscriber.project_assoc(project)
-    |> insert_or_modify(project)
+    |> Repo.insert()
   end
 
   def create_subscriber(%Campaign{} = campaign, attrs) do
@@ -359,10 +354,10 @@ defmodule Newnix.Subscribers do
         {:ok, subscriber} |> notify_subscribers([:subscriber, :created])
 
       {:error, _error} ->
-        email = get_field(changeset, :email)
-        campaign = get_field(list_campaign_subscriber, :campaign)
+        email = Subscriber.get_email(changeset)
+        campaign = Subscriber.get_campaign(list_campaign_subscriber)
 
-        case get_subscription_by_email!(campaign, email) do
+        case get_subscription_by_email(campaign, email) do
           nil ->
             subscriber = get_subscriber_by_email!(project, email)
 
@@ -374,7 +369,7 @@ defmodule Newnix.Subscribers do
             |> Repo.update()
             |> notify_subscribers([:subscriber, :updated])
 
-          subscription ->
+          {:ok, subscription} ->
             CampaignSubscriber.changeset(subscription, %{
               "subscribed_at" => DateTime.utc_now(),
               "unsubscribed_at" => nil

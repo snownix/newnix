@@ -9,29 +9,6 @@ defmodule NewnixWeb.Live.Project.CampaignsLive.Show do
     {:ok, socket |> put_initial_assigns()}
   end
 
-  def put_initial_assigns(socket) do
-    socket
-    |> assign(
-      pagination: %{
-        limit: 50
-      }
-    )
-    |> assign(:loading, true)
-    |> assign(:campaign, nil)
-    |> assign(:subscribers, %{
-      meta: nil,
-      entries:
-        skeleton_fake_data(%Subscriber{
-          id: "loading",
-          firstname: "Loading",
-          lastname: "Loading",
-          email: "Loading",
-          inserted_at: DateTime.utc_now(),
-          updated_at: DateTime.utc_now()
-        })
-    })
-  end
-
   def handle_params(%{"id" => id} = params, _, %{assigns: assigns} = socket) do
     %{project: project, live_action: live_action} = assigns
 
@@ -66,13 +43,56 @@ defmodule NewnixWeb.Live.Project.CampaignsLive.Show do
     {:noreply, socket |> fetch_records()}
   end
 
-  def handle_info(:update, %{assigns: assigns} = socket) do
-    %{campaign: campaign} = assigns
+  # Paginator
+  def handle_event("page", %{"page" => page}, socket) do
+    {:noreply, socket |> update_table_paginator(page)}
+  end
 
+  # Paginator
+  def handle_event("pagination", %{"pagination" => %{"page" => page, "limit" => limit}}, socket) do
+    {:noreply, socket |> update_table_paginator(page, String.to_integer(limit))}
+  end
+
+  def handle_info(:update, socket) do
     {:noreply,
      socket
      |> assign(:loading, false)
-     |> assign_subscribers(campaign)}
+     |> assign_subscribers()}
+  end
+
+  def put_initial_assigns(socket) do
+    socket
+    |> assign(
+      pagination: %{
+        limit: 50
+      }
+    )
+    |> assign(:loading, true)
+    |> assign(:campaign, nil)
+    |> assign(:table, %{
+      metadata: nil,
+      entries:
+        skeleton_fake_data(%Subscriber{
+          id: "loading",
+          firstname: "Loading",
+          lastname: "Loading",
+          email: "Loading",
+          inserted_at: DateTime.utc_now(),
+          updated_at: DateTime.utc_now()
+        })
+    })
+    |> put_initial_paginator()
+  end
+
+  defp put_initial_paginator(socket) do
+    socket
+    |> assign(:paginator, %{
+      page: 1,
+      limit: 20,
+      order: :desc,
+      order_by: :inserted_at,
+      pages: 0
+    })
   end
 
   def toggle_subscriber(false, subscriber, campaign),
@@ -104,9 +124,30 @@ defmodule NewnixWeb.Live.Project.CampaignsLive.Show do
     |> assign(:subscriber, fetch_subscriber(campaign, sub_id))
   end
 
-  defp assign_subscribers(socket, campaign) do
+  defp assign_subscribers(socket) do
     socket
-    |> assign(:subscribers, fetch_subscribers(campaign))
+    |> fetch_subscribers()
+  end
+
+  # Paginator
+  defp update_table_paginator(%{assigns: %{paginator: paginator}} = socket, page, limit \\ nil) do
+    paginator =
+      Map.merge(paginator, %{
+        page: String.to_integer(page),
+        limit: limit || paginator.limit
+      })
+
+    socket
+    |> assign(:paginator, paginator)
+    |> fetch_subscribers()
+  end
+
+  defp fetch_subscribers(%{assigns: %{paginator: paginator, campaign: campaign}} = socket) do
+    %{metadata: metadata} = table = Campaigns.list_subscribers(campaign, Map.to_list(paginator))
+
+    socket
+    |> assign(:table, table)
+    |> assign(:paginator, Map.merge(paginator, metadata))
   end
 
   defp fetch_records(socket, loading \\ true) do
@@ -122,10 +163,6 @@ defmodule NewnixWeb.Live.Project.CampaignsLive.Show do
   defp fetch_subscriber(campaign, id) do
     Campaigns.get_campaign_subscriber!(campaign, id)
     |> Subscribers.fetch_campaigns()
-  end
-
-  defp fetch_subscribers(campaign, opts \\ []) do
-    Campaigns.list_subscribers(campaign, opts)
   end
 
   def subscribe_action(%{unsubscribed_at: unsubscribed_at}) when is_nil(unsubscribed_at),

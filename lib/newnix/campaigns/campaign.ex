@@ -36,12 +36,20 @@ defmodule Newnix.Campaigns.Campaign do
     timestamps()
   end
 
+  @maxlen_name 40
+  def maxlen_name(), do: @maxlen_name
+  @maxlen_description 500
+  def maxlen_description(), do: @maxlen_description
+
   def changeset(campaign, attrs) do
     campaign
     |> cast(attrs, [:name, :description, :start_at, :expire_at, :status])
     |> cast_assoc(:subscribers)
     |> cast_assoc(:campaign_subscriber)
     |> validate_required([:name])
+    |> validate_length(:name, max: @maxlen_name)
+    |> validate_length(:description, max: @maxlen_description)
+    |> validate_campaign_dates()
   end
 
   def project_assoc(changeset, project) do
@@ -49,7 +57,12 @@ defmodule Newnix.Campaigns.Campaign do
     |> put_assoc(:project, project)
   end
 
-  # "TODO:: check if between start & end(time left/progress), after end(expired), before start(ago),"
+  def campaign_status(%Ecto.Changeset{} = changeset) do
+    campaign_status(%Campaign{
+      start_at: get_field(changeset, :start_at),
+      expire_at: get_field(changeset, :expire_at)
+    })
+  end
 
   def campaign_status(%Campaign{} = campaign) do
     %{start_at: start_at, expire_at: expire_at} = campaign
@@ -89,6 +102,17 @@ defmodule Newnix.Campaigns.Campaign do
           true ->
             :draft
         end
+    end
+  end
+
+  defp validate_campaign_dates(changeset) do
+    start_at = get_field(changeset, :start_at)
+    expire_at = get_field(changeset, :expire_at)
+
+    if Date.compare(start_at, expire_at) == :gt do
+      add_error(changeset, :start_at, "Start date cannot be later than end date")
+    else
+      changeset
     end
   end
 end

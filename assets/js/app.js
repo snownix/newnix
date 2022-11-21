@@ -11,7 +11,7 @@ let liveSocket = new LiveSocket("/live", Socket, {
     hooks: Hooks,
     params: {
         _csrf_token: csrfToken,
-        save_states: Hooks.SaveState.all()
+        states: Hooks.SaveState.getAllStates()
     }
 })
 

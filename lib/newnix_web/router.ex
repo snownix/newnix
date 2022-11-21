@@ -90,6 +90,7 @@ defmodule NewnixWeb.Router do
 
       scope "/forms", Live.Project.FormsLive do
         live "/", Index, :index
+        live "/:cam_id", Index, :index
         live "/new", Index, :new
 
         live "/:id/edit", Index, :edit

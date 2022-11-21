@@ -19,6 +19,7 @@ defmodule Newnix.Repo.Migrations.CreateSubscribers do
     end
 
     create unique_index(:subscribers, [:email, :project_id])
+    create index(:subscribers, [:inserted_at, :id])
 
     create table(:campaign_subscriber, primary_key: false) do
       add :id, :uuid, primary_key: true
@@ -38,6 +39,7 @@ defmodule Newnix.Repo.Migrations.CreateSubscribers do
       timestamps(type: :utc_datetime_usec)
     end
 
+    create index(:campaign_subscriber, [:inserted_at, :id])
     create(unique_index(:campaign_subscriber, [:campaign_id, :subscriber_id]))
   end
 end

@@ -47,6 +47,7 @@ defmodule NewnixWeb.Live.Components.Helper do
   attr :name, :string, required: true
   attr :form, :string, required: true
   attr :title, :string, required: true
+  attr :show_error, :boolean, default: false
   attr :class, :string, default: ""
 
   def ui_textarea(assigns) do
@@ -55,6 +56,9 @@ defmodule NewnixWeb.Live.Components.Helper do
         field-fill={is_fill(@form, @name)} id={@name}>
         <%= textarea @form, @name %>
         <%= label @form, @name, @title, class: "label" %>
+        <%= if @show_error do %>
+          <%= error_tag @form , @name %>
+        <% end %>
       </label>
     """
   end
@@ -105,12 +109,15 @@ defmodule NewnixWeb.Live.Components.Helper do
   attr :theme, :string, default: "simple"
   attr :class, :string, default: ""
   attr :href, :string, default: nil
+  attr :navigate, :string, default: nil
   attr :size, :string, default: ""
 
   def ui_button(assigns) do
     ~H"""
-      <%= if !is_nil(@href) do %>
-        <.link class={"button " <> @theme <> " " <> @size <> " " <> @class} {@rest} patch={@href}>
+      <%= if !is_nil(@href) or !is_nil(@navigate) do %>
+        <.link
+          class={"button " <> @theme <> " " <> @size <> " " <> @class} {@rest}
+          patch={@href} navigate={@navigate}>
           <%= render_slot(@inner_block) %>
         </.link>
       <% else %>
@@ -176,21 +183,63 @@ defmodule NewnixWeb.Live.Components.Helper do
   end
 
   slot(:thead, required: true)
-  slot(:tbody, required: true)
+  slot(:body, required: true)
+  slot(:footer, required: false)
   attr :columns, :map, default: []
 
   def ui_table(assigns) do
     ~H"""
     <table class="table">
-      <thead class="bg-gray-50">
+      <thead :if={@thead} class="bg-gray-50">
         <tr>
           <%= render_slot(@thead) %>
         </tr>
       </thead>
       <tbody class="divide-y divide-gray-100 bg-white">
-        <%= render_slot(@tbody) %>
+        <%= render_slot(@body) %>
       </tbody>
+      <tfoot :if={@footer} class="divide-y divide-gray-100 bg-white">
+        <%= render_slot(@footer) %>
+      </tfoot>
     </table>
+    """
+  end
+
+  attr :table, :map, required: true
+  attr :paginator, :map, required: true
+
+  def ui_table_paginator(assigns) do
+    ~H"""
+       <section class="table_paginator__">
+        <%= form_for :pagination, "#", [phx_change: "pagination", class: "_footer border-t px-4 py-2 justify-between flex w-full items-center" ], fn f ->%>
+          <div class="flex items-center space-x-2 ">
+            <%= select f, :limit, Enum.map(1..5, &(&1 * 5)), class: "select" , value: @paginator.limit %>
+            <label>Lines </label>
+          </div>
+          <div class="flex">
+            <a :if={@table.metadata.has_prev} href="#" class="btn sm light" phx-click="page" phx-value-page={@table.metadata.prev_page}>
+              <.ui_icon icon="chevron-left" />
+            </a>
+            <div class="flex  divide-x divide-gray-300 items-center">
+              <p class="px-2">Total:
+                <span>
+                  <%= @table.metadata.count %>
+                </span>
+              </p>
+              <p class="px-2">
+                Page: <span><%= @table.metadata.page %> / <%= @paginator.pages %></span>
+              </p>
+            </div>
+            <a :if={@table.metadata.has_next} href="#" class="btn sm light" phx-click="page" phx-value-page={@table.metadata.next_page}>
+              <.ui_icon icon="chevron-right" />
+            </a>
+          </div>
+          <div class="flex items-center space-x-2 ">
+            <label>Page </label>
+            <%= select f, :page, 1..(@paginator.pages || 1), class: "select" , value: @paginator.page %>
+          </div>
+          <% end %>
+      </section>
     """
   end
 
@@ -250,7 +299,7 @@ defmodule NewnixWeb.Live.Components.Helper do
           </h1>
           <p class="mt-2 text-sm text-grai"><%= @description %></p>
         </div>
-        <div class="sm:ml-16 sm:flex-none">
+        <div class="sm:ml-16 sm:flex-none flex items-center md:space-x-2">
           <%= if @action do %>
             <%= render_slot(@action) %>
           <% end %>

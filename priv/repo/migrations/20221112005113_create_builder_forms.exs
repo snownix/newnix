@@ -31,6 +31,7 @@ defmodule Newnix.Repo.Migrations.CreateBuilderForms do
       timestamps(type: :utc_datetime_usec)
     end
 
+    create index(:builder_forms, [:inserted_at, :id])
     create index(:builder_forms, [:campaign_id])
   end
 end

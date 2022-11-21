@@ -5,6 +5,7 @@ defmodule Newnix.Builder do
 
   import Ecto.Query
   alias Newnix.Repo
+  alias Newnix.Pagination
   alias Newnix.Builder.Form
   alias Newnix.Projects.Project
 
@@ -54,16 +55,29 @@ defmodule Newnix.Builder do
 
   """
   def list_forms(project = %Project{}, opts \\ []) do
-    limit = Keyword.get(opts, :limit, 50)
+    campaigns_id = Keyword.get(opts, :campaigns_id, [])
 
-    from(f in Form,
-      where: f.project_id == ^project.id,
-      order_by: {:desc, f.inserted_at},
-      preload: [:campaign]
-    )
-    |> Repo.paginate(
-      cursor_fields: [:inserted_at, :id],
-      limit: Repo.secure_allowed_limit(limit)
+    query =
+      from(f in Form,
+        left_join: c in assoc(f, :campaign),
+        order_by: {:desc, f.inserted_at},
+        where: ^with_project_campaigns(project, campaigns_id),
+        preload: [:campaign]
+      )
+
+    %{entries: Repo.all(query), metdata: %{}}
+  end
+
+  defp with_project_campaigns(project, campaigns_id)
+       when is_nil(campaigns_id) or campaigns_id == [] do
+    dynamic([f], f.project_id == ^project.id)
+  end
+
+  defp with_project_campaigns(project, campaigns_id) do
+    dynamic(
+      [f],
+      f.campaign_id in ^campaigns_id and
+        f.project_id == ^project.id
     )
   end
 

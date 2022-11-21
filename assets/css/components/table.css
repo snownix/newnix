@@ -1,12 +1,12 @@
 .table {
-	@apply w-full divide-y divide-gray-300 border-b text-dark-300 table-fixed 2xl:table-auto;
+	@apply w-full divide-y divide-gray-300 border-b text-dark-300 table-auto;
 }
 .table th {
 	@apply py-3.5 text-left text-sm font-semibold pl-2 md:pl-4;
 }
 
 .table tr td {
-	@apply whitespace-nowrap py-4 pr-3 text-base font-medium pl-2 md:pl-4;
+	@apply py-4 pr-3 text-base font-medium pl-2 md:pl-4;
 }
 
 .table th:first-child,
@@ -18,14 +18,34 @@
 	@apply lg:pr-8;
 }
 
-.table * {
-	@apply truncate;
-}
-
 .table .low {
 	@apply whitespace-nowrap px-3 py-4 text-sm text-gray-500;
 }
 
 .table .actions {
 	@apply flex items-center justify-end space-x-2;
+}
+
+.table .actions * {
+	@apply flex-shrink-0;
+}
+
+.table .status,
+.label .status {
+	@apply px-3 py-1 rounded bg-gray-100 text-dark-400 text-sm;
+}
+
+.table .status[type="active"],
+.label .status[type="active"] {
+	@apply bg-green-400 text-white;
+}
+
+.table .status[type="future"],
+.label .status[type="future"] {
+	@apply bg-orange-400 text-white;
+}
+
+.table .status[type="expired"],
+.label .status[type="expired"] {
+	@apply bg-dark-400 text-white;
 }

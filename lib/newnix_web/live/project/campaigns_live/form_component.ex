@@ -2,6 +2,7 @@ defmodule NewnixWeb.Live.Project.CampaignsLive.FormComponent do
   use NewnixWeb, :live_component
 
   alias Newnix.Campaigns
+  alias Newnix.Campaigns.Campaign
 
   @impl true
   def update(%{campaign: campaign, project: _project} = assigns, socket) do
@@ -51,5 +52,9 @@ defmodule NewnixWeb.Live.Project.CampaignsLive.FormComponent do
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset: changeset)}
     end
+  end
+
+  def status(changeset) do
+    Campaign.campaign_status(changeset)
   end
 end

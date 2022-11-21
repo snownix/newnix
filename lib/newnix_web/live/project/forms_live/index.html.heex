@@ -1,18 +1,30 @@
 <main class={"text-dark-50 py-6 #{skeleton_class(@loading)}"}>
   <.ui_page_head title="Forms Builder" description="Modify your campaigns forms here." icon="window">
     <:action>
-      <.ui_button href={Routes.project_forms_index_path(@socket, :new)} theme="dark" size="small">
+      <div class="search__ flex items-center">
+        <form class="flex items-center space-x-4 justify-between">
+          <select class="select" name="campaign"  id="select-campaign"
+            phx-change="select-campaign" phx-hook="SaveState" state-name="forms:campaign_id"
+            >
+            <option>All Campaigns</option>
+            <option :for={campaign <- @campaigns_options} value={campaign.value} selected={campaign.selected}>
+              <%= campaign.label %>
+            </option>
+          </select>
+        </form>
+      </div>
+      <.ui_button href={Routes.project_forms_index_path(@socket, :new)} theme="primary" size="small">
         <.ui_icon icon="plus" />
         <span>New Form</span>
       </.ui_button>
     </:action>
   </.ui_page_head>
-
   <section class="space-y-5 flex-wrap p-6 md:p-8 space-between">
-    <div :for={form <- @forms.entries} class="card-bg relative flex space-x-4">
+    <div :for={form <- @table.entries} class="card-bg relative flex space-x-4">
       <div class="flex lg:space-x-6 p-6 lg:p-2 w-full">
         <!-- Form Preview Block -->
-        <div skl-aimate class="hidden text-xs lg:flex flex-shrink-0 overflow-hidden justify-center p-4 w-40 h-40 border rounded flex-col space-y-2">
+        <div skl-aimate
+          class="hidden text-xs lg:flex flex-shrink-0 overflow-hidden justify-center p-4 w-40 h-40 border rounded flex-col space-y-2">
           <div skl class="text-center font-semibold">
             <%= form.name %>
           </div>
@@ -24,20 +36,33 @@
               Last Name
             </span>
           </div>
-          <div skl-full class="rounded bg-gray-200 border p-1 truncate"><%= form.email_text || Form.default_email() %></div>
-          <span skl-full class="p-1 rounded bg-gray-200 text-center border truncate"><%= form.button_text || Form.default_button() %></span>
+          <div skl-full class="rounded bg-gray-200 border p-1 truncate">
+            <%= form.email_text || Form.default_email() %>
+          </div>
+          <span skl-full class="p-1 rounded bg-gray-200 text-center border truncate">
+            <%= form.button_text || Form.default_button() %>
+          </span>
         </div>
 
         <!-- Form Info -->
         <div class="space-y-2 py-2 place-self-center w-full">
-          <div skl class="inline-flex-center text-sm">
-            <.ui_square_color :if={form.campaign} color={string_to_color_hash(form.campaign.id)} />
-            <h2  :if={form.campaign} class="Newsletter">
-              <%= form.campaign.name %>
-            </h2>
+          <div skl class="flex-center w-full justify-between" :if={form.campaign}>
+            <div class="inline-flex-center text-sm">
+              <.ui_square_color color={string_to_color_hash(form.campaign.id)} />
+              <.link navigate={Routes.project_campaigns_show_path(@socket, :show, form.campaign)} class="Newsletter">
+                <%= form.campaign.name %>
+              </.link>
+            </div>
+            <div skl class="capitalize label">
+              <span type={current_status(form.campaign)} class="status">
+                <%= current_status(form.campaign) %>
+              </span>
+            </div>
           </div>
           <h3 class="font-bold">
-            <span skl><%= form.name %></span>
+            <span skl>
+              <%= form.name %>
+            </span>
           </h3>
           <p skl skl-fw>
             <%= form.description %>
@@ -80,13 +105,9 @@
 </main>
 
 <%= if @live_action in [:new, :edit] do %>
-  <.rightbar_modal
-    class="large"
-    return_to={Routes.project_forms_index_path(@socket, :index)}>
-    <.live_component module={NewnixWeb.Live.Project.FormsLive.FormComponent}
-      id={@form.id || :new}
-      title={@page_title}
+  <.rightbar_modal class="large" return_to={Routes.project_forms_index_path(@socket, :index)}>
+    <.live_component module={NewnixWeb.Live.Project.FormsLive.FormComponent} id={@form.id || :new} title={@page_title}
       form={@form} project={@project} action={@live_action} campaigns={@campaigns}
       return_to={Routes.project_forms_index_path(@socket, :index)} />
   </.rightbar_modal>
-<% end %>
+  <% end %>
