@@ -1,0 +1,38 @@
+<section class="flex flex-1 flex-col py-8">
+    <div class="pb-8 border-b ">
+        <.ui_page_head
+        title="Invites"
+        description="A list of all invites."
+        icon="layers">
+        <:action>
+            <.ui_button theme="primary" size="small" href={Routes.live_path(@socket, NewnixWeb.Live.User.DashboardLive.New)}>
+            <.ui_icon icon="plus"/>
+            <span><%= gettext "New Project" %></span>
+            </.ui_button>
+        </:action>
+        </.ui_page_head>
+    </div>
+    <%= if Enum.count(@invites) === 0 do %>
+        <div class="w-full h-full flex-center">
+        <.live_component
+            module={NewnixWeb.Live.Components.Cards.EmptyStateComponent}
+            title="invite"
+            id="invite-empty-state"
+            button={false}
+            href={Routes.live_path(@socket, NewnixWeb.Live.User.DashboardLive.New)} />
+        </div>
+    <% else %>
+        <main>
+            <!-- Stacked list -->
+            <ul role="list" class="mt-5 border-t border-gray-200 divide-y divide-gray-200 sm:mt-0 sm:border-t-0">
+                <.live_component
+                    :for={invite <- @invites}
+                    id={invite.id}
+                    invite={invite}
+                    project={invite.project}
+                    module={NewnixWeb.Live.Components.Cards.InviteComponent}
+                    />
+            </ul>
+        </main>
+    <% end %>
+</section>

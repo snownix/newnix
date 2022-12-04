@@ -68,7 +68,7 @@ defmodule Newnix.Subscribers do
         }
       )
       |> all_subscribers(Keyword.get(opts, :all, true))
-      |> order_subscribers(Keyword.get(opts, :sort, :dsec), Keyword.get(opts, :order))
+      |> order_subscribers(Keyword.get(opts, :sort, :desc), Keyword.get(opts, :order))
 
     Pagination.all(query, opts)
   end

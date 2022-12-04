@@ -47,12 +47,13 @@ defmodule NewnixWeb.Live.Project.CampaignsLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    %{project: project} = socket.assigns
+    {:noreply,
+     can_do!(socket, :campaign, :delete, fn %{assigns: %{project: project}} = socket ->
+       campaign = Campaigns.get_campaign!(project, id)
+       {:ok, _} = Campaigns.delete_campaign(campaign)
 
-    campaign = Campaigns.get_campaign!(project, id)
-    {:ok, _} = Campaigns.delete_campaign(campaign)
-
-    {:noreply, socket |> fetch_records()}
+       socket |> fetch_records()
+     end)}
   end
 
   # Paginator
@@ -100,13 +101,13 @@ defmodule NewnixWeb.Live.Project.CampaignsLive.Index do
     |> update_info()
   end
 
-  defp apply_action(socket, :edit, %{"id" => id}) do
+  defp apply_action(socket, :update, %{"id" => id}) do
     socket
     |> assign(:page_title, "Edit Campaign")
     |> assign(:campaign, Campaigns.get_campaign!(socket.assigns.project, id))
   end
 
-  defp apply_action(socket, :new, _params) do
+  defp apply_action(socket, :create, _params) do
     socket
     |> assign(:page_title, "New Campaign")
     |> assign(:campaign, %Campaign{})

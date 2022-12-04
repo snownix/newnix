@@ -37,8 +37,10 @@ defmodule Newnix.Seeds do
 
       p =
         Project.changeset(%Project{}, p)
-        |> Project.owner_changeset(select_random_user())
         |> Repo.insert!(timeout: :infinity)
+        |> Repo.preload(:users_projects)
+        |> Project.owner_changeset(select_random_user())
+        |> Repo.update!()
 
       camp = update_campaigns_subscribers(p)
 
@@ -62,7 +64,7 @@ defmodule Newnix.Seeds do
   end
 
   def insert_rand_forms(project, campaigns) do
-    many_rands(&generate_rand_form/0, 5, 2)
+    many_rands(&generate_rand_form/0, 4, 2)
     |> Enum.each(fn form ->
       Builder.change_form(form, %{})
       |> Form.campaign_assoc(Enum.random(campaigns))
@@ -78,7 +80,7 @@ defmodule Newnix.Seeds do
       "name" => Faker.Company.En.name(),
       "description" => Faker.Lorem.Shakespeare.En.hamlet(),
       "website" => Faker.Internet.En.free_email_service(),
-      "campaigns" => many_rands(&generate_rand_campaign/0, 5, 2)
+      "campaigns" => many_rands(&generate_rand_campaign/0, 4, 2)
     }
   end
 
@@ -90,7 +92,7 @@ defmodule Newnix.Seeds do
       "description" => Faker.Lorem.Shakespeare.En.hamlet(),
       "start_at" => datetime_patch(Faker.DateTime.backward(4)),
       "expire_at" => datetime_patch(Faker.DateTime.forward(4)),
-      "subscribers" => many_rands(&generate_rand_subscriber/0, 1_000, 500)
+      "subscribers" => many_rands(&generate_rand_subscriber/0, 300, 100)
     }
   end
 

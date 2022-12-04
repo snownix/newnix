@@ -7,6 +7,14 @@ defmodule Newnix.Campaigns.Campaign do
   alias Newnix.Subscribers.Subscriber
   alias Newnix.Campaigns.{Campaign, CampaignToken, CampaignSubscriber}
 
+  @policies %{
+    list: [:admin, :manager, :user],
+    create: [:admin, :manager, :user],
+    update: [:admin, :manager, :user],
+    delete: [:admin, :manager]
+  }
+  def policies(), do: @policies
+
   @primary_key {:id, :binary_id, autogenerate: true}
 
   schema "campaigns" do
@@ -105,11 +113,13 @@ defmodule Newnix.Campaigns.Campaign do
     end
   end
 
+  def campaign_status(_), do: ""
+
   defp validate_campaign_dates(changeset) do
     start_at = get_field(changeset, :start_at)
     expire_at = get_field(changeset, :expire_at)
 
-    if Date.compare(start_at, expire_at) == :gt do
+    if !is_nil(start_at) and !is_nil(expire_at) and Date.compare(start_at, expire_at) == :gt do
       add_error(changeset, :start_at, "Start date cannot be later than end date")
     else
       changeset

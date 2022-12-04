@@ -1,51 +1,72 @@
-.table {
+.table-data {
 	@apply w-full divide-y divide-gray-300 border-b text-dark-300 table-auto;
 }
-.table th {
+.table-data th {
 	@apply py-3.5 text-left text-sm font-semibold pl-2 md:pl-4;
 }
 
-.table tr td {
+.table-data tr td {
 	@apply py-4 pr-3 text-base font-medium pl-2 md:pl-4;
 }
 
-.table th:first-child,
-.table tr td:first-child {
+.table-data th:first-child,
+.table-data tr td:first-child {
 	@apply lg:pl-8;
 }
-.table th:last-child,
-.table tr td:last-child {
+.table-data th:last-child,
+.table-data tr td:last-child {
 	@apply lg:pr-8;
 }
 
-.table .low {
+.table-data .low {
 	@apply whitespace-nowrap px-3 py-4 text-sm text-gray-500;
 }
 
-.table .actions {
+.table-data .actions {
 	@apply flex items-center justify-end space-x-2;
 }
 
-.table .actions * {
+.table-data .actions * {
 	@apply flex-shrink-0;
 }
 
-.table .status,
+.table-data .status,
 .label .status {
 	@apply px-3 py-1 rounded bg-gray-100 text-dark-400 text-sm;
 }
 
-.table .status[type="active"],
+.table-data .status[type="active"],
 .label .status[type="active"] {
 	@apply bg-green-400 text-white;
 }
 
-.table .status[type="future"],
+.table-data .status[type="future"],
 .label .status[type="future"] {
 	@apply bg-orange-400 text-white;
 }
 
-.table .status[type="expired"],
+.table-data .status[type="expired"],
 .label .status[type="expired"] {
 	@apply bg-dark-400 text-white;
+}
+
+.table-permissions {
+	@apply py-8;
+}
+
+.table-permissions thead th {
+	@apply capitalize font-medium text-gray-800 border-b;
+}
+
+.table-permissions tbody td {
+	@apply text-center py-1;
+}
+
+.table-permissions thead th.self {
+	@apply font-bold;
+}
+
+.table-permissions thead th:first-child,
+.table-permissions tbody tr td:first-child {
+	@apply text-left;
 }

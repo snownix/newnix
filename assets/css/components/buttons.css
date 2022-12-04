@@ -19,12 +19,24 @@
 	@apply py-2.5 text-sm;
 }
 
+.button.xs {
+	@apply p-1.5 text-sm;
+}
+
 .button.base {
 	@apply border-none;
 }
 
 .button.primary {
 	@apply bg-primary-500 text-white border-primary-500;
+}
+
+.button.purpo {
+	@apply bg-purpo-500 text-white border-purpo-500;
+}
+
+.button.redo {
+	@apply bg-redo-500 text-white border-redo-500;
 }
 
 .button.dark {

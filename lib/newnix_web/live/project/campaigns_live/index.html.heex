@@ -4,7 +4,7 @@
       description="A list of all the campaigns in your project, with their name, description, start and end dates."
       icon="inbox">
       <:action>
-        <.ui_button theme="primary" size="small" href={Routes.project_campaigns_index_path(@socket, :new)}>
+        <.ui_button theme="primary" size="small" href={Routes.project_campaigns_index_path(@socket, :create)}>
           <.ui_icon icon="plus"/>
           <span><%= gettext "New Campaign" %></span>
         </.ui_button>
@@ -27,8 +27,10 @@
             <%= for campaign <- @table.entries do %>
               <tr class={skeleton_class(@loading)}>
                 <td>
+                  <.link skl navigate={Routes.project_campaigns_show_path(@socket, :show, campaign)}>
                   <p class="font-semibold" skl><%= campaign.name %></p>
                   <p class="hidden xl:block text-grai text-sm" skl><%= campaign.description %></p>
+                  </.link>
                 </td>
                 <td>
                   <div class="flex flex-col">
@@ -59,7 +61,7 @@
                   <.link skl navigate={Routes.project_campaigns_show_path(@socket, :show, campaign)}>
                     <.ui_icon class="w-6 h-6" icon="inbox" />
                   </.link>
-                  <.link skl patch={Routes.project_campaigns_index_path(@socket, :edit, campaign)}>
+                  <.link skl patch={Routes.project_campaigns_index_path(@socket, :update, campaign)}>
                     <.ui_icon class="w-6 h-6" icon="pencil-square" />
                   </.link>
                   <.link skl phx-click="delete" phx-value-id={campaign.id} data={[confirm: "Are you sure?"]}>
@@ -79,21 +81,22 @@
             module={NewnixWeb.Live.Components.Cards.EmptyStateComponent}
             title="Campaign"
             icon="inbox"
-            href={Routes.project_campaigns_index_path(@socket, :new)}
+            href={Routes.project_campaigns_index_path(@socket, :create)}
             />
         </div>
       <% end %>
     </div>
   </div>
-<%= if @live_action in [:new, :edit] do %>
+<%= if @live_action in [:create, :update] do %>
   <.rightbar_modal return_to={Routes.project_campaigns_index_path(@socket, :index)}>
     <.live_component
       module={NewnixWeb.Live.Project.CampaignsLive.FormComponent}
-      id={@campaign.id || :new}
+      id={@campaign.id || :create}
       title={@page_title}
       action={@live_action}
       campaign={@campaign}
       project={@project}
+      role={@role}
       return_to={Routes.project_campaigns_index_path(@socket, :index)}
     />
   </.rightbar_modal>

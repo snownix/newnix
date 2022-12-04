@@ -12,19 +12,17 @@
 
 .chart_bar__.large .bar__container {
 	@apply lg:px-1;
-	@apply lg:space-x-0.5;
 }
+
 .chart_bar__ .bar__container:hover {
 	@apply bg-gray-300 bg-opacity-20;
 }
 
 .chart_bar__ .bar {
 	@apply transition-all;
-	@apply w-full max-w-[3em] h-0 relative;
+	@apply w-full max-w-[2em] h-0 relative;
 }
+
 .chart_bar__ .bar {
 	@apply rounded-t-sm;
-}
-.chart_bar__.large .bar {
-	@apply rounded-t-md;
 }

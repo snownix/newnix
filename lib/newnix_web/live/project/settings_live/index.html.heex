@@ -18,6 +18,7 @@
                     <div>
                         <.ui_textarea form={f} name={:description} class="!bg-opacity-20 border" title="Description" />
                     </div>
+
                     <div class="flex justify-end">
                         <.ui_button class="!w-fit" theme="dark" size="small">
                             <%= gettext "Update" %>
@@ -35,7 +36,7 @@
         <section class="pb-6 border-b border-gray-50">
             <h2 class="font-bold text-2xl">Team members</h2>
             <p class="text-grai-low">
-                A list of all the users in your account including their name, title, email and role.
+                A list of all the users in your account including their roles.
             </p>
         </section>
         <section class="flex flex-1">
@@ -53,18 +54,28 @@
                                 Information
                             </th>
                             <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                Role
+                                <div class="flex space-x-1">
+                                    <span>Role</span>
+                                    <.link patch={Routes.project_settings_index_path(@socket, :roles)}>
+                                        <.ui_icon icon="question" />
+                                    </.link>
+                                </div>
                             </th>
                             <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                                 Date Added
                             </th>
-                            <th :if={false} scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                                <span class="sr-only">Edit</span>
+                            <th :if={can?(:invite, :create, @role)} scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                                <div class="flex w-full justify-end">
+                                    <.ui_button navigate={Routes.project_settings_index_path(@socket, :invite)} size="xs">
+                                        <.ui_icon icon="plus" />
+                                    </.ui_button>
+                                </div>
                             </th>
                         </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 bg-white">
-                            <.user_row :for={user <- @project.users} admin={false} user={user} />
+                            <.user_row :for={user <- @project.users} role={@role} user={user} />
+                            <.invite_row :for={invite <- @project.invites} role={@role} invite={invite} />
                         </tbody>
                     </table>
                     </div>
@@ -73,3 +84,27 @@
         </section>
     </div>
 </main>
+
+<%= if @live_action == :ivnite do %>
+  <.rightbar_modal return_to={Routes.live_path(@socket, NewnixWeb.Live.Project.SettingsLive.Index)}>
+    <.live_component
+        id={:create}
+        project={@project}
+        title={@page_title}
+        user={@current_user}
+        action={@live_action}
+        module={NewnixWeb.Live.Project.SettingsLive.FormComponent}
+        return_to={Routes.live_path(@socket, NewnixWeb.Live.Project.SettingsLive.Index)} />
+  </.rightbar_modal>
+<% end %>
+
+
+<%= if @live_action == :roles do %>
+  <.rightbar_modal return_to={Routes.live_path(@socket, NewnixWeb.Live.Project.SettingsLive.Index)}>
+    <.live_component
+        id={:roles}
+        role={@role}
+        module={NewnixWeb.Live.Project.SettingsLive.RolesComponent}
+        return_to={Routes.live_path(@socket, NewnixWeb.Live.Project.SettingsLive.Index)} />
+  </.rightbar_modal>
+<% end %>

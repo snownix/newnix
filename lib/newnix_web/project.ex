@@ -25,6 +25,7 @@ defmodule NewnixWeb.Project do
       project ->
         conn
         |> assign(:project, project)
+        |> assign(:role, project.role)
     end
   end
 

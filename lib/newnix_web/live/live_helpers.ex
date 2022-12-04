@@ -16,7 +16,7 @@ defmodule NewnixWeb.LiveHelpers do
       <.rightbar_modal return_to={Routes.abc_index_path(@socket, :index)}>
         <.live_component
           module={NewnixWeb.AbcLive.FormComponent}
-          id={@abc.id || :new}
+          id={@abc.id || :create}
           title={@page_title}
           action={@live_action}
           return_to={Routes.abc_index_path(@socket, :index)}

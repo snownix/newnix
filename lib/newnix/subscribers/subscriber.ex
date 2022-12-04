@@ -7,6 +7,14 @@ defmodule Newnix.Subscribers.Subscriber do
   alias Newnix.Campaigns.Campaign
   alias Newnix.Campaigns.CampaignSubscriber
 
+  @policies %{
+    list: [:admin, :manager, :user],
+    create: [:admin, :manager, :user],
+    update: [:admin, :manager, :user],
+    delete: [:admin, :manager]
+  }
+  def policies(), do: @policies
+
   @timestamps_opts [type: :utc_datetime_usec]
   @primary_key {:id, :binary_id, autogenerate: true}
 

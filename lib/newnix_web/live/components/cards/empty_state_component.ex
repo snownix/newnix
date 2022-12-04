@@ -4,6 +4,7 @@ defmodule NewnixWeb.Live.Components.Cards.EmptyStateComponent do
   attr :title, :string
   attr :href, :string, default: "#"
   attr :icon, :string, default: "folder-plus"
+  attr :button, :boolean, default: true
 
   def render(assigns) do
     ~H"""
@@ -13,7 +14,7 @@ defmodule NewnixWeb.Live.Components.Cards.EmptyStateComponent do
           <h3 class="mt-2 text-sm font-medium text-gray-900">No <%= @title %>s</h3>
           <p class="mt-1 text-sm text-gray-500">Get started by creating a new <%= @title %>.</p>
           <div class="flex justify-center mt-6">
-              <.ui_button href={@href} size="small">
+              <.ui_button :if={@button} href={@href} size="small">
                 <%= NewnixWeb.IconsView.render "plus", %{class: "w-6 h-6"}%>
                 New <%= @title %>
               </.ui_button>

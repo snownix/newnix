@@ -42,37 +42,35 @@ defmodule NewnixWeb.Live.Project.FormsLive.FormComponent do
   end
 
   def handle_event("save", %{"form" => form_params}, socket) do
-    save_form(socket, socket.assigns.action, form_params)
+    {:noreply, save_form(socket, socket.assigns.action, form_params)}
   end
 
-  defp save_form(%{assigns: assigns} = socket, :edit, form_params) do
-    %{form: form} = assigns
+  defp save_form(socket, :update, form_params) do
+    can_do!(socket, :form, :update, fn %{assigns: %{form: form}} = socket ->
+      case Builder.update_form(form, form_params) do
+        {:ok, _form} ->
+          socket
+          |> put_flash(:info, "Form updated successfully")
+          |> push_redirect(to: socket.assigns.return_to)
 
-    case Builder.update_form(form, form_params) do
-      {:ok, _form} ->
-        {:noreply,
-         socket
-         |> put_flash(:info, "Form updated successfully")
-         |> push_redirect(to: socket.assigns.return_to)}
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, :changeset, changeset)}
-    end
+        {:error, %Ecto.Changeset{} = changeset} ->
+          assign(socket, :changeset, changeset)
+      end
+    end)
   end
 
-  defp save_form(%{assigns: assigns} = socket, :new, form_params) do
-    %{project: project} = assigns
+  defp save_form(socket, :create, form_params) do
+    can_do!(socket, :form, :create, fn %{assigns: %{form: form}} = socket ->
+      case Builder.create_form(form, form_params) do
+        {:ok, _form} ->
+          socket
+          |> put_flash(:info, "Form created successfully")
+          |> push_redirect(to: socket.assigns.return_to)
 
-    case Builder.create_form(project, form_params) do
-      {:ok, _form} ->
-        {:noreply,
-         socket
-         |> put_flash(:info, "Form created successfully")
-         |> push_redirect(to: socket.assigns.return_to)}
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, changeset: changeset)}
-    end
+        {:error, %Ecto.Changeset{} = changeset} ->
+          assign(socket, :changeset, changeset)
+      end
+    end)
   end
 
   defp put_campaigns_options(%{assigns: assigns} = socket) do

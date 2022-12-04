@@ -78,7 +78,7 @@ defmodule NewnixWeb.Live.Project.SubscribersLive.Index do
     |> fetch_records()
   end
 
-  defp apply_action(socket, :edit, %{"id" => id}) do
+  defp apply_action(socket, :update, %{"id" => id}) do
     subscriber =
       Subscribers.get_subscriber!(socket.assigns.project, id)
       |> Subscribers.fetch_campaigns()
@@ -98,7 +98,7 @@ defmodule NewnixWeb.Live.Project.SubscribersLive.Index do
     |> assign(:subscriber, subscriber)
   end
 
-  defp apply_action(socket, :new, _params) do
+  defp apply_action(socket, :create, _params) do
     socket
     |> assign(:page_title, "New Subscriber")
     |> assign(:subscriber, %Subscriber{})
@@ -106,11 +106,12 @@ defmodule NewnixWeb.Live.Project.SubscribersLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    subscriber = Subscribers.get_subscriber!(socket.assigns.project, id)
-
-    {:ok, _} = Subscribers.delete_subscriber(subscriber)
-
-    {:noreply, socket |> fetch_subscribers()}
+    {:noreply,
+     can_do!(socket, :subscriber, :delete, fn socket ->
+       subscriber = Subscribers.get_subscriber!(socket.assigns.project, id)
+       {:ok, _} = Subscribers.delete_subscriber(subscriber)
+       socket |> fetch_subscribers()
+     end)}
   end
 
   # Paginator

@@ -50,8 +50,10 @@ defmodule NewnixWeb.Router do
 
       scope "/", Live.User.DashboardLive do
         live "/", Index
-        live "/new", New
+        live "/create", New
       end
+
+      live "/invites", Live.User.InvitesLive.Index
     end
   end
 
@@ -65,35 +67,37 @@ defmodule NewnixWeb.Router do
 
       scope "/settings", Live.Project.SettingsLive do
         live "/", Index
+        live "/invite", Index, :invite
+        live "/roles", Index, :roles
       end
 
       scope "/campaigns", Live.Project.CampaignsLive do
         live "/", Index, :index
-        live "/new", Index, :new
-        live "/:id/edit", Index, :edit
+        live "/create", Index, :create
+        live "/:id/update", Index, :update
 
         live "/:id", Show, :show
-        live "/:id/show/edit", Show, :edit
+        live "/:id/show/update", Show, :update
 
-        live "/:id/subscriber/new", Show, :new_subscriber
-        live "/:id/subscriber/:sub_id/edit", Show, :edit_subscriber
+        live "/:id/subscriber/create", Show, :new_subscriber
+        live "/:id/subscriber/:sub_id/update", Show, :edit_subscriber
         live "/:id/subscriber/:sub_id/show", Show, :show_subscriber
       end
 
       scope "/subscribers", Live.Project.SubscribersLive do
         live "/", Index, :index
-        live "/new", Index, :new
+        live "/create", Index, :create
 
-        live "/:id/edit", Index, :edit
+        live "/:id/update", Index, :update
         live "/:id/show", Index, :show
       end
 
       scope "/forms", Live.Project.FormsLive do
         live "/", Index, :index
-        live "/:cam_id", Index, :index
-        live "/new", Index, :new
+        live "/:cam_id/list", Index, :index
 
-        live "/:id/edit", Index, :edit
+        live "/create", Index, :create
+        live "/:id/update", Index, :update
       end
     end
   end

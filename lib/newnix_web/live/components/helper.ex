@@ -18,8 +18,8 @@ defmodule NewnixWeb.Live.Components.Helper do
     ~H"""
       <label class={"input_group #{@class}"} field-error={tag_has_error(@form, @name)} {@rest}
         field-fill={is_fill(@form, @name)}>
-        <%= text_input @form, @name, type: @type, readonly: @readonly %>
-        <%= label @form, @name, @title, class: "label" %>
+        <%= text_input @form, @name, type: @type, readonly: @readonly, phx_debounce: "blur" %>
+        <%= label @form, @name, @title, class: "label select-none" %>
         <.ui_icon :if={@readonly} icon="lock" />
         <%= if @show_error do %>
           <%= error_tag @form , @name %>
@@ -32,7 +32,6 @@ defmodule NewnixWeb.Live.Components.Helper do
   attr :name, :string, required: true
   attr :form, :string, required: true
   attr :title, :string, required: true
-  attr :type, :string, default: "text"
   attr :class, :string, default: ""
   attr :readonly, :boolean, default: false
 
@@ -40,8 +39,8 @@ defmodule NewnixWeb.Live.Components.Helper do
     ~H"""
       <label class={"input_group #{@class}"} field-error={tag_has_error(@form, @name)} {@rest}
         field-fill={is_fill(@form, @name)}>
-        <%= datetime_local_input @form, @name, type: @type, readonly: @readonly %>
-        <%= label @form, @name, @title, class: "label" %>
+        <%= datetime_local_input @form, @name, readonly: @readonly, phx_debounce: "blur" %>
+        <%= label @form, @name, @title, class: "label select-none" %>
       </label>
     """
   end
@@ -59,7 +58,7 @@ defmodule NewnixWeb.Live.Components.Helper do
       <label class={"input_group #{@class}"} field-error={tag_has_error(@form, @name)}
         field-fill={is_fill(@form, @name)} id={@name}>
         <%= textarea @form, @name, readonly: @readonly %>
-        <%= label @form, @name, @title, class: "label" %>
+        <%= label @form, @name, @title, class: "label select-none" %>
         <%= if @show_error do %>
           <%= error_tag @form , @name %>
         <% end %>
@@ -79,9 +78,9 @@ defmodule NewnixWeb.Live.Components.Helper do
     ~H"""
       <label class={"input_group #{@class}"} field-error={tag_has_error(@form, @name)}
         field-fill={is_fill(@form, @name)} id={@name} phx-hook="CssEditor">
-        <%= textarea @form, @name, hidden: true %>
+        <%= textarea @form, @name, hidden: true, phx_debounce: "blur" %>
         <code id="css-editor"></code>
-        <%= label @form, @name, @title, class: "label" %>
+        <%= label @form, @name, @title, class: "label select-none" %>
       </label>
     """
   end
@@ -100,7 +99,7 @@ defmodule NewnixWeb.Live.Components.Helper do
       <label class={"input_group #{@class}"} field-error={tag_has_error(@form, @name)} {@rest}
         field-fill={is_fill(@form, @name)}>
         <%= select @form, @name, @options, type: @type %>
-        <%= label @form, @name, @title, class: "label" %>
+        <%= label @form, @name, @title, class: "label select-none" %>
         <%= if @show_error do %>
           <%= error_tag @form , @name %>
         <% end %>
@@ -138,7 +137,7 @@ defmodule NewnixWeb.Live.Components.Helper do
 
   def ui_avatar(assigns) do
     ~H"""
-      <div class="flex items-center justify-center border h-12 w-12 rounded-full group-hover:opacity-75" {@rest}>
+      <div class="flex items-center justify-center border h-12 w-12 rounded-full group-hover:opacity-75 uppercase" {@rest}>
         <%= if !is_nil(@avatar) do %>
           <img src={@avatar} />
         <% else %>
@@ -193,7 +192,7 @@ defmodule NewnixWeb.Live.Components.Helper do
 
   def ui_table(assigns) do
     ~H"""
-    <table class="table">
+    <table class="table-data">
       <thead :if={@thead} class="bg-gray-50">
         <tr>
           <%= render_slot(@thead) %>
@@ -366,15 +365,25 @@ defmodule NewnixWeb.Live.Components.Helper do
             style={"bottom: #{level.pos}%;"}>
             <div class="text-gray-400 text-sm bottom-0"><%= level.value %></div>
           </div>
+              <!-- Default -->
           <div class="h-full pr-10"></div>
+          <!-- Bar Container -->
           <div class="bar__container relative group"
               :for={item <- @items}>
-              <div class={"absolute-center -bottom-6 text-sm min-w-max " <> chart_display_all(@count)}>
+
+              <!-- Date -->
+              <div class={"absolute-center top-full flex flex-col text-sm min-w-max " <> chart_display_all(@count)}>
                 <span><%= item.title %></span>
               </div>
+
+              <!-- BarItem -->
               <div :for={bar <- item.bars} skl-full
-                  class={"bar #{bar.color}"}
+                  class={"bar #{bar.color} relative"}
                   style={"height: #{bar.value}%;"}>
+                <div
+                  class="absolute-center bottom-full font-bold hidden group-hover:block">
+                    <span><%= bar.real %></span>
+                </div>
               </div>
           </div>
       </div>

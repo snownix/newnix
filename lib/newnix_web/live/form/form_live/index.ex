@@ -51,7 +51,7 @@ defmodule NewnixWeb.Live.Form.FormLive.Index do
     value || default
   end
 
-  def campaign_status(%{campaign: campaign} = form) do
+  def campaign_status(%{campaign: campaign}) do
     Campaign.campaign_status(campaign)
   end
 
@@ -62,7 +62,7 @@ defmodule NewnixWeb.Live.Form.FormLive.Index do
 
   defp apply_action(socket, :dev, form) do
     if connected?(socket), do: Newnix.Builder.subscribe(:dev, form.id)
-    socket
+    socket |> assign(:dev, true)
   end
 
   defp put_initial_assigns(%{assigns: %{form: form}} = socket) do
@@ -73,6 +73,7 @@ defmodule NewnixWeb.Live.Form.FormLive.Index do
       :changeset,
       Subscribers.change_subscriber(%Subscriber{}, %{}, opts)
     )
+    |> assign(:dev, false)
     |> assign(:success, false)
   end
 

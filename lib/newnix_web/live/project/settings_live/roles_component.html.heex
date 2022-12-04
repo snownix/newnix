@@ -1,0 +1,41 @@
+<section class="flex flex-1 flex-col lg:flex-row lg:space-x-12 w-full">
+  <div class="flex flex-col space-y-4 max-w-screen-sm w-full">
+    <h2 class="text-lg font-semibold">
+      <%= gettext("Roles") %>
+    </h2>
+
+    <div class="space-y-4">
+      <h4>
+        <%= gettext("Permissions for each role") %>
+      </h4>
+
+      <div class="space-y-6">
+        <%= for permission <- @permissions do %>
+          <table class="table  table-fixed table-permissions w-full">
+            <thead>
+              <tr>
+                <th>
+                  <%= permission.collection %>
+                </th>
+
+                <th class={"w-24 capitalize #{@role.role == role && "self" || ""}"} :for={role <- @roles}>
+                  <%= role %>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="text-gray-800">
+              <tr :for={action <- Map.keys(permission.actions)}>
+                <td>
+                  <%= action %>
+                </td>
+                <td :for={role <- @roles}>
+                  <%= Enum.member?(permission.actions[action], role) && "✔️" || "❌" %>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <% end %>
+      </div>
+    </div>
+  </div>
+</section>

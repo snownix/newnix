@@ -3,7 +3,7 @@
     description="A list of all the subscribers in your project, with their name, description, start and end dates."
     icon="user-group">
     <:action>
-      <.ui_button theme="primary" size="small" href={Routes.project_subscribers_index_path(@socket, :new)}>
+      <.ui_button theme="primary" size="small" href={Routes.project_subscribers_index_path(@socket, :create)}>
         <.ui_icon icon="plus" />
         <span>
           <%= gettext "New Subscriber" %>
@@ -43,7 +43,7 @@
                   <.link skl patch={Routes.project_subscribers_index_path(@socket, :show, subscriber)}>
                     <.ui_icon class="w-6 h-6" icon="eye" />
                   </.link>
-                  <.link skl patch={Routes.project_subscribers_index_path(@socket, :edit, subscriber)}>
+                  <.link skl patch={Routes.project_subscribers_index_path(@socket, :update, subscriber)}>
                     <.ui_icon class="w-6 h-6" icon="pencil-square" />
                   </.link>
                   <.link skl phx-click="delete" phx-value-id={subscriber.id} data={[confirm: "Are you sure?" ]}>
@@ -59,23 +59,33 @@
       <% else %>
         <div class="flex items-center justify-center h-full">
           <.live_component id="empty-subscribers" module={NewnixWeb.Live.Components.Cards.EmptyStateComponent}
-            title="Subscriber" icon="user-group" href={Routes.project_subscribers_index_path(@socket, :new)} />
+            title="Subscriber" icon="user-group" href={Routes.project_subscribers_index_path(@socket, :create)} />
         </div>
       <% end %>
   </div>
 </div>
-<%= if @live_action in [:new, :edit] do %>
+<%= if @live_action in [:create, :update] do %>
   <.rightbar_modal return_to={Routes.project_subscribers_index_path(@socket, :index)}>
-    <.live_component module={NewnixWeb.Live.Project.SubscribersLive.FormComponent} id={@subscriber.id || :new}
-      title={@page_title} action={@live_action} project={@project} campaigns={@campaigns} subscriber={@subscriber}
-      return_to={Routes.project_subscribers_index_path(@socket, :index)} />
+    <.live_component
+      id={@subscriber.id || :create}
+      module={NewnixWeb.Live.Project.SubscribersLive.FormComponent}
+      role={@role}
+      title={@page_title}
+      action={@live_action}
+      project={@project}
+      campaigns={@campaigns}
+      subscriber={@subscriber}
+      return_to={Routes.project_subscribers_index_path(@socket, :index)}
+      />
   </.rightbar_modal>
 <% end %>
 
 
-<%= if @live_action===:show do %>
+<%= if @live_action === :show do %>
   <.rightbar_modal return_to={Routes.project_subscribers_index_path(@socket, :index)}>
-    <.live_component module={NewnixWeb.Live.Project.SubscribersLive.ShowComponent} id={@subscriber.id}
-      subscriber={@subscriber} return_to={Routes.project_subscribers_index_path(@socket, :index)} />
+    <.live_component module={NewnixWeb.Live.Project.SubscribersLive.ShowComponent}
+    id={@subscriber.id}
+      subscriber={@subscriber}
+      return_to={Routes.project_subscribers_index_path(@socket, :index)} />
   </.rightbar_modal>
 <% end %>

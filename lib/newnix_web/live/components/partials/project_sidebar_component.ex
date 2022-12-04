@@ -1,6 +1,8 @@
 defmodule NewnixWeb.Live.Components.Partials.ProjectSidebarComponent do
   use NewnixWeb, :live_component
 
+  attr :user, :map, default: %{}
+  attr :role, :map, default: %{}
   attr :project, :map, default: nil
   attr :campaign, :map, default: nil
   attr :projects, :map, default: []
@@ -14,24 +16,24 @@ defmodule NewnixWeb.Live.Components.Partials.ProjectSidebarComponent do
         class="hidden md:flex"
       >
         <%= if @project do %>
-          <div class="md:flex-shrink-0 dark:md:bg-dark-800 md:overflow-y-auto border-r w-72 bg-gray-50">
-            <.project_logo target={@myself} project={@project} />
+          <div class="flex flex-col md:flex-shrink-0 dark:md:bg-dark-800 md:overflow-y-auto border-r w-72 bg-gray-50">
+            <.project_header return_to={Routes.live_path(@socket, NewnixWeb.Live.Project.DashboardLive.Index)} target={@myself} project={@project} />
 
-            <div class="px-4 py-3 space-y-8">
+            <div class="flex-1 px-4 py-3 space-y-8">
               <ul>
                 <.menu_item link={Routes.live_path(@socket, NewnixWeb.Live.Project.DashboardLive.Index)} icon="layers">
                   Dashboard
                 </.menu_item>
-                <.menu_item link={Routes.project_campaigns_index_path(@socket, :index)} icon="inbox-stack">
+                <.menu_item :if={can?(@role, :campaign, :list)} link={Routes.project_campaigns_index_path(@socket, :index)} icon="inbox-stack">
                   Campaigns
                 </.menu_item>
-                <.menu_item link={Routes.project_subscribers_index_path(@socket, :index)} icon="user-group">
+                <.menu_item :if={can?(@role, :subscriber, :list)} link={Routes.project_subscribers_index_path(@socket, :index)} icon="user-group">
                   Subscribers
                 </.menu_item>
-                <.menu_item link={Routes.project_forms_index_path(@socket, :index)} icon="window">
+                <.menu_item :if={can?(@role, :form, :list)} link={Routes.project_forms_index_path(@socket, :index)} icon="window">
                   Forms
                 </.menu_item>
-                <.menu_item link={Routes.live_path(@socket, NewnixWeb.Live.Project.SettingsLive.Index)} icon="settings">
+                <.menu_item :if={can?(@role, :project, :settings)} link={Routes.live_path(@socket, NewnixWeb.Live.Project.SettingsLive.Index)} icon="settings">
                   Settings
                 </.menu_item>
               </ul>
@@ -51,13 +53,14 @@ defmodule NewnixWeb.Live.Components.Partials.ProjectSidebarComponent do
                   </.campaign_item>
                  </li>
                  <li>
-                  <.campaign_item icon="plus" link={Routes.project_campaigns_index_path(@socket, :new)} class="text-gray-500">
+                  <.campaign_item icon="plus" link={Routes.project_campaigns_index_path(@socket, :create)} class="text-gray-500">
                     New campaign
                   </.campaign_item>
                  </li>
                 </ul>
               </div>
             </div>
+            <.user_account role={@role} user={@user} />
           </div>
         <% end %>
       </nav>
@@ -115,16 +118,39 @@ defmodule NewnixWeb.Live.Components.Partials.ProjectSidebarComponent do
 
   def is_current_active(_assigns, _id), do: false
 
-  def project_logo(assigns) do
+  attr :return_to, :string
+
+  def project_header(assigns) do
     ~H"""
-      <div
-        phx-click="toggle-projects" phx-target={@target}
-        class="flex items-center space-x-4 py-4 px-6 flex-1 bg-white  border-b cursor-pointer">
+      <.link patch={@return_to}
+        class="flex-grow-0 py-4 px-6 flex-1 bg-white  border-b cursor-pointer">
         <div class="flex flex-col space-y-0.5 w-full">
           <span class="font-semibold truncate text-ellipsis text-gray-900">
             <%= @project.name %>
           </span>
           <span class="text-gray-500 text-sm">Free plan</span>
+        </div>
+      </.link>
+    """
+  end
+
+  attr :role, :map, required: true
+  attr :user, :map, required: true
+
+  def user_account(assigns) do
+    ~H"""
+      <div
+        class="flex-grow-0 py-4 px-6 bg-white border-t">
+        <div class="flex flex-col space-y-0.5  w-full">
+          <div class="flex justify-between">
+            <span class="font-semibold truncate text-ellipsis text-gray-900">
+              <%= @user.firstname %>
+            </span>
+            <span class="font-normal text-gray-500">
+              <%= @role.role %>
+            </span>
+          </div>
+          <span class="text-gray-500 text-sm"><%= @user.email %></span>
         </div>
       </div>
     """

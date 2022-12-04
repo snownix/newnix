@@ -5,8 +5,9 @@ defmodule NewnixWeb.Live.Project.DashboardLive.Index do
   alias Newnix.Subscribers
 
   @bar_levels 10
-  @red_color "bg-redo-400"
-  @green_color "bg-purpo-400"
+  @red_color "bg-redo-400 text-redo-400"
+  @green_color "bg-purpo-400 text-purpo-400"
+
   @periods [
     %{value: "all", label: "All time", selected: false, items: nil, unit: :months},
     %{value: "day", label: "Last day", selected: false, items: 24, unit: :hours},
@@ -137,12 +138,15 @@ defmodule NewnixWeb.Live.Project.DashboardLive.Index do
       |> Enum.map(fn d ->
         %{
           title: d.day_date,
+          max: d.subscribers + d.unsubscribers,
           bars: [
             %{
+              real: d.unsubscribers,
               value: Float.round(d.unsubscribers / maxSubs * 100, 2),
               color: @red_color
             },
             %{
+              real: d.subscribers,
               value: Float.round(d.subscribers / maxSubs * 100, 2),
               color: @green_color
             }

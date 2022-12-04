@@ -5,7 +5,6 @@ defmodule Newnix.Builder do
 
   import Ecto.Query
   alias Newnix.Repo
-  alias Newnix.Pagination
   alias Newnix.Builder.Form
   alias Newnix.Projects.Project
 
@@ -91,7 +90,13 @@ defmodule Newnix.Builder do
       iex> get_form!("aaaaa-bbbb-cccc-ddddd")
       %Form{}
 
+      iex> get_form!(project, "aaaaa-bbbb-cccc-ddddd")
+      %Form{}
+
       iex> get_form!("aaaaa-bbbb-cccc-ddddf")
+      ** (Ecto.NoResultsError)
+
+      iex> get_form!(project, "aaaaa-bbbb-cccc-ddddf")
       ** (Ecto.NoResultsError)
 
   """

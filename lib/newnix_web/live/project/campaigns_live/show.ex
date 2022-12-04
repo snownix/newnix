@@ -180,7 +180,7 @@ defmodule NewnixWeb.Live.Project.CampaignsLive.Show do
     do: "Resubscribe"
 
   defp page_title(:show, campaign), do: "Show Campaign #{campaign.name}"
-  defp page_title(:edit, campaign), do: "Edit Campaign #{campaign.name}"
+  defp page_title(:update, campaign), do: "Edit Campaign #{campaign.name}"
   defp page_title(:new_subscriber, campaign), do: "New Subscriber - #{campaign.name}"
   defp page_title(:edit_subscriber, campaign), do: "Edit Subscriber - #{campaign.name}"
   defp page_title(:show_subscriber, campaign), do: "Show Subscriber - #{campaign.name}"

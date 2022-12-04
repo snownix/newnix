@@ -6,11 +6,14 @@
       sidebar={@sidebar}
       project={@project}
       projects={@projects}
+      count_invites={@count_invites}
       module={NewnixWeb.Live.Components.Partials.MainSidebarComponent}
        />
 
     <.live_component
       id="sidebar"
+      role={@role}
+      user={@current_user}
       sidebar={@sidebar}
       project={@project}
       campaign={assigns[:campaign]}

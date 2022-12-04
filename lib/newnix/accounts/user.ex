@@ -3,6 +3,7 @@ defmodule Newnix.Accounts.User do
   import Ecto.Changeset
   use Waffle.Ecto.Schema
 
+  alias Newnix.Projects.Invite
   alias Newnix.Projects.Project
   alias Newnix.Accounts.Identity
   alias Newnix.Projects.UserProject
@@ -25,6 +26,7 @@ defmodule Newnix.Accounts.User do
     # Newnix admin
     field :admin, :boolean, default: false
 
+    has_many :invites, Invite, foreign_key: :user_id
     has_many :identities, Identity, foreign_key: :user_id
     many_to_many :projects, Project, join_through: UserProject
 

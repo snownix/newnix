@@ -7,10 +7,10 @@ defmodule Newnix.Projects.UserProject do
   alias Newnix.Projects.Project
 
   @timestamps_opts [type: :utc_datetime_usec]
-  @primary_key false
 
   schema "users_projects" do
-    field :role, :string, default: "user"
+    field :role, Ecto.Enum, values: [:owner, :admin, :user], default: :user
+    field :status, Ecto.Enum, values: [:active, :inactive, :suspend, :pending], default: :pending
 
     belongs_to :user, User, type: :binary_id
     belongs_to :project, Project, type: :binary_id
@@ -20,7 +20,19 @@ defmodule Newnix.Projects.UserProject do
 
   def changeset(changeset, params \\ %{}) do
     changeset
-    |> cast(params, [:user_id, :project_id])
-    |> validate_required([:user_id, :project_id])
+    |> cast(params, [:role, :status])
+    |> validate_required([:user, :project, :role, :status])
+  end
+
+  def project_assoc(changeset, project) do
+    changeset
+    |> change()
+    |> put_assoc(:project, project)
+  end
+
+  def user_assoc(changeset, user) do
+    changeset
+    |> change()
+    |> put_assoc(:user, user)
   end
 end

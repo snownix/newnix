@@ -40,11 +40,14 @@ defmodule NewnixWeb.Live.Project.FormsLive.Index do
   end
 
   @impl true
-  def handle_event("delete", %{"id" => id}, %{assigns: %{project: project}} = socket) do
-    form = Builder.get_form!(project, id)
-    {:ok, _} = Builder.delete_form(form)
+  def handle_event("delete", %{"id" => id}, socket) do
+    {:noreply,
+     can_do!(socket, :form, :delete, fn %{assigns: %{project: project}} = socket ->
+       form = Builder.get_form!(project, id)
+       {:ok, _} = Builder.delete_form(form)
 
-    {:noreply, socket |> fetch_records()}
+       socket
+     end)}
   end
 
   @impl true
@@ -119,7 +122,7 @@ defmodule NewnixWeb.Live.Project.FormsLive.Index do
     |> fetch_records()
   end
 
-  defp apply_action(%{assigns: %{project: project}} = socket, :new, _params) do
+  defp apply_action(%{assigns: %{project: project}} = socket, :create, _params) do
     form_draft_params = %{
       "name" => "#{Date.utc_today()} Draft",
       "css" =>
@@ -132,14 +135,14 @@ defmodule NewnixWeb.Live.Project.FormsLive.Index do
       {:ok, form} ->
         socket
         |> put_flash(:info, "Form created successfully")
-        |> push_redirect(to: Routes.project_forms_index_path(socket, :edit, form.id))
+        |> push_redirect(to: Routes.project_forms_index_path(socket, :update, form.id))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         assign(socket, changeset: changeset)
     end
   end
 
-  defp apply_action(%{assigns: %{project: project}} = socket, :edit, %{"id" => id}) do
+  defp apply_action(%{assigns: %{project: project}} = socket, :update, %{"id" => id}) do
     form = Builder.get_form!(project, id)
 
     socket
@@ -156,7 +159,6 @@ defmodule NewnixWeb.Live.Project.FormsLive.Index do
   defp selected_campaigns(%{campaigns_options: campaigns_options}),
     do: Enum.filter(campaigns_options, & &1.selected) |> Enum.map(& &1.value)
 
-  def all_or_many_campaigns([], items), do: items |> Enum.map(& &1.value)
   def all_or_many_campaigns(many, _items), do: many
 
   def current_status(campaign) do

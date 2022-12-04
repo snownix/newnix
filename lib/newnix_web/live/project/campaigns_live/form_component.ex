@@ -25,32 +25,39 @@ defmodule NewnixWeb.Live.Project.CampaignsLive.FormComponent do
   end
 
   def handle_event("save", %{"campaign" => campaign_params}, socket) do
-    save_campaign(socket, socket.assigns.action, campaign_params)
+    %{assigns: %{action: action}} = socket
+
+    {:noreply,
+     can_do!(socket, :campaign, action, fn socket ->
+       save_campaign(socket, action, campaign_params)
+     end)}
   end
 
-  defp save_campaign(socket, :edit, campaign_params) do
-    case Campaigns.update_campaign(socket.assigns.campaign, campaign_params) do
+  defp save_campaign(socket, :update, campaign_params) do
+    %{assigns: %{campaign: campaign, return_to: return_to}} = socket
+
+    case Campaigns.update_campaign(campaign, campaign_params) do
       {:ok, _campaign} ->
-        {:noreply,
-         socket
-         |> put_flash(:info, "Campaign updated successfully")
-         |> push_redirect(to: socket.assigns.return_to)}
+        socket
+        |> put_flash(:info, "Campaign updated successfully")
+        |> push_redirect(to: return_to)
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, :changeset, changeset)}
+        assign(socket, :changeset, changeset)
     end
   end
 
-  defp save_campaign(%{assigns: assigns} = socket, :new, campaign_params) do
-    case Campaigns.create_campaign(assigns.project, campaign_params) do
+  defp save_campaign(socket, :create, campaign_params) do
+    %{assigns: %{project: project, return_to: return_to}} = socket
+
+    case Campaigns.create_campaign(project, campaign_params) do
       {:ok, _campaign} ->
-        {:noreply,
-         socket
-         |> put_flash(:info, "Campaign created successfully")
-         |> push_redirect(to: socket.assigns.return_to)}
+        socket
+        |> put_flash(:info, "Campaign created successfully")
+        |> push_redirect(to: return_to)
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, changeset: changeset)}
+        assign(socket, changeset: changeset)
     end
   end
 

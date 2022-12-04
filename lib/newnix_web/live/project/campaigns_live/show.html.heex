@@ -4,7 +4,7 @@
       description="A list of all the subscribers in your project, with their name, description, start and end dates."
       icon="user-group">
       <:action>
-        <.ui_button size="small" navigate={Routes.project_campaigns_index_path(@socket, :edit, @campaign.id)}>
+        <.ui_button size="small" navigate={Routes.project_campaigns_index_path(@socket, :update, @campaign.id)}>
           <.ui_icon icon="cog"/>
           <span><%= gettext "Settings" %></span>
         </.ui_button>
@@ -78,7 +78,7 @@
                   <.link skl :if={is_nil(subscriber.unsubscribed_at)} patch={Routes.project_campaigns_show_path(@socket, :edit_subscriber, @campaign.id, subscriber.id)}>
                     <.ui_icon class="w-6 h-6" icon="pencil-square" />
                   </.link>
-                  <.link skl phx-click="delete" phx-value-id={subscriber.id} data={[confirm: "Are you sure?"]}>
+                  <.link skl phx-click="delete" phx-value-sub-id={subscriber.id} data={[confirm: "Are you sure?"]}>
                     <.ui_icon class="w-6 h-6" icon="trash" />
                   </.link>
                 </td>
@@ -105,9 +105,9 @@
   <.rightbar_modal return_to={Routes.project_campaigns_show_path(@socket, :show, @campaign.id)}>
     <.live_component
       module={NewnixWeb.Live.Project.SubscribersLive.FormComponent}
-      id={@subscriber.id || :new}
+      id={@subscriber.id || :create}
       title={@page_title}
-      action={:new_subscriber == @live_action && :new || :edit}
+      action={:new_subscriber == @live_action && :create || :update}
       project={@project}
       campaign={@campaign}
       subscriber={@subscriber}
@@ -115,8 +115,6 @@
     />
   </.rightbar_modal>
 <% end %>
-
-
 
 <%= if @live_action === :show_subscriber do %>
   <.rightbar_modal return_to={Routes.project_campaigns_show_path(@socket, :show, @campaign.id)}>

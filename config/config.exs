@@ -13,6 +13,8 @@ config :newnix,
 config :flop,
   repo: Newnix.Repo
 
+config :newnix, :generators, binary_id: true
+
 # Configures the endpoint
 config :newnix, NewnixWeb.Endpoint,
   url: [host: "localhost"],

@@ -1,12 +1,15 @@
 defmodule NewnixWeb.Live.Project.SettingsLive.Index do
+  @doc false
+
   use NewnixWeb, :live_project
 
   alias Newnix.Projects
+  alias Newnix.Projects.Invite
 
   def mount(_session, _params, socket) do
-    %{project: project} = socket.assigns
+    %{assigns: %{project: project}} = socket = fetch_records(socket)
 
-    project = project |> Projects.list_users()
+    if connected?(socket), do: Projects.subscribe(project.id)
 
     {:ok,
      socket
@@ -14,35 +17,70 @@ defmodule NewnixWeb.Live.Project.SettingsLive.Index do
      |> assign(changeset: Projects.change_project(project))}
   end
 
-  def handle_event("validate", %{"project" => params}, %{assigns: assigns} = socket) do
+  def handle_info({Projects, [_name, _event], _result}, socket) do
+    {:noreply, socket |> fetch_records()}
+  end
+
+  def handle_params(params, _url, socket) do
+    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
+  end
+
+  defp apply_action(socket, :invite, _params) do
+    socket
+    |> assign(:invite, %Invite{})
+    |> assign(:page_title, "New Invite")
+  end
+
+  defp apply_action(socket, _, _) do
+    socket
+  end
+
+  def handle_event("validate", %{"project" => params}, %{assigns: %{project: project}} = socket) do
     changeset =
-      assigns.project
+      project
       |> Projects.change_project(params)
-      |> Map.put(:action, :insert)
+      |> Map.put(:action, :validate)
 
     {:noreply, assign(socket, changeset: changeset)}
   end
 
-  def handle_event("save", %{"project" => project_params}, %{assigns: assigns} = socket) do
-    case Projects.update_project(assigns.project, project_params) do
-      {:ok, project} ->
-        {:noreply,
-         socket
-         |> assign(:project, project)
-         |> put_flash(:success, "Project \"#{project.name}\" updated")}
+  def handle_event(
+        "save",
+        %{"project" => project_params},
+        %{assigns: %{project: project}} = socket
+      ) do
+    {:noreply,
+     can_do!(socket, :project, :update, fn socket ->
+       case Projects.update_project(project, project_params) do
+         {:ok, project} ->
+           socket
+           |> assign(:project, project)
+           |> put_flash(:success, "Project \"#{project.name}\" updated")
 
-      {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, changeset: changeset)}
-    end
+         {:error, %Ecto.Changeset{} = changeset} ->
+           assign(socket, changeset: changeset)
+       end
+     end)}
+  end
+
+  def handle_event("delete-invite", %{"id" => id}, socket) do
+    {:noreply,
+     can_do!(socket, :invite, :delete, fn %{assigns: %{project: project}} = socket ->
+       invite = Projects.get_invite!(project, id)
+       {:ok, _} = Projects.delete_invite(invite)
+
+       socket
+     end)}
   end
 
   attr :user, :map
+  attr :role, :map, default: nil
   attr :logo, :string, default: nil
 
   def user_row(assigns) do
     ~H"""
       <tr>
-        <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
+        <td class="py-4 pl-4 pr-3 text-sm sm:pl-6">
             <div class="flex items-center">
                 <.ui_avatar text={"#{String.slice(@user.firstname,0,1)}#{String.slice(@user.lastname,0,1)}"} avatar={@user.avatar} />
                 <div class="ml-4">
@@ -55,20 +93,68 @@ defmodule NewnixWeb.Live.Project.SettingsLive.Index do
                 </div>
             </div>
         </td>
-        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><%= role(@user) %></td>
-        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><.date_added datetime={@user.inserted_at} /></td>
-        <td :if={@admin} class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-            <a href="#" class="text-indigo-600 hover:text-indigo-900">
-              Edit
-            <span class="sr-only">, <%= @user.firstname %> <%= @user.lastname %></span>
-            </a>
+        <td class="px-3 py-4 text-sm text-gray-500 capitalize">-</td>
+        <td class="px-3 py-4 text-sm text-gray-500"><.date_added datetime={@user.inserted_at} /></td>
+        <td>
+          <div class="flex justify-center items-center">
+            <.link :if={can?(@role, :invite, :update)} class="text-indigo-600 hover:text-indigo-900">
+              <.ui_icon icon="cog" />
+            </.link>
+          </div>
         </td>
     </tr>
     """
   end
 
-  def role(%{admin: true}), do: "Admin"
-  def role(%{admin: _}), do: "User"
+  attr :invite, :map
+  attr :role, :map, default: nil
+  attr :logo, :string, default: nil
+
+  def invite_row(assigns) do
+    ~H"""
+      <tr>
+        <td class="py-4 pl-4 pr-3 text-sm sm:pl-6">
+            <div class="flex items-center">
+                <.ui_avatar text={"#{String.slice(@invite.email,0,2)}"}  />
+                <div class="ml-4">
+                    <div class="font-medium text-gray-900">
+                      Invite
+                    </div>
+                    <div class="text-gray-500">
+                        <%= @invite.email %>
+                    </div>
+                </div>
+            </div>
+        </td>
+        <td class="px-3 py-4 text-sm text-gray-500 capitalize"><%= role(@invite.role) %></td>
+        <td class="px-3 py-4 text-sm text-gray-500"><.date_added datetime={@invite.inserted_at} /></td>
+        <td>
+          <div class="flex justify-center items-center">
+            <.link
+              :if={can?(:invite, :delete, @role)}
+              phx-click="delete-invite"
+              phx-value-id={@invite.id}
+              class="text-indigo-600 hover:text-indigo-900">
+              <.ui_icon icon="trash" />
+            </.link>
+          </div>
+        </td>
+    </tr>
+    """
+  end
+
+  defp fetch_records(%{assigns: %{project: project}} = socket) do
+    socket
+    |> assign(
+      :project,
+      project
+      |> Projects.list_users(force: true)
+      |> Projects.list_invites(force: true)
+    )
+  end
+
+  def role(%{role: role}), do: role
+  def role(name), do: name
 
   def date_added(assigns) do
     ~H"""

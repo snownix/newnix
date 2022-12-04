@@ -1,0 +1,53 @@
+<section class="flex flex-1 flex-col lg:flex-row lg:space-x-12 w-full">
+  <div class="flex flex-col space-y-4 max-w-screen-sm w-full">
+    <h2 class="text-lg font-semibold">
+      <%= @title %>
+    </h2>
+
+    <.form
+      id="invite-form"
+      let={f}
+      for={@changeset}
+      phx-submit="save"
+      phx-target={@myself}
+      phx-change="validate"
+      class="flex flex-col space-y-4">
+
+      <div>
+        <.ui_select form={f} name={:role} options={@roles} title="Role" show_error={true} />
+      </div>
+
+      <div>
+        <.ui_input form={f} name={:email} title="Email" type="email" show_error={true} />
+      </div>
+
+      <div>
+        <.ui_datetime form={f} name={:expire_at} title="Expiration" />
+      </div>
+
+      <div class="p-1 px-5 bg-gray-100 rounded">Expired <%= expire_at(@changeset) %></div>
+
+      <%= if tag_has_error(f, :project_id) do %>
+      <div>
+        <div class="alert info rounded">
+          <.ui_icon icon="no-symbol" />
+          <span class="message"><%= gettext("The user has already been invited")  %></span>
+        </div>
+      </div>
+      <% end %>
+      <div class="inline-flex-center justify-between">
+        <.ui_button
+          navigate={@return_to}
+          theme="danger inversed"
+          >
+          <.ui_icon icon="close" />
+          <span>Cancel</span>
+        </.ui_button>
+        <.ui_button theme="dark" phx_disable_with="Saving...">
+          <.ui_icon icon="check" />
+          <span>Save</span>
+        </.ui_button>
+      </div>
+    </.form>
+  </div>
+</section>

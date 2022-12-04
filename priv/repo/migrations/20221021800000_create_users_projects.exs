@@ -2,8 +2,9 @@ defmodule Newnix.Repo.Migrations.CreateUsersProjects do
   use Ecto.Migration
 
   def change do
-    create table(:users_projects, primary_key: false) do
+    create table(:users_projects) do
       add :role, :string, default: "user"
+      add :status, :string, default: "pending"
 
       add :user_id,
           references(:users, type: :binary_id, on_delete: :delete_all)

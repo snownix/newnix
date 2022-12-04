@@ -1,4 +1,4 @@
-<%= if is_nil(@form) or campaign_status(@form) !== :active do %>
+<%= if (is_nil(@form) or campaign_status(@form) !== :active) and @dev === false do %>
 <div class="newnix_expired">
     <div class="img">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
@@ -36,7 +36,7 @@
 <.form
     let={f}
     for={@changeset}
-    id="campaign-form"
+    id="subscribe-form"
     class="newnix_form"
     phx-change="validate"
     phx-submit="save">
@@ -55,7 +55,7 @@
             </p>
         <% end %>
     </div>
-    <%= if campaign_status(@form) === :active do %>
+    <%= if campaign_status(@form) === :active or @dev do %>
         <%= if !@success do %>
             <div class="form">
                 <%= if get_form_value(@form.firstname, false) or get_form_value(@form.lastname, false) do  %>

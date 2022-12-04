@@ -20,6 +20,7 @@ defmodule NewnixWeb.InitAssigns do
      |> assign(:sidebar, :user)
      |> assign_locale(session, params)
      |> assign(:current_user, user)
+     |> assign(:count_invites, Projects.count_invites(user))
      |> assign(:projects, Projects.list_projects(user))}
   end
 
@@ -51,8 +52,9 @@ defmodule NewnixWeb.InitAssigns do
 
           {:cont,
            socket
-           |> assign(:project, project)
            |> assign(:page_title, project.name)
+           |> assign(:project, project)
+           |> assign(:role, project.role)
            |> assign(:project_campaigns, campaigns)}
       end
     end

@@ -26,10 +26,13 @@
             <section
                 class="flex flex-col md:flex-row text-sm md:text-lg divide-y md:items-center card-bg w-full-lg border border-opacity-5 md:divide-y-0 md:divide-x">
                 <div class="flex-1 py-3 md:py-5 px-4">
-                    <p clsas="font-semibold">
+                    <div class="flex-center py-1 font-medium text-gray-500">
+                        <div class="p-1 rounded-lg border">
+                            <.ui_icon icon="check" />
+                        </div>
                         <span skl>Subscribers</span>
-                    </p>
-                    <div class="font-bold text-2xl md:text-3xl">
+                    </div>
+                    <div class="font-semibold text-2xl md:text-3xl">
                         <div skl>
                             <%= @stats.subscribers %>
                         </div>
@@ -39,10 +42,13 @@
                     </div>
                 </div>
                 <div class="flex-1 py-3 md:py-5 px-4">
-                    <p clsas="font-semibold">
+                    <div class="flex-center py-1 font-medium text-gray-500">
+                        <div class="p-1 rounded-lg border">
+                            <.ui_icon icon="no-symbol" />
+                        </div>
                         <span skl>Unsubscribers</span>
-                    </p>
-                    <div class="font-bold text-2xl md:text-3xl">
+                    </div>
+                    <div class="font-semibold text-2xl md:text-3xl">
                         <div skl>
                             <%= @stats.unsubscribers %>
                         </div>

@@ -13,7 +13,7 @@
           </select>
         </form>
       </div>
-      <.ui_button href={Routes.project_forms_index_path(@socket, :new)} theme="primary" size="small">
+      <.ui_button href={Routes.project_forms_index_path(@socket, :create)} theme="primary" size="small">
         <.ui_icon icon="plus" />
         <span>New Form</span>
       </.ui_button>
@@ -86,7 +86,7 @@
             <.ui_icon icon="eye" />
           </span>
         </.link>
-        <.link patch={Routes.project_forms_index_path(@socket, :edit, form.id)}
+        <.link patch={Routes.project_forms_index_path(@socket, :update, form.id)}
           class="flex items-center justify-center w-full h-full px-8 hover:bg-gray-100 cursor-pointer">
           <span skl-full skl-rounded>
             <.ui_icon icon="cog" />
@@ -104,10 +104,10 @@
   </section>
 </main>
 
-<%= if @live_action in [:new, :edit] do %>
+<%= if @live_action in [:create, :update] do %>
   <.rightbar_modal class="large" return_to={Routes.project_forms_index_path(@socket, :index)}>
-    <.live_component module={NewnixWeb.Live.Project.FormsLive.FormComponent} id={@form.id || :new} title={@page_title}
-      form={@form} project={@project} action={@live_action} campaigns={@campaigns}
+    <.live_component module={NewnixWeb.Live.Project.FormsLive.FormComponent} id={@form.id || :create} title={@page_title}
+      form={@form} role={@role} project={@project} action={@live_action} campaigns={@campaigns}
       return_to={Routes.project_forms_index_path(@socket, :index)} />
   </.rightbar_modal>
   <% end %>

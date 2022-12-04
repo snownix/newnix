@@ -11,6 +11,38 @@ defmodule Newnix.Campaigns do
   alias Newnix.Campaigns.CampaignSubscriber
   alias Newnix.Subscribers.Subscriber
 
+  @topic inspect(__MODULE__)
+
+  def subscribe do
+    Phoenix.PubSub.subscribe(Newnix.PubSub, @topic)
+  end
+
+  def subscribe(project_id) do
+    Phoenix.PubSub.subscribe(Newnix.PubSub, "#{@topic}:#{project_id}")
+  end
+
+  def subscribe(project_id, row_id) do
+    Phoenix.PubSub.subscribe(Newnix.PubSub, "#{@topic}:#{project_id}:#{row_id}")
+  end
+
+  defp notify_subscribers({:ok, result}, event) do
+    Phoenix.PubSub.broadcast(
+      Newnix.PubSub,
+      "#{@topic}:#{result.project_id}",
+      {__MODULE__, event, result}
+    )
+
+    Phoenix.PubSub.broadcast(
+      Newnix.PubSub,
+      "#{@topic}:#{result.project_id}:#{result.id}",
+      {__MODULE__, event, result}
+    )
+
+    {:ok, result}
+  end
+
+  defp notify_subscribers({:error, reason}, _), do: {:error, reason}
+
   @doc """
   Returns the list of campaigns.
 
@@ -104,6 +136,7 @@ defmodule Newnix.Campaigns do
     |> Campaign.changeset(attrs)
     |> Campaign.project_assoc(project)
     |> Repo.insert()
+    |> notify_subscribers([:campaign, :created])
   end
 
   @doc """
@@ -122,6 +155,7 @@ defmodule Newnix.Campaigns do
     campaign
     |> Campaign.changeset(attrs)
     |> Repo.update()
+    |> notify_subscribers([:campaign, :updated])
   end
 
   @doc """
@@ -138,6 +172,7 @@ defmodule Newnix.Campaigns do
   """
   def delete_campaign(%Campaign{} = campaign) do
     Repo.delete(campaign)
+    |> notify_subscribers([:campaign, :deleted])
   end
 
   @doc """
