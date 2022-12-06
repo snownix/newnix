@@ -59,10 +59,10 @@ defmodule Newnix.Projects.Project do
     |> validate_length(:website, max: @maxlen_website)
   end
 
-  def user_assoc(project, user) do
+  def user_assoc(project, user, role) do
     project
     |> change()
-    |> put_assoc(:users, [user])
+    |> put_assoc(:users_projects, [%UserProject{user: user, role: role}])
   end
 
   def owner_changeset(project, user) do

@@ -54,7 +54,7 @@ defmodule Newnix.Pagination do
     }
   end
 
-  def secure_allowed_limit(limit) when limit > 0 and limit < 100, do: limit
+  def secure_allowed_limit(limit) when limit > 0 and limit <= 200, do: limit
   def secure_allowed_limit(_limit), do: @default_limit
 
   def secure_allowed_page(page) when page > 0, do: page

@@ -30,23 +30,23 @@
 	@apply flex-shrink-0;
 }
 
-.table-data .status,
-.label .status {
+.table-data .label,
+.label {
 	@apply px-3 py-1 rounded bg-gray-100 text-dark-400 text-sm;
 }
 
-.table-data .status[type="active"],
-.label .status[type="active"] {
+.table-data .label[type="active"],
+.label[type="active"] {
 	@apply bg-green-400 text-white;
 }
 
-.table-data .status[type="future"],
-.label .status[type="future"] {
+.table-data .label[type="future"],
+.label[type="future"] {
 	@apply bg-orange-400 text-white;
 }
 
-.table-data .status[type="expired"],
-.label .status[type="expired"] {
+.table-data .label[type="expired"],
+.label[type="expired"] {
 	@apply bg-dark-400 text-white;
 }
 

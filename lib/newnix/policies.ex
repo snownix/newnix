@@ -21,6 +21,10 @@ defmodule Newnix.Policies do
     ]
   end
 
+  def contains_role?(roles, role) when is_list(roles) do
+    Enum.member?(roles, role)
+  end
+
   def can?(%{assigns: %{role: role}} = _socket, collection, action) do
     can?(role, collection, action)
   end
@@ -28,6 +32,8 @@ defmodule Newnix.Policies do
   def can?(%{role: role}, collection, action) do
     can?(role, collection, action)
   end
+
+  def can?(:owner, _roles, _actions), do: true
 
   def can?(role, :project, action) do
     can_do?(role, Project.policies(), action)
@@ -49,23 +55,15 @@ defmodule Newnix.Policies do
     can_do?(role, Subscriber.policies(), action)
   end
 
-  def can?(:owner, _roles, _actions), do: true
+  def can?(_, _, _), do: false
 
-  def can_do?(_roles, :owner, _actions), do: true
+  def can_do?(:owner, _collection, _actions), do: true
 
   def can_do?(role, %{} = map, action) do
     contains_role?(map[action] || [], role)
   end
 
   def can_do?(_, _, _), do: false
-
-  def can_do?(_roles, :owner), do: true
-  def can?(_, _, _), do: false
-  def can?(_, _), do: false
-
-  def contains_role?(roles, role) when is_list(roles) do
-    Enum.member?(roles, role)
-  end
 
   def can_do!(%{assigns: %{role: role}} = socket, collection, action, callback) do
     can_do!(socket, role, collection, action, callback)

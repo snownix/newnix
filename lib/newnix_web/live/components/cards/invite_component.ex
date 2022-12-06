@@ -4,7 +4,7 @@ defmodule NewnixWeb.Live.Components.Cards.InviteComponent do
   def render(assigns) do
     ~H"""
       <li class="flex items-center py-5 px-4 sm:py-6">
-        <div class="min-w-0 flex-1 flex items-center">
+        <div class="relative min-w-0 flex-1 flex items-center">
             <div class="flex-shrink-0">
               <.ui_avatar text="AB" avatar={@project.logo}></.ui_avatar>
             </div>
@@ -26,6 +26,7 @@ defmodule NewnixWeb.Live.Components.Cards.InviteComponent do
                   </div>
               </div>
             </div>
+            <.link navigate={Routes.project_path(@socket, :open, @project.id)} class="absolute inset-0"></.link>
         </div>
         <div class="flex space-x-2 p-2" :if={@invite.status === :pending}>
           <.ui_button size="xs" theme="dark" phx-click="accept" phx-value-id={@invite.id}>
@@ -35,8 +36,8 @@ defmodule NewnixWeb.Live.Components.Cards.InviteComponent do
             <.ui_icon icon="close" />
           </.ui_button>
         </div>
-        <div class="flex space-x-2 p-2" :if={@invite.status !== :pending}>
-          <span><%= @invite.status %></span>
+        <div :if={@invite.status !== :pending} class="flex space-x-2 p-2 capitalize">
+          <span class={"label #{@invite.status == :accepted && "success" || "warning"}"}><%= @invite.status %></span>
         </div>
     </li>
     """

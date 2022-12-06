@@ -28,21 +28,19 @@
     </div>
     <div class="inline-flex-center">
       <div class="w-full">
-        <.ui_datetime form={f} type="datetime-local" name={:start_at} title="Start Date" />
+        <.ui_datetime phx_debounce={300} form={f} type="datetime-local" name={:start_at} title="Start Date" />
       </div>
 
       <div class="w-full">
-        <.ui_datetime form={f} type="datetime-local" name={:expire_at} title="End Date" />
+        <.ui_datetime phx_debounce={300} form={f} type="datetime-local" name={:expire_at} title="End Date" />
       </div>
     </div>
 
     <%= error_tag f, :start_at %>
     <%= error_tag f, :expire_at %>
 
-    <div class="label">
-      <div class="status" type={status(@changeset)}>
-        Status: <span class="capitalize"><%= status(@changeset) %></span>
-      </div>
+    <div class="label" type={status(@changeset)}>
+      Status: <span class="capitalize"><%= status(@changeset) %></span>
     </div>
 
     <div>

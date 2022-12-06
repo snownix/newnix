@@ -1,0 +1,19 @@
+.label {
+	@apply px-2 py-1 rounded bg-gray-100;
+}
+
+.label.success {
+	@apply bg-green-500 text-white;
+}
+
+.label.danger {
+	@apply bg-red-500 text-white;
+}
+
+.label.warning {
+	@apply bg-yellow-500 text-white;
+}
+
+.label.info {
+	@apply bg-blue-400 text-white;
+}

@@ -13,12 +13,13 @@ defmodule NewnixWeb.Live.Components.Helper do
   attr :class, :string, default: ""
   attr :show_error, :boolean, default: false
   attr :readonly, :boolean, default: false
+  attr :phx_debounce, :string, default: "blur"
 
   def ui_input(assigns) do
     ~H"""
       <label class={"input_group #{@class}"} field-error={tag_has_error(@form, @name)} {@rest}
         field-fill={is_fill(@form, @name)}>
-        <%= text_input @form, @name, type: @type, readonly: @readonly, phx_debounce: "blur" %>
+        <%= text_input @form, @name, type: @type, readonly: @readonly, phx_debounce: @phx_debounce %>
         <%= label @form, @name, @title, class: "label select-none" %>
         <.ui_icon :if={@readonly} icon="lock" />
         <%= if @show_error do %>
@@ -34,12 +35,13 @@ defmodule NewnixWeb.Live.Components.Helper do
   attr :title, :string, required: true
   attr :class, :string, default: ""
   attr :readonly, :boolean, default: false
+  attr :phx_debounce, :string, default: "blur"
 
   def ui_datetime(assigns) do
     ~H"""
       <label class={"input_group #{@class}"} field-error={tag_has_error(@form, @name)} {@rest}
         field-fill={is_fill(@form, @name)}>
-        <%= datetime_local_input @form, @name, readonly: @readonly, phx_debounce: "blur" %>
+        <%= datetime_local_input @form, @name, readonly: @readonly, phx_debounce: @phx_debounce %>
         <%= label @form, @name, @title, class: "label select-none" %>
       </label>
     """
@@ -52,12 +54,13 @@ defmodule NewnixWeb.Live.Components.Helper do
   attr :show_error, :boolean, default: false
   attr :class, :string, default: ""
   attr :readonly, :boolean, default: false
+  attr :phx_debounce, :string, default: "blur"
 
   def ui_textarea(assigns) do
     ~H"""
       <label class={"input_group #{@class}"} field-error={tag_has_error(@form, @name)}
         field-fill={is_fill(@form, @name)} id={@name}>
-        <%= textarea @form, @name, readonly: @readonly %>
+        <%= textarea @form, @name, readonly: @readonly, phx_debounce: @phx_debounce %>
         <%= label @form, @name, @title, class: "label select-none" %>
         <%= if @show_error do %>
           <%= error_tag @form , @name %>
@@ -71,6 +74,7 @@ defmodule NewnixWeb.Live.Components.Helper do
   attr :form, :string, required: true
   attr :title, :string, required: true
   attr :class, :string, default: ""
+  attr :phx_debounce, :string, default: "blur"
 
   CssEditor
 
@@ -78,7 +82,7 @@ defmodule NewnixWeb.Live.Components.Helper do
     ~H"""
       <label class={"input_group #{@class}"} field-error={tag_has_error(@form, @name)}
         field-fill={is_fill(@form, @name)} id={@name} phx-hook="CssEditor">
-        <%= textarea @form, @name, hidden: true, phx_debounce: "blur" %>
+        <%= textarea @form, @name, hidden: true, phx_debounce: @phx_debounce %>
         <code id="css-editor"></code>
         <%= label @form, @name, @title, class: "label select-none" %>
       </label>
@@ -236,7 +240,7 @@ defmodule NewnixWeb.Live.Components.Helper do
        <section class="table_paginator__">
         <%= form_for :pagination, "#", [phx_change: "pagination", class: "_footer border-t px-4 py-2 justify-between flex w-full items-center" ], fn f ->%>
           <div class="flex items-center space-x-2 ">
-            <%= select f, :limit, Enum.map(1..5, &(&1 * 5)), class: "select" , value: @paginator.limit %>
+            <%= select f, :limit, Enum.map(1..20, &(&1 * 5)), class: "select" , value: @paginator.limit %>
             <label>Lines </label>
           </div>
           <div class="flex">

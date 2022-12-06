@@ -164,7 +164,7 @@ defmodule Newnix.Projects do
   def create_project(user = %User{}, attrs \\ %{}) do
     %Project{}
     |> Project.changeset(attrs)
-    |> Project.user_assoc(user)
+    |> Project.user_assoc(user, :owner)
     |> Repo.insert()
   end
 

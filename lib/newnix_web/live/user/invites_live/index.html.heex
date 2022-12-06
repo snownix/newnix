@@ -2,8 +2,8 @@
     <div class="pb-8 border-b ">
         <.ui_page_head
         title="Invites"
-        description="A list of all invites."
-        icon="layers">
+        description="recevied invitations to join projects."
+        icon="user-plus">
         <:action>
             <.ui_button theme="primary" size="small" href={Routes.live_path(@socket, NewnixWeb.Live.User.DashboardLive.New)}>
             <.ui_icon icon="plus"/>
@@ -19,6 +19,7 @@
             title="invite"
             id="invite-empty-state"
             button={false}
+            icon="user-plus"
             href={Routes.live_path(@socket, NewnixWeb.Live.User.DashboardLive.New)} />
         </div>
     <% else %>
