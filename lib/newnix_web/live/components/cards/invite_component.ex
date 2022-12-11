@@ -26,7 +26,10 @@ defmodule NewnixWeb.Live.Components.Cards.InviteComponent do
                   </div>
               </div>
             </div>
-            <.link navigate={Routes.project_path(@socket, :open, @project.id)} class="absolute inset-0"></.link>
+            <.link
+              :if={@invite.status == :accepted}
+              class="absolute inset-0"
+              navigate={Routes.project_path(@socket, :open, @project.id)} ></.link>
         </div>
         <div class="flex space-x-2 p-2" :if={@invite.status === :pending}>
           <.ui_button size="xs" theme="dark" phx-click="accept" phx-value-id={@invite.id}>
