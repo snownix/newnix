@@ -14,4 +14,25 @@ defmodule Newnix.Helper do
   def format_period_interval(:hours), do: "%H"
   def format_period_interval(:days), do: "%d-%m-%Y"
   def format_period_interval(:months), do: "%m-%Y"
+
+  def auth_providers_enabled() do
+    true in [
+      auth_provider_enabled(:twitter),
+      auth_provider_enabled(:google),
+      auth_provider_enabled(:github)
+    ]
+  end
+
+  def auth_provider_enabled(provider) when provider in [:twitter, :github, :google] do
+    not (Application.get_env(
+           :ueberauth,
+           case provider do
+             :twitter -> Ueberauth.Strategy.Twitter.OAuth
+             :github -> Ueberauth.Strategy.Github.OAuth
+             :google -> Ueberauth.Strategy.Google.OAuth
+           end
+         )
+         |> Keyword.values()
+         |> Enum.any?(&is_nil/1))
+  end
 end

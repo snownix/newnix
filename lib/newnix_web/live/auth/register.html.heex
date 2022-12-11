@@ -45,15 +45,15 @@
         <% end %>
         <div class="w-full flex flex-col space-y-4">
             <%= if @show_form? do %>
-                <div class="flex items-center space-x-4  after:w-1/2 after:h-1 after:bg-gray-100 before:w-1/2 before:h-1 before:bg-gray-100">
+                <div  :if={auth_providers_enabled()} class="flex items-center space-x-4  after:w-1/2 after:h-1 after:bg-gray-100 before:w-1/2 before:h-1 before:bg-gray-100">
                     <div class="font-bold px-6">Or</div>
                 </div>
 
-                <.ui_button size="large" phx-click="toggle-form" type="button" theme="simple" class="hover:text-dark-500">
+                <.ui_button :if={auth_providers_enabled()} size="large" phx-click="toggle-form" type="button" theme="simple" class="hover:text-dark-500">
                     <div class="flex space-x-1">
-                        <svg class="w-7 h-7"><use href={Routes.static_path(@socket, "/icons/social.svg#github")} /></svg>
-                        <svg class="w-7 h-7"><use href={Routes.static_path(@socket, "/icons/social.svg#google")} /></svg>
-                        <svg class="w-7 h-7"><use href={Routes.static_path(@socket, "/icons/social.svg#twitter")} /></svg>
+                        <svg :if={auth_provider_enabled(:github)} class="w-7 h-7"><use href={Routes.static_path(@socket, "/icons/social.svg#github")} /></svg>
+                        <svg :if={auth_provider_enabled(:google)} class="w-7 h-7"><use href={Routes.static_path(@socket, "/icons/social.svg#google")} /></svg>
+                        <svg :if={auth_provider_enabled(:twitter)} class="w-7 h-7"><use href={Routes.static_path(@socket, "/icons/social.svg#twitter")} /></svg>
                     </div>
                 </.ui_button>
             <% else %>
@@ -63,24 +63,26 @@
                 </.ui_button>
 
 
-                <div class="flex items-center space-x-4  after:w-1/2 after:h-1 after:bg-gray-100 before:w-1/2 before:h-1 before:bg-gray-100">
-                    <div class="font-bold px-6">Or</div>
-                </div>
+                <%= if auth_providers_enabled() do %>
+                    <div class="flex items-center space-x-4  after:w-1/2 after:h-1 after:bg-gray-100 before:w-1/2 before:h-1 before:bg-gray-100">
+                        <div class="font-bold px-6">Or</div>
+                    </div>
 
-                <.ui_button size="large" href={Routes.providers_path(@socket, :request, "github", type: "register")} class="w-full border-2 hover:border-gray-600 rounded-md py-3 flex justify-center items-center hover:!no-underline transition-all">
-                    <svg class="w-7 h-7"><use href={Routes.static_path(@socket, "/icons/social.svg#github")} /></svg>
-                    <span class="text-gray-800 font-medium">Sign up with Github</span>
-                </.ui_button>
+                    <.ui_button :if={auth_provider_enabled(:github)} size="large" href={Routes.providers_path(@socket, :request, "github", type: "register")} class="w-full border-2 hover:border-gray-600 rounded-md py-3 flex justify-center items-center hover:!no-underline transition-all">
+                        <svg class="w-7 h-7"><use href={Routes.static_path(@socket, "/icons/social.svg#github")} /></svg>
+                        <span class="text-gray-800 font-medium">Sign up with Github</span>
+                    </.ui_button>
 
-                <.ui_button size="large" href={Routes.providers_path(@socket, :request, "google", type: "register")} class="w-full border-2 hover:border-gray-600 rounded-md py-3 flex justify-center items-center hover:!no-underline transition-all">
-                    <svg class="w-7 h-7"><use href={Routes.static_path(@socket, "/icons/social.svg#google")} /></svg>
-                    <span class="text-gray-800 font-medium">Sign up with Google</span>
-                </.ui_button>
+                    <.ui_button :if={auth_provider_enabled(:google)} size="large" href={Routes.providers_path(@socket, :request, "google", type: "register")} class="w-full border-2 hover:border-gray-600 rounded-md py-3 flex justify-center items-center hover:!no-underline transition-all">
+                        <svg class="w-7 h-7"><use href={Routes.static_path(@socket, "/icons/social.svg#google")} /></svg>
+                        <span class="text-gray-800 font-medium">Sign up with Google</span>
+                    </.ui_button>
 
-                <.ui_button size="large" href={Routes.providers_path(@socket, :request, "twitter", type: "register")} class="w-full border-2 hover:border-gray-600 rounded-md py-3 flex justify-center items-center hover:!no-underline transition-all">
-                    <svg class="w-7 h-7"><use href={Routes.static_path(@socket, "/icons/social.svg#twitter")} /></svg>
-                    <span class="text-gray-800 font-medium">Sign up with Twitter</span>
-                </.ui_button>
+                    <.ui_button :if={auth_provider_enabled(:twitter)} size="large" href={Routes.providers_path(@socket, :request, "twitter", type: "register")} class="w-full border-2 hover:border-gray-600 rounded-md py-3 flex justify-center items-center hover:!no-underline transition-all">
+                        <svg class="w-7 h-7"><use href={Routes.static_path(@socket, "/icons/social.svg#twitter")} /></svg>
+                        <span class="text-gray-800 font-medium">Sign up with Twitter</span>
+                    </.ui_button>
+                <% end %>
             <% end %>
 
         </div>
