@@ -106,6 +106,7 @@
     <.live_component
       module={NewnixWeb.Live.Project.SubscribersLive.FormComponent}
       id={@subscriber.id || :create}
+      role={@role}
       title={@page_title}
       action={:new_subscriber == @live_action && :create || :update}
       project={@project}

@@ -400,6 +400,23 @@ defmodule NewnixWeb.Live.Components.Helper do
   def chart_display_all(count) when count < 10, do: ""
   def chart_display_all(_), do: "hidden group-hover:block"
 
+  # TODO: menu
+  attr :items, :map, default: []
+
+  def ui_dropmenu(assigns) do
+    ~H"""
+      <div id="dropdown" class="hidden z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700">
+          <ul class="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefault">
+            <li :for={item <- @items}>
+              <a href="#" class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                <%= item %>
+              </a>
+            </li>
+          </ul>
+      </div>
+    """
+  end
+
   def ui_loading(assigns) do
     ~H"""
     <div class="newnix-loading">
