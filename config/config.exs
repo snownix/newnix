@@ -35,7 +35,7 @@ config :newnix, Newnix.Mailer, adapter: Swoosh.Adapters.Local
 config :swoosh, :api_client, false
 
 config :tailwind,
-  version: "3.1.6",
+  version: "3.2.4",
   app: [
     args: ~w(
       --config=tailwind.config.js

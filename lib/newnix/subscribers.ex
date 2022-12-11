@@ -4,7 +4,6 @@ defmodule Newnix.Subscribers do
   """
 
   import Ecto.Query
-  import Ecto.Changeset, only: [get_field: 2]
 
   alias Newnix.Repo
   alias Newnix.Pagination

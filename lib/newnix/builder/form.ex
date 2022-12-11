@@ -13,6 +13,25 @@ defmodule Newnix.Builder.Form do
   }
   def policies(), do: @policies
 
+  @maxlen_name 40
+  def maxlen_name(), do: @maxlen_name
+  @maxlen_email 100
+  def maxlen_email(), do: @maxlen_email
+  @maxlen_description 500
+  def maxlen_description(), do: @maxlen_description
+  @maxlen_thanks 500
+  def maxlen_thanks(), do: @maxlen_thanks
+  @maxlen_button 500
+  def maxlen_button(), do: @maxlen_button
+  @maxlen_css 3000
+  def maxlen_css(), do: @maxlen_css
+  @default_email "Email address"
+  def default_email(), do: @default_email
+  @default_button "Join"
+  def default_button(), do: @default_button
+  @status_options [:draft, :active, :inactive]
+  def status_options(), do: @status_options
+
   @timestamps_opts [type: :utc_datetime_usec]
   @primary_key {:id, :binary_id, autogenerate: true}
 
@@ -31,32 +50,13 @@ defmodule Newnix.Builder.Form do
 
     field :css, :string
 
-    field :status, Ecto.Enum, values: [:draft, :active, :inactive], default: :draft
+    field :status, Ecto.Enum, values: @status_options, default: :draft
 
     belongs_to :project, Project, type: :binary_id
     belongs_to :campaign, Campaign, type: :binary_id
 
     timestamps()
   end
-
-  @maxlen_name 40
-  def maxlen_name(), do: @maxlen_name
-  @maxlen_email 100
-  def maxlen_email(), do: @maxlen_email
-  @maxlen_description 500
-  def maxlen_description(), do: @maxlen_description
-  @maxlen_thanks 500
-  def maxlen_thanks(), do: @maxlen_thanks
-  @maxlen_button 500
-  def maxlen_button(), do: @maxlen_button
-  @maxlen_css 3000
-  def maxlen_css(), do: @maxlen_css
-
-  @default_email "Email address"
-  def default_email(), do: @default_email
-
-  @default_button "Join"
-  def default_button(), do: @default_button
 
   @doc false
   def changeset(form, attrs) do

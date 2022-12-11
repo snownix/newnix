@@ -1,0 +1,103 @@
+version: '3.7'
+services:
+  traefik:
+    image: traefik:2.3
+    command:
+      - '--log.level=ERROR'
+      - '--api=true'
+      - '--api.dashboard=true'
+      - '--entrypoints.web.address=:80'
+      - '--entrypoints.websecure.address=:443'
+      - '--providers.docker.swarmMode=true'
+      - '--providers.docker.exposedbydefault=false'
+      - '--providers.docker.network=traefik_public'
+      - '--providers.docker.endpoint=unix:///var/run/docker.sock'
+      - '--certificatesresolvers.letsencryptresolver.acme.httpchallenge=true'
+      - '--certificatesresolvers.letsencryptresolver.acme.httpchallenge.entrypoint=web'
+      - '--certificatesresolvers.letsencryptresolver.acme.email=support@neutrapp.com'
+      - '--certificatesresolvers.letsencryptresolver.acme.storage=/letsencrypt/acme.json'
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - traefik_certs:/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - traefik_public
+    configs:
+      - source: traefik_htpasswd
+        target: /etc/htpasswd
+    deploy:
+      placement:
+        constraints:
+        - node.role == manager
+      labels:
+        - 'traefik.enable=true'
+        # HTTP Catchall for redirecting HTTP -> HTTPS
+        - 'traefik.http.routers.http-catchall.rule=PathPrefix(`/`)'
+        - 'traefik.http.routers.http-catchall.entrypoints=web'
+        - 'traefik.http.routers.http-catchall.middlewares=redirect-to-https'
+        - 'traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https'
+        # Traefik dashboard
+        - 'traefik.http.routers.traefik.rule=Host(`tnewnix.neutrapp.com`)'
+        - 'traefik.http.routers.traefik.entrypoints=websecure'
+        - 'traefik.http.routers.traefik.tls.certresolver=letsencryptresolver'
+        - 'traefik.http.routers.traefik.service=api@internal'
+        - 'traefik.http.services.api@internal.loadbalancer.server.port=8080'
+        - 'traefik.http.routers.traefik.middlewares=traefik-auth'
+        - 'traefik.http.middlewares.traefik-auth.basicauth.usersfile=/etc/htpasswd'
+
+  agent:
+    image: portainer/agent
+    environment:
+      AGENT_CLUSTER_ADDR: tasks.agent
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+    networks:
+      - agent_network
+    deploy:
+      mode: global
+      placement:
+        constraints:
+          - node.platform.os == linux
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    command: -H tcp://tasks.agent:9001 --tlsskipverify
+    volumes:
+      - portainer_data:/data
+    networks:
+      - agent_network
+      - traefik_public
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.portainer.service=portainer"
+        - "traefik.http.routers.portainer.entrypoints=websecure"
+        - "traefik.http.routers.portainer.rule=Host(`pnewnix.neutrapp.com`)"
+        - "traefik.http.routers.portainer.tls.certresolver=letsencryptresolver"
+        - "traefik.http.services.portainer.loadbalancer.server.port=9000"
+        # Edge
+        - "traefik.http.routers.edge.service=edge"
+        - "traefik.http.routers.edge.entrypoints=websecure"
+        - "traefik.http.routers.edge.rule=Host(`enewnix.neutrapp.com`)"
+        - "traefik.http.routers.edge.tls.certresolver=letsencryptresolver"
+        - "traefik.http.services.edge.loadbalancer.server.port=8000"
+
+configs:
+  traefik_htpasswd:
+    file: ./htpasswd
+
+networks:
+  traefik_public:
+    external: true
+  agent_network:
+    external: true
+
+volumes:
+  portainer_data: {}
+  traefik_certs: {}

@@ -26,7 +26,7 @@ defmodule NewnixWeb.Live.Project.SubscribersLive.FormComponent do
   end
 
   def handle_event("save", %{"subscriber" => subscriber_params}, socket) do
-    %{assigns: %{action: action, role: role}} = socket
+    %{assigns: %{action: action}} = socket
 
     {:noreply,
      can_do!(socket, :subscriber, action, fn socket ->

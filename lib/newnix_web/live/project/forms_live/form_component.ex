@@ -3,6 +3,7 @@ defmodule NewnixWeb.Live.Project.FormsLive.FormComponent do
 
   alias Plug.Builder
   alias Newnix.Builder
+  alias Newnix.Builder.Form
 
   @impl true
   def update(%{form: form, campaigns: _campaigns, project: _project} = assigns, socket) do
@@ -16,6 +17,7 @@ defmodule NewnixWeb.Live.Project.FormsLive.FormComponent do
      |> assign(:done, false)
      |> assign(:advanced, false)
      |> assign(:changeset, changeset)
+     |> assign(:status_options, Form.status_options())
      |> put_campaigns_options()}
   end
 

@@ -16,9 +16,9 @@ import Config
 #
 # Alternatively, you can use `mix phx.gen.release` to generate a `bin/server`
 # script that automatically sets the env var above.
-if System.get_env("PHX_SERVER") do
-  config :newnix, NewnixWeb.Endpoint, server: true
-end
+# if System.get_env("PHX_SERVER") do
+#   config :newnix, NewnixWeb.Endpoint, server: true
+# end
 
 config :ueberauth, Ueberauth,
   base_path: "/auth/providers",
@@ -36,8 +36,8 @@ config :ueberauth, Ueberauth,
   ]
 
 config :ueberauth, Ueberauth.Strategy.Google.OAuth,
-  client_id: {System, :get_env, ["GOOGLE_CLIENT_ID"]},
-  client_secret: {System, :get_env, ["GOOGLE_CLIENT_SECRET"]}
+  client_id: System.get_env("GOOGLE_CLIENT_ID"),
+  client_secret: System.get_env("GOOGLE_CLIENT_SECRET")
 
 config :ueberauth, Ueberauth.Strategy.Github.OAuth,
   client_id: System.get_env("GITHUB_CLIENT_ID"),
@@ -75,10 +75,13 @@ if config_env() == :prod do
       You can generate one by calling: mix phx.gen.secret
       """
 
-  host = System.get_env("PHX_HOST") || "example.com"
+  host = System.get_env("PHX_HOST") || "app.newnix.io"
   port = String.to_integer(System.get_env("PORT") || "4000")
 
   config :newnix, NewnixWeb.Endpoint,
+    load_from_system_env: true,
+    check_origin: false,
+    server: true,
     url: [host: host, port: 443, scheme: "https"],
     http: [
       # Enable IPv6 and bind on all interfaces.

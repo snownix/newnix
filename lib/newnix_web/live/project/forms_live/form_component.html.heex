@@ -28,23 +28,26 @@
       phx-change="validate"
       class="flex flex-col space-y-4">
 
-      <div>
-        <.ui_select form={f} name={:campaign_id} options={@options} title="Campaign" class="filled" />
+      <div class="flex flex-col space-y-4 lg:flex-row lg:space-x-4 lg:space-y-0">
+        <.ui_select form={f} name={:campaign_id} options={@options}  title="Campaign" class="filled" />
+        <div class="lg:w-1/2">
+          <.ui_select form={f} name={:status} options={@status_options}  title="Campaign" class="filled" />
+        </div>
       </div>
 
       <div>
-        <.ui_input form={f} name={:name} title="Form Name" />
+        <.ui_input form={f} name={:name} title="Form Name" phx_debounce={100} />
       </div>
 
       <div>
-        <.ui_textarea form={f} name={:description} title="Description" />
+        <.ui_textarea form={f} name={:description} title="Description" phx_debounce={100} />
       </div>
 
       <details id="advanced" class="space-y-4" open={@advanced}>
         <summary class="cursor-pointer" phx-click="open-advanced" phx-target={@myself}>Advanced Settings</summary>
 
         <div id="custom-css" phx-update="ignore">
-          <.ui_css_editor form={f} name={:css} title="Custom Css" class="filled" />
+          <.ui_css_editor form={f} name={:css} title="Custom Css" class="filled" phx_debounce={100} />
         </div>
 
         <div class="flex space-x-2">
@@ -62,15 +65,15 @@
 
         <div class="flex space-x-2">
           <div class="w-full">
-            <.ui_input form={f} name={:email_text} title="Email Text" />
+            <.ui_input form={f} name={:email_text} title="Email Text" phx_debounce={100} />
           </div>
           <div class="w-full">
-            <.ui_input form={f} name={:button_text} title="Button Text" />
+            <.ui_input form={f} name={:button_text} title="Button Text" phx_debounce={100} />
           </div>
         </div>
 
         <div>
-          <.ui_textarea form={f} name={:thanks_text} title="Thanks Message" />
+          <.ui_textarea form={f} name={:thanks_text} title="Thanks Message" phx_debounce={100}/>
         </div>
 
         <.live_component

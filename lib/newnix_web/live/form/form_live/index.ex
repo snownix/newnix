@@ -1,7 +1,6 @@
 defmodule NewnixWeb.Live.Form.FormLive.Index do
   use NewnixWeb, :live_form
 
-  alias Newnix.Campaigns
   alias Newnix.Campaigns.Campaign
   alias Newnix.Builder
   alias Newnix.Subscribers

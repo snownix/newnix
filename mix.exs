@@ -17,6 +17,15 @@ defmodule Newnix.MixProject do
         "coveralls.detail": :test,
         "coveralls.post": :test,
         "coveralls.html": :test
+      ],
+      releases: [
+        newnix: [
+          include_erts: true,
+          include_executables_for: [:unix],
+          applications: [
+            runtime_tools: :permanent
+          ]
+        ]
       ]
     ]
   end
@@ -53,7 +62,7 @@ defmodule Newnix.MixProject do
       {:swoosh, "~> 1.3"},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
-      {:gettext, "~> 0.18"},
+      {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:excoveralls, "~> 0.10", only: :test},
@@ -67,7 +76,7 @@ defmodule Newnix.MixProject do
       {:waffle_ecto, "~> 0.0"},
       {:slugify, "~> 1.3"},
       {:bcrypt_elixir, "~> 2.0"},
-      {:tailwind, "~> 0.1.6", runtime: Mix.env() == :dev},
+      {:tailwind, "~> 0.1.8", runtime: Mix.env() == :dev},
       {:timex, "~> 3.0"},
       {:flop, "~> 0.18.4"},
       {:faker, "~> 0.17", only: [:dev, :test]},
@@ -88,7 +97,12 @@ defmodule Newnix.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "ecto.seeds"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
-      "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"]
+      "assets.deploy": [
+        "tailwind app --minify",
+        "tailwind form --minify",
+        "esbuild default --minify",
+        "phx.digest"
+      ]
     ]
   end
 end
