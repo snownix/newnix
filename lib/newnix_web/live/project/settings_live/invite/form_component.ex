@@ -1,4 +1,4 @@
-defmodule NewnixWeb.Live.Project.SettingsLive.FormComponent do
+defmodule NewnixWeb.Live.Project.SettingsLive.Invite.FormComponent do
   use NewnixWeb, :live_component
 
   alias Newnix.Policies

@@ -82,7 +82,9 @@ defmodule NewnixWeb.Live.Project.SettingsLive.Index do
       <tr>
         <td class="py-4 pl-4 pr-3 text-sm sm:pl-6">
             <div class="flex items-center">
-                <.ui_avatar text={"#{String.slice(@user.firstname,0,1)}#{String.slice(@user.lastname,0,1)}"} avatar={@user.avatar} />
+                <.ui_avatar
+                  avatar={@user.avatar}
+                  text={"#{String.slice(@user.firstname,0,1)}#{String.slice(@user.lastname,0,1)}"}/>
                 <div class="ml-4">
                     <div class="font-medium text-gray-900">
                         <%= @user.firstname %> <%= @user.lastname %>
@@ -97,7 +99,9 @@ defmodule NewnixWeb.Live.Project.SettingsLive.Index do
         <td class="px-3 py-4 text-sm text-gray-500"><.date_added datetime={@user.inserted_at} /></td>
         <td>
           <div class="flex justify-center items-center">
-            <.link :if={can?(@role, :invite, :update)} class="text-indigo-600 hover:text-indigo-900">
+            <.link
+              :if={can?(@role, :invite, :update)}
+              class="text-indigo-600 hover:text-indigo-900">
               <.ui_icon icon="cog" />
             </.link>
           </div>
@@ -131,7 +135,7 @@ defmodule NewnixWeb.Live.Project.SettingsLive.Index do
         <td>
           <div class="flex justify-center items-center">
             <.link
-              :if={can?(:invite, :delete, @role)}
+              :if={can?(@role, :invite, :delete)}
               phx-click="delete-invite"
               phx-value-id={@invite.id}
               class="text-indigo-600 hover:text-indigo-900">

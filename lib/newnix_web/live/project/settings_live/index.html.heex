@@ -64,7 +64,7 @@
                             <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                                 Date Added
                             </th>
-                            <th :if={can?(:invite, :create, @role)} scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                            <th :if={can?(@role, :invite, :create)} scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
                                 <div class="flex w-full justify-end">
                                     <.ui_button navigate={Routes.project_settings_index_path(@socket, :invite)} size="xs">
                                         <.ui_icon icon="plus" />
@@ -85,7 +85,7 @@
     </div>
 </main>
 
-<%= if @live_action == :ivnite do %>
+<%= if @live_action == :invite and can?(@role, :invite, :create) do %>
   <.rightbar_modal return_to={Routes.live_path(@socket, NewnixWeb.Live.Project.SettingsLive.Index)}>
     <.live_component
         id={:create}
@@ -93,7 +93,7 @@
         title={@page_title}
         user={@current_user}
         action={@live_action}
-        module={NewnixWeb.Live.Project.SettingsLive.FormComponent}
+        module={NewnixWeb.Live.Project.SettingsLive.Invite.FormComponent}
         return_to={Routes.live_path(@socket, NewnixWeb.Live.Project.SettingsLive.Index)} />
   </.rightbar_modal>
 <% end %>
