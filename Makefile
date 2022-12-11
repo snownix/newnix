@@ -13,3 +13,13 @@ serve:
 
 docker:
 	@docker-compose up -d
+
+prod:
+	$(MAKE) build-prod
+	$(MAKE) push-prod
+
+build-prod:
+	@docker build -t registry.gitlab.com/newnixio/newnix .
+
+push-prod:
+	@docker push registry.gitlab.com/newnixio/newnix

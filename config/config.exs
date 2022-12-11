@@ -65,11 +65,18 @@ config :esbuild,
 
 # Auth
 config :ueberauth, Ueberauth,
+  base_path: "/auth/providers",
   providers: [
-    # <provider name>: { <Strategy Module>, [ <strategy options> ] }
-    # facebook: {Ueberauth.Strategy.Facebook, [opt1: "value", opts2: "value"]},
-    # github: {Ueberauth.Strategy.Github, [opt1: "value", opts2: "value"]}
-    # twitter: {Ueberauth.Strategy.Twitter, [opt1: "value", opts2: "value"]}
+    google:
+      {Ueberauth.Strategy.Google,
+       [
+         default_scope: "email profile",
+         prompt: "select_account",
+         access_type: "offline",
+         include_granted_scopes: true
+       ]},
+    github: {Ueberauth.Strategy.Github, [default_scope: "user:email"]},
+    twitter: {Ueberauth.Strategy.Twitter, []}
   ]
 
 # Configures Elixir's Logger

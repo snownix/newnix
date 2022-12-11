@@ -1,11 +1,11 @@
 defmodule NewnixWeb.ProvidersController do
   use NewnixWeb, :controller
 
-  import NewnixWeb.UserAuth
   alias Newnix.Accounts
+  import NewnixWeb.UserAuth
 
-  plug :prepare when action == :request
   plug Ueberauth
+  plug :prepare when action in [:request]
 
   @types ["login", "register"]
 

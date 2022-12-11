@@ -20,21 +20,6 @@ import Config
 #   config :newnix, NewnixWeb.Endpoint, server: true
 # end
 
-config :ueberauth, Ueberauth,
-  base_path: "/auth/providers",
-  providers: [
-    google:
-      {Ueberauth.Strategy.Google,
-       [
-         default_scope: "email profile",
-         prompt: "select_account",
-         access_type: "offline",
-         include_granted_scopes: true
-       ]},
-    github: {Ueberauth.Strategy.Github, [default_scope: "user:email"]},
-    twitter: {Ueberauth.Strategy.Twitter, []}
-  ]
-
 config :ueberauth, Ueberauth.Strategy.Google.OAuth,
   client_id: System.get_env("GOOGLE_CLIENT_ID"),
   client_secret: System.get_env("GOOGLE_CLIENT_SECRET")
