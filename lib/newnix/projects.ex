@@ -229,10 +229,10 @@ defmodule Newnix.Projects do
       ** (Ecto.NoResultsError)
 
   """
-  def get_invite!(%Project{id: id}, id) do
+  def get_invite!(%Project{id: project_id}, id) do
     query =
       from c in Invite,
-        where: c.id == ^id and c.project_id == ^id
+        where: c.id == ^id and c.project_id == ^project_id
 
     Repo.one!(query)
   end
