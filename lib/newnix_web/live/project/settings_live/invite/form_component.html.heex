@@ -14,18 +14,33 @@
       class="flex flex-col space-y-4">
 
       <div>
-        <.ui_select form={f} name={:role} options={@roles} title="Role" show_error={true} />
+        <.ui_select
+          form={f}
+          name={:role}
+          options={@roles}
+          icon="user"
+          title="Role"
+          show_error={true} />
       </div>
 
       <div>
-        <.ui_input form={f} name={:email} title="Email" type="email" show_error={true} />
+        <.ui_input
+          form={f}
+          name={:email}
+          icon="at-email"
+          title="Email" type="email"
+          show_error={true} />
       </div>
 
       <div>
-        <.ui_datetime form={f} name={:expire_at} title="Expiration" />
+        <.ui_datetime
+        form={f}
+        name={:expire_at}
+        icon="clock"
+        title="Expiration" />
       </div>
 
-      <div class="p-1 px-5 bg-gray-100 rounded">Expired <%= expire_at(@changeset) %></div>
+      <div class="p-2 px-5 bg-gray-100 rounded">Expired <%= expire_at(@changeset) %></div>
 
       <%= if tag_has_error(f, :project_id) do %>
       <div>

@@ -29,18 +29,40 @@
       class="flex flex-col space-y-4">
 
       <div class="flex flex-col space-y-4 lg:flex-row lg:space-x-4 lg:space-y-0">
-        <.ui_select form={f} name={:campaign_id} options={@options}  title="Campaign" class="filled" />
+        <.ui_select
+          form={f}
+          name={:campaign_id}
+          options={@options}
+          icon="inbox"
+          title="Target Campaign"
+          class="filled" />
         <div class="lg:w-1/2">
-          <.ui_select form={f} name={:status} options={@status_options}  title="Campaign" class="filled" />
+          <.ui_select
+            form={f}
+            name={:status}
+            options={@status_options}
+            icon="bolt"
+            title="Status"
+            class="filled" />
         </div>
       </div>
 
       <div>
-        <.ui_input form={f} name={:name} title="Form Name" phx_debounce={100} />
+        <.ui_input
+          form={f}
+          name={:name}
+          icon="window"
+          title="Form Name"
+          phx_debounce={100} />
       </div>
 
       <div>
-        <.ui_textarea form={f} name={:description} title="Description" phx_debounce={100} />
+        <.ui_textarea
+          form={f}
+          name={:description}
+          icon="comment"
+          title="Description"
+          phx_debounce={100} />
       </div>
 
       <details id="advanced" class="space-y-4" open={@advanced}>
@@ -65,23 +87,39 @@
 
         <div class="flex space-x-2">
           <div class="w-full">
-            <.ui_input form={f} name={:email_text} title="Email Text" phx_debounce={100} />
+            <.ui_input
+              form={f}
+              name={:email_text}
+              title="Email Text"
+              icon="at-email"
+              phx_debounce={100} />
           </div>
           <div class="w-full">
-            <.ui_input form={f} name={:button_text} title="Button Text" phx_debounce={100} />
+            <.ui_input
+              form={f}
+              name={:button_text}
+              icon="send"
+              title="Button Text"
+              phx_debounce={100} />
           </div>
         </div>
 
         <div>
-          <.ui_textarea form={f} name={:thanks_text} title="Thanks Message" phx_debounce={100}/>
+          <.ui_textarea
+            form={f}
+            name={:thanks_text}
+            title="Thanks Message"
+            icon="gift-top"
+            phx_debounce={100}/>
         </div>
 
         <.live_component
           id="domains"
           form={f}
-          title="Allowed Domains"
           name={:domains}
           value={input_value(f, :domains)}
+          title="Allowed Domains"
+          icon="lock"
           module={NewnixWeb.Live.Components.Form.InputTagsComponent}
         />
       </details>

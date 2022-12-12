@@ -14,6 +14,7 @@ defmodule NewnixWeb.Live.Components.Form.InputTagsComponent do
   attr :form, :string, required: true
   attr :title, :string, required: true
   attr :type, :string, default: "text"
+  attr :icon, :string, default: ""
   attr :class, :string, default: ""
   attr :show_error, :boolean, default: false
   attr :value, :string, default: ""
@@ -25,7 +26,8 @@ defmodule NewnixWeb.Live.Components.Form.InputTagsComponent do
       <label class={"input_group #{@class}"} phx-hook="InputTags" phx-target={@myself} field-error={tag_has_error(@form, @name)} {@rest}
         field-fill={is_fill(@form, @name)}>
         <input type="text">
-        <%= label @form, @name, @title, class: "label" %>
+        <.ui_input_label icon={@icon} form={@form} name={@name} title={@title} />
+
         <%= if @show_error do %>
           <%= error_tag @form , @name %>
         <% end %>

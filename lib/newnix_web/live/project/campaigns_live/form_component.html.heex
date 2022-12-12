@@ -12,27 +12,43 @@
     phx-submit="save"
     class="flex flex-col space-y-4">
     <div>
-      <.ui_input form={f} name={:name} title="Campaign Name" show_error={true} />
+      <.ui_input
+        form={f}
+        name={:name}
+        show_error={true}
+        icon="inbox"
+        title="Campaign Name"
+      />
     </div>
 
     <div>
-      <.ui_textarea form={f} name={:description} title="Campaign Description" show_error={true} />
+      <.ui_textarea
+        form={f}
+        name={:description}
+        show_error={true}
+        icon="comment"
+        title="Campaign Description" />
     </div>
 
-
-    <div>
-      <h2 class="font-semibold text-sm inline-flex-center">
-        <.ui_icon icon="clock" class="w-5 h-5" />
-        <span>Campaign Duration</span>
-      </h2>
-    </div>
     <div class="inline-flex-center">
       <div class="w-full">
-        <.ui_datetime phx_debounce={300} form={f} type="datetime-local" name={:start_at} title="Start Date" />
+        <.ui_datetime
+          form={f}
+          name={:start_at}
+          phx_debounce={300}
+          icon="play"
+          type="datetime-local"
+          title="Start Date" />
       </div>
 
       <div class="w-full">
-        <.ui_datetime phx_debounce={300} form={f} type="datetime-local" name={:expire_at} title="End Date" />
+        <.ui_datetime
+          form={f}
+          name={:expire_at}
+          phx_debounce={300}
+          icon="no-symbol"
+          type="datetime-local"
+          title="End Date" />
       </div>
     </div>
 
