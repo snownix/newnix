@@ -31,6 +31,14 @@ defmodule NewnixWeb.Live.Project.SettingsLive.Index do
     |> assign(:page_title, "New Invite")
   end
 
+  defp apply_action(%{assigns: %{project: project}} = socket, :user, %{"id" => id}) do
+    user_project = Projects.get_project_user!(project, id)
+
+    socket
+    |> assign(:user_project, user_project)
+    |> assign(:page_title, "Edit User")
+  end
+
   defp apply_action(socket, _, _) do
     socket
   end
@@ -76,6 +84,7 @@ defmodule NewnixWeb.Live.Project.SettingsLive.Index do
   attr :user, :map
   attr :role, :map, default: nil
   attr :logo, :string, default: nil
+  attr :link, :string, default: ""
 
   def user_row(assigns) do
     ~H"""
@@ -95,12 +104,15 @@ defmodule NewnixWeb.Live.Project.SettingsLive.Index do
                 </div>
             </div>
         </td>
-        <td class="px-3 py-4 text-sm text-gray-500 capitalize">-</td>
+        <td class="px-3 py-4 text-sm text-gray-500 capitalize">
+          <%= role(@user.role) %>
+        </td>
         <td class="px-3 py-4 text-sm text-gray-500"><.date_added datetime={@user.inserted_at} /></td>
         <td>
           <div class="flex justify-center items-center">
             <.link
               :if={can?(@role, :invite, :update)}
+              patch={@link}
               class="text-indigo-600 hover:text-indigo-900">
               <.ui_icon icon="cog" />
             </.link>

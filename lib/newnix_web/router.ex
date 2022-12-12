@@ -67,8 +67,10 @@ defmodule NewnixWeb.Router do
 
       scope "/settings", Live.Project.SettingsLive do
         live "/", Index
-        live "/invite", Index, :invite
         live "/roles", Index, :roles
+
+        live "/invite", Index, :invite
+        live "/user/:id", Index, :user
       end
 
       scope "/campaigns", Live.Project.CampaignsLive do

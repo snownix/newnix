@@ -9,8 +9,13 @@ defmodule Newnix.Projects.UserProject do
   @timestamps_opts [type: :utc_datetime_usec]
 
   schema "users_projects" do
-    field :role, Ecto.Enum, values: [:owner, :admin, :user], default: :user
-    field :status, Ecto.Enum, values: [:active, :inactive, :suspend, :pending], default: :pending
+    field :role, Ecto.Enum,
+      values: [:owner, :admin, :manager, :user],
+      default: :user
+
+    field :status, Ecto.Enum,
+      values: [:active, :inactive, :suspend, :pending],
+      default: :pending
 
     belongs_to :user, User, type: :binary_id
     belongs_to :project, Project, type: :binary_id

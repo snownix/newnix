@@ -71,10 +71,10 @@ defmodule Newnix.Projects do
 
   ## Examples
 
-      iex> get_project!(123)
+      iex> get_project!("xxxxx-xxxx-xxxx-xxxxx")
       %Project{}
 
-      iex> get_project!(456)
+      iex> get_project!("xxxxx-xxxx-xxxx-xxxxx")
       ** (Ecto.NoResultsError)
 
   """
@@ -99,7 +99,13 @@ defmodule Newnix.Projects do
 
   """
   def list_users(%Project{} = project, opts \\ []) do
-    Repo.preload(project, :users, opts)
+    preload_users_role =
+      from u in User,
+        join: up in UserProject,
+        on: up.project_id == ^project.id and up.user_id == u.id,
+        preload: [:role]
+
+    Repo.preload(project, [users: preload_users_role], opts)
   end
 
   @doc """
@@ -216,16 +222,39 @@ defmodule Newnix.Projects do
   end
 
   @doc """
+  Gets a single user project.
+
+  Raises `Ecto.NoResultsError` if the invite does not exist.
+
+  ## Examples
+
+      iex> get_project_user!(project, "xxxxx-xxxx-xxxx-xxxxx")
+      %invite{}
+
+      iex> get_project_user!(project, "xxxxx-xxxx-xxxx-xxxxx")
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_project_user!(%Project{id: project_id}, id) do
+    query =
+      from up in UserProject,
+        where: up.project_id == ^project_id and up.user_id == ^id,
+        preload: [:user, :project]
+
+    Repo.one!(query)
+  end
+
+  @doc """
   Gets a single invite.
 
   Raises `Ecto.NoResultsError` if the invite does not exist.
 
   ## Examples
 
-      iex> get_invite!(project, 123)
+      iex> get_invite!(project, "xxxxx-xxxx-xxxx-xxxxx")
       %invite{}
 
-      iex> get_invite!(project, 456)
+      iex> get_invite!(project, "xxxxx-xxxx-xxxx-xxxxx")
       ** (Ecto.NoResultsError)
 
   """
@@ -356,5 +385,35 @@ defmodule Newnix.Projects do
   """
   def change_invite(%Invite{} = invite, attrs \\ %{}) do
     Invite.changeset(invite, attrs)
+  end
+
+  @doc """
+  Updates a project user.
+
+  ## Examples
+
+      iex> update_project_user(project_user, %{field: new_value})
+      {:ok, %Project_user{}}
+
+      iex> update_project_user(project_user, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_project_user(%UserProject{} = project_user, attrs) do
+    project_user
+    |> UserProject.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+
+  ## Examples
+
+      iex> change_user(user_project)
+      %Ecto.Changeset{data: %UserProject{}}
+
+  """
+  def change_user(%UserProject{} = user_project, attrs \\ %{}) do
+    UserProject.changeset(user_project, attrs)
   end
 end

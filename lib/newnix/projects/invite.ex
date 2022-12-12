@@ -73,7 +73,14 @@ defmodule Newnix.Projects.Invite do
   end
 
   def expire_at(changeset) do
-    get_field(changeset, :expire_at) |> Timex.format!("{relative}", :relative)
+    case get_field(changeset, :expire_at) do
+      nil ->
+        nil
+
+      date ->
+        date
+        |> Timex.format!("{relative}", :relative)
+    end
   end
 
   def validate_available_email(changeset) do

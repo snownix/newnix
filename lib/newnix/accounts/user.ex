@@ -26,6 +26,9 @@ defmodule Newnix.Accounts.User do
     # Newnix admin
     field :admin, :boolean, default: false
 
+    # works only to retrive one user_project row
+    has_one :role, UserProject
+
     has_many :invites, Invite, foreign_key: :user_id
     has_many :identities, Identity, foreign_key: :user_id
     many_to_many :projects, Project, join_through: UserProject

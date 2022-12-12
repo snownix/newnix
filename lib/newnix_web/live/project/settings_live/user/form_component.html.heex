@@ -1,0 +1,41 @@
+<section class="flex flex-1 flex-col lg:flex-row lg:space-x-12 w-full">
+  <div class="flex flex-col space-y-4 max-w-screen-sm w-full">
+    <h2 class="text-lg font-semibold">
+      <%= @title %>
+    </h2>
+
+    <.form
+      id="invite-form"
+      let={f}
+      for={@changeset}
+      phx-submit="save"
+      phx-target={@myself}
+      phx-change="validate"
+      class="flex flex-col space-y-4">
+
+      <div>
+        <.ui_select
+          form={f}
+          name={:role}
+          options={@roles}
+          icon="user"
+          title="Role"
+          show_error={true} />
+      </div>
+
+      <div class="inline-flex-center justify-between">
+        <.ui_button
+          navigate={@return_to}
+          theme="danger inversed"
+          >
+          <.ui_icon icon="close" />
+          <span>Cancel</span>
+        </.ui_button>
+        <.ui_button theme="dark" phx_disable_with="Saving...">
+          <.ui_icon icon="check" />
+          <span>Save</span>
+        </.ui_button>
+      </div>
+    </.form>
+  </div>
+</section>
