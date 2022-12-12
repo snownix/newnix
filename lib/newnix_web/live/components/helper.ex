@@ -5,10 +5,25 @@ defmodule NewnixWeb.Live.Components.Helper do
   use Phoenix.HTML
   import NewnixWeb.ErrorHelpers
 
+  attr :name, :string, required: true
+  attr :form, :string, required: true
+  attr :title, :string, required: true
+  attr :icon, :string, default: nil
+
+  def ui_input_label(assigns) do
+    ~H"""
+      <span class="flex items-center space-x-1 label select-none">
+        <.ui_icon :if={not is_nil(@icon)} class="w-4 h-4" icon={@icon}/>
+        <%= label @form, @name, @title %>
+      </span>
+    """
+  end
+
   attr :rest, :global, include: ~w(form required value)
   attr :name, :string, required: true
   attr :form, :string, required: true
   attr :title, :string, required: true
+  attr :icon, :string, default: nil
   attr :type, :string, default: "text"
   attr :class, :string, default: ""
   attr :show_error, :boolean, default: false
@@ -20,8 +35,8 @@ defmodule NewnixWeb.Live.Components.Helper do
       <label class={"input_group #{@class}"} field-error={tag_has_error(@form, @name)} {@rest}
         field-fill={is_fill(@form, @name)}>
         <%= text_input @form, @name, type: @type, readonly: @readonly, phx_debounce: @phx_debounce %>
-        <%= label @form, @name, @title, class: "label select-none" %>
-        <.ui_icon :if={@readonly} icon="lock" />
+        <.ui_input_label icon={@icon} form={@form} name={@name} title={@title} />
+        <.ui_icon :if={@readonly} class="ui_lock" icon="lock" />
         <%= if @show_error do %>
           <%= error_tag @form , @name %>
         <% end %>
@@ -33,6 +48,7 @@ defmodule NewnixWeb.Live.Components.Helper do
   attr :name, :string, required: true
   attr :form, :string, required: true
   attr :title, :string, required: true
+  attr :icon, :string, default: nil
   attr :class, :string, default: ""
   attr :readonly, :boolean, default: false
   attr :phx_debounce, :string, default: "blur"
@@ -42,7 +58,7 @@ defmodule NewnixWeb.Live.Components.Helper do
       <label class={"input_group #{@class}"} field-error={tag_has_error(@form, @name)} {@rest}
         field-fill={is_fill(@form, @name)}>
         <%= datetime_local_input @form, @name, readonly: @readonly, phx_debounce: @phx_debounce %>
-        <%= label @form, @name, @title, class: "label select-none" %>
+        <.ui_input_label icon={@icon} form={@form} name={@name} title={@title} />
       </label>
     """
   end
@@ -52,6 +68,7 @@ defmodule NewnixWeb.Live.Components.Helper do
   attr :form, :string, required: true
   attr :title, :string, required: true
   attr :show_error, :boolean, default: false
+  attr :icon, :string, default: nil
   attr :class, :string, default: ""
   attr :readonly, :boolean, default: false
   attr :phx_debounce, :string, default: "blur"
@@ -61,7 +78,7 @@ defmodule NewnixWeb.Live.Components.Helper do
       <label class={"input_group #{@class}"} field-error={tag_has_error(@form, @name)}
         field-fill={is_fill(@form, @name)} id={@name}>
         <%= textarea @form, @name, readonly: @readonly, phx_debounce: @phx_debounce %>
-        <%= label @form, @name, @title, class: "label select-none" %>
+        <.ui_input_label icon={@icon} form={@form} name={@name} title={@title} />
         <%= if @show_error do %>
           <%= error_tag @form , @name %>
         <% end %>
@@ -73,6 +90,7 @@ defmodule NewnixWeb.Live.Components.Helper do
   attr :name, :string, required: true
   attr :form, :string, required: true
   attr :title, :string, required: true
+  attr :icon, :string, default: nil
   attr :class, :string, default: ""
   attr :phx_debounce, :string, default: "blur"
 
@@ -84,7 +102,7 @@ defmodule NewnixWeb.Live.Components.Helper do
         field-fill={is_fill(@form, @name)} id={@name} phx-hook="CssEditor">
         <%= textarea @form, @name, hidden: true, phx_debounce: @phx_debounce %>
         <code id="css-editor"></code>
-        <%= label @form, @name, @title, class: "label select-none" %>
+        <.ui_input_label icon={@icon} form={@form} name={@name} title={@title} />
       </label>
     """
   end
@@ -93,6 +111,7 @@ defmodule NewnixWeb.Live.Components.Helper do
   attr :form, :string, required: true
   attr :title, :string, required: true
   attr :type, :string, default: "text"
+  attr :icon, :string, default: nil
   attr :class, :string, default: ""
   attr :options, :map, default: []
   attr :show_error, :boolean, default: false
@@ -103,7 +122,7 @@ defmodule NewnixWeb.Live.Components.Helper do
       <label class={"input_group #{@class}"} field-error={tag_has_error(@form, @name)} {@rest}
         field-fill={is_fill(@form, @name)}>
         <%= select @form, @name, @options, type: @type %>
-        <%= label @form, @name, @title, class: "label select-none" %>
+        <.ui_input_label icon={@icon} form={@form} name={@name} title={@title} />
         <%= if @show_error do %>
           <%= error_tag @form , @name %>
         <% end %>
@@ -399,23 +418,6 @@ defmodule NewnixWeb.Live.Components.Helper do
 
   def chart_display_all(count) when count < 10, do: ""
   def chart_display_all(_), do: "hidden group-hover:block"
-
-  # TODO: menu
-  attr :items, :map, default: []
-
-  def ui_dropmenu(assigns) do
-    ~H"""
-      <div id="dropdown" class="hidden z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700">
-          <ul class="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefault">
-            <li :for={item <- @items}>
-              <a href="#" class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                <%= item %>
-              </a>
-            </li>
-          </ul>
-      </div>
-    """
-  end
 
   def ui_loading(assigns) do
     ~H"""

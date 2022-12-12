@@ -13,6 +13,14 @@
 	@apply text-gray-500 font-medium;
 }
 
+.input_group .label:has(.ui_icon) {
+	@apply left-2;
+}
+
+.input_group .label .ui_icon {
+	@apply opacity-0 hidden;
+}
+
 .input_group select,
 .input_group input[type="email"],
 .input_group input[type="text"],
@@ -47,13 +55,22 @@
 
 /** Filled **/
 .input_group.filled .label,
-.input_group input[type="datetime-local"] + .label,
 .input_group input[type="date"] + .label,
 .input_group input[type="time"] + .label,
+.input_group input[type="datetime-local"] + .label,
 .input_group:focus-within .label,
 .input_group[field-fill] .label {
 	@apply transition-all text-xs;
 	@apply top-2;
+}
+
+.input_group.filled .label .ui_icon,
+.input_group input[type="date"] + .label .ui_icon,
+.input_group input[type="time"] + .label .ui_icon,
+.input_group input[type="datetime-local"] + .label .ui_icon,
+.input_group:focus-within .label .ui_icon,
+.input_group[field-fill] .label .ui_icon {
+	@apply block opacity-100;
 }
 
 .input_multi_select {
@@ -129,6 +146,6 @@ textarea[readonly] {
 	@apply bg-dark-50  bg-opacity-20;
 }
 
-.input_group:has(*[readonly]) .ui_icon {
+.input_group:has(*[readonly]) .ui_lock {
 	@apply absolute right-4 top-6;
 }
