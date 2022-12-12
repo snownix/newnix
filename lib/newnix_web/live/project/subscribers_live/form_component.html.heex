@@ -12,16 +12,32 @@
     phx-change="validate"
     phx-submit="save"
     class="flex flex-col space-y-4">
-    <div>
-      <.ui_input form={f} name={:firstname} show_error={true} title="First name" />
-    </div>
 
-    <div>
-      <.ui_input form={f} name={:lastname} show_error={true} title="Last name" />
-    </div>
 
+    <div class="flex-center">
+      <.ui_input
+        form={f}
+        name={:firstname}
+        show_error={true}
+        icon="user"
+        title="First name" />
+
+      <.ui_input
+        form={f}
+        name={:lastname}
+        icon="identity"
+        show_error={true}
+        title="Last name" />
+    </div>
     <div>
-      <.ui_input form={f} name={:email} readonly={@action == :update} show_error={true} type="email" title="Email" />
+      <.ui_input
+        form={f}
+        name={:email}
+        readonly={@action == :update}
+        show_error={true}
+        icon="at-email"
+        type="email"
+        title="Email" />
     </div>
 
     <div>
