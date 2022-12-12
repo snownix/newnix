@@ -12,7 +12,7 @@ body {
 	--inputBgColor: #25252505;
 	--inputTextColor: #0f121f;
 
-	@apply flex flex-col min-h-screen;
+	@apply flex flex-col min-h-screen font-primary;
 }
 
 [data-phx-main] {
