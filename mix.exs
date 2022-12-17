@@ -80,7 +80,9 @@ defmodule Newnix.MixProject do
       {:timex, "~> 3.0"},
       {:flop, "~> 0.18.4"},
       {:faker, "~> 0.17", only: [:dev, :test]},
-      {:ecto_psql_extras, "~> 0.6"}
+      {:ecto_psql_extras, "~> 0.6"},
+      {:phoenix_swoosh, "~> 1.0"},
+      {:browser, "~> 0.4.4"}
     ]
   end
 

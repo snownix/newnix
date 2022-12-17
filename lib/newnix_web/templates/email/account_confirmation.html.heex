@@ -1,0 +1,47 @@
+<tr>
+    <td class="content-cell">
+        <div class="f-fallback">
+            <p>Dear valued customer,
+                <br />Thank you for choosing <%= @app %>.
+                <br />In order to complete your account setup and begin using our services, we need to confirm your email address.</p>
+
+            <!-- Action -->
+            <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                <tr>
+                    <td align="center">
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0" role="presentation">
+                        <tr>
+                            <td align="center">
+                            <a href={@url} class="f-fallback button button--blue" target="_blank">Confirm Email</a>
+                            </td>
+                        </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- Sub link -->
+            <table role="presentation">
+                <tr>
+                    <td>
+                        <p class="f-fallback sub">If you’re having trouble with the button above, copy and paste the URL below into your web browser.</p>
+                        <p class="f-fallback sub"><%= @url %></p>
+                    </td>
+                </tr>
+            </table>
+
+            <p>Thank you again for choosing <%= @app %>. We look forward to serving you and helping you make the most of our app.</p>
+            <p>Thanks,
+                <br>The <%= @app %> team</p>
+
+            <!-- Sub copy -->
+            <table class="body-sub" role="presentation">
+                <tr>
+                    <td>
+                        <p class="f-fallback sub">If you do not use <%= @app %> or did not request a confirmation email, please ignore this email or <a href={"mailto: #{@support_email}"}>contact support</a> if you have questions.</p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </td>
+</tr>

@@ -286,23 +286,6 @@ defmodule Newnix.Accounts do
   end
 
   @doc """
-  Delivers the update email instructions to the given user.
-
-  ## Examples
-
-      iex> deliver_update_email_instructions(user, current_email, &Routes.user_update_email_url(conn, :update, &1))
-      {:ok, %{to: ..., body: ...}}
-
-  """
-  def deliver_update_email_instructions(%User{} = user, current_email, update_email_url_fun)
-      when is_function(update_email_url_fun, 1) do
-    {encoded_token, user_token} = UserToken.build_email_token(user, "change:#{current_email}")
-
-    Repo.insert!(user_token)
-    UserNotifier.deliver_update_email_instructions(user, update_email_url_fun.(encoded_token))
-  end
-
-  @doc """
   Returns an `%Ecto.Changeset{}` for changing the user password.
 
   ## Examples
@@ -497,11 +480,20 @@ defmodule Newnix.Accounts do
       {:ok, %{to: ..., body: ...}}
 
   """
-  def deliver_user_reset_password_instructions(%User{} = user, reset_password_url_fun)
+  def deliver_user_reset_password_instructions(
+        %User{} = user,
+        reset_password_url_fun,
+        client_agent
+      )
       when is_function(reset_password_url_fun, 1) do
     {encoded_token, user_token} = UserToken.build_email_token(user, "reset_password")
     Repo.insert!(user_token)
-    UserNotifier.deliver_reset_password_instructions(user, reset_password_url_fun.(encoded_token))
+
+    UserNotifier.deliver_reset_password_instructions(
+      user,
+      reset_password_url_fun.(encoded_token),
+      client_agent
+    )
   end
 
   @doc """
