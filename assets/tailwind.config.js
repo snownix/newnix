@@ -75,7 +75,7 @@ module.exports = {
         }
       },
       fontFamily: {
-        primary: 'Inter'
+        primary: 'Inter, sans-serif'
       }
     },
   },
