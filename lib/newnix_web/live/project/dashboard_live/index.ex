@@ -38,8 +38,12 @@ defmodule NewnixWeb.Live.Project.DashboardLive.Index do
     |> assign(:levels, [])
     |> assign(
       :campaigns,
-      Enum.map(project_campaigns, fn [id, value] ->
-        %{label: value, value: id, selected: company_selected(id, custom_params)}
+      Enum.map(project_campaigns, fn campaign ->
+        %{
+          label: campaign.name,
+          value: campaign.id,
+          selected: company_selected(campaign.id, custom_params)
+        }
       end)
     )
     |> assign(

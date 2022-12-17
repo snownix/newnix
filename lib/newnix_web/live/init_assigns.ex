@@ -17,11 +17,11 @@ defmodule NewnixWeb.InitAssigns do
 
     {:cont,
      socket
-     |> assign(:sidebar, :user)
      |> assign_locale(session, params)
+     |> assign(:sidebar, :user)
      |> assign(:current_user, user)
      |> assign(:count_invites, Projects.count_invites(user))
-     |> assign(:projects, Projects.list_projects(user))}
+     |> assign(:projects, Projects.meta_list_projects(user))}
   end
 
   def on_mount(:form, params, session, socket) do

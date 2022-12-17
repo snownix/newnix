@@ -84,8 +84,12 @@ defmodule NewnixWeb.Live.Project.FormsLive.Index do
     |> assign(:campaigns, %{entries: []})
     |> assign(
       :campaigns_options,
-      Enum.map(project_campaigns, fn [id, value] ->
-        %{label: value, value: id, selected: company_selected(id, custom_params)}
+      Enum.map(project_campaigns, fn campaign ->
+        %{
+          label: campaign.name,
+          value: campaign.id,
+          selected: company_selected(campaign.id, custom_params)
+        }
       end)
     )
     |> assign(:table, %{

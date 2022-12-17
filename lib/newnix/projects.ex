@@ -53,15 +53,24 @@ defmodule Newnix.Projects do
 
   """
   def list_projects(user = %User{}) do
-    user
-    |> Repo.preload(
-      projects:
-        from(
-          a in Project,
-          order_by: [desc: a.inserted_at]
-        )
+    from(
+      p in Project,
+      join: u in assoc(p, :users),
+      where: u.id == ^user.id,
+      order_by: {:desc, p.inserted_at}
     )
-    |> then(fn u -> u.projects end)
+    |> Repo.all()
+  end
+
+  def meta_list_projects(user = %User{}) do
+    from(
+      p in Project,
+      join: u in assoc(p, :users),
+      where: u.id == ^user.id,
+      select: [:id, :name],
+      order_by: {:desc, p.inserted_at}
+    )
+    |> Repo.all()
   end
 
   @doc """

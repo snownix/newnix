@@ -91,7 +91,7 @@ defmodule Newnix.Campaigns do
     from(
       p in Campaign,
       where: p.project_id == ^project.id,
-      select: [p.id, p.name],
+      select: [:id, :name],
       order_by: {:desc, p.inserted_at}
     )
     |> Repo.all()

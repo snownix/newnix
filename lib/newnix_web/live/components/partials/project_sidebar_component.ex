@@ -42,14 +42,14 @@ defmodule NewnixWeb.Live.Components.Partials.ProjectSidebarComponent do
                 <div class="text-sm font-medium text-gray-400">Campaigns</div>
                 <ul class="space-y-1">
                  <li
-                 :for={[id, name] <- @campaigns}
+                 :for={campaign<- @campaigns}
                  >
                  <.campaign_item
-                    link={Routes.project_campaigns_show_path(@socket, :show, id)}
-                    active={is_current_active(assigns, id)}
-                    id={id}
+                    link={Routes.project_campaigns_show_path(@socket, :show, campaign.id)}
+                    active={is_current_active(assigns, campaign.id)}
+                    id={campaign.id}
                     >
-                    <%= name %>
+                    <%= campaign.name %>
                   </.campaign_item>
                  </li>
                  <li>
