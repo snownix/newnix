@@ -121,7 +121,7 @@ defmodule NewnixWeb.Live.Components.Helper do
     ~H"""
       <label class={"input_group #{@class}"} field-error={tag_has_error(@form, @name)} {@rest}
         field-fill={is_fill(@form, @name)}>
-        <%= select @form, @name, @options, type: @type %>
+        <%= select @form, @name, @options, type: @type, class: @class %>
         <.ui_input_label icon={@icon} form={@form} name={@name} title={@title} />
         <%= if @show_error do %>
           <%= error_tag @form , @name %>
