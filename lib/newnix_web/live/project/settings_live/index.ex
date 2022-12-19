@@ -104,6 +104,7 @@ defmodule NewnixWeb.Live.Project.SettingsLive.Index do
                 </div>
             </div>
         </td>
+        <td class="px-3 py-4 text-sm text-gray-500 capitalize"><%= status(@user.role) %></td>
         <td class="px-3 py-4 text-sm text-gray-500 capitalize">
           <%= role(@user.role) %>
         </td>
@@ -142,6 +143,7 @@ defmodule NewnixWeb.Live.Project.SettingsLive.Index do
                 </div>
             </div>
         </td>
+        <td class="px-3 py-4 text-sm text-gray-500 capitalize"><%= status(@invite.role) %></td>
         <td class="px-3 py-4 text-sm text-gray-500 capitalize"><%= role(@invite.role) %></td>
         <td class="px-3 py-4 text-sm text-gray-500"><.date_added datetime={@invite.inserted_at} /></td>
         <td>
@@ -159,18 +161,11 @@ defmodule NewnixWeb.Live.Project.SettingsLive.Index do
     """
   end
 
-  defp fetch_records(%{assigns: %{project: project}} = socket) do
-    socket
-    |> assign(
-      :project,
-      project
-      |> Projects.list_users(force: true)
-      |> Projects.list_invites(force: true)
-    )
-  end
-
   def role(%{role: role}), do: role
   def role(name), do: name
+
+  def status(%{status: status}), do: status
+  def status(_), do: "unknown"
 
   def date_added(assigns) do
     ~H"""
@@ -181,5 +176,15 @@ defmodule NewnixWeb.Live.Project.SettingsLive.Index do
         <%= Timex.from_now(@datetime) %>
       </p>
     """
+  end
+
+  defp fetch_records(%{assigns: %{project: project}} = socket) do
+    socket
+    |> assign(
+      :project,
+      project
+      |> Projects.list_users(force: true)
+      |> Projects.list_invites(force: true)
+    )
   end
 end

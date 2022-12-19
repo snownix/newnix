@@ -36,10 +36,6 @@ defmodule NewnixWeb.InitAssigns do
   def on_mount(:project, _params, session, socket) do
     %{current_user: current_user} = socket.assigns
 
-    socket =
-      socket
-      |> assign(:sidebar, :project)
-
     if is_nil(current_user) do
       {:cont, socket}
     else
@@ -52,10 +48,11 @@ defmodule NewnixWeb.InitAssigns do
 
           {:cont,
            socket
+           |> assign(:sidebar, :project)
            |> assign(:page_title, project.name)
            |> assign(:project, project)
-           |> assign(:role, project.role)
-           |> assign(:project_campaigns, campaigns)}
+           |> assign(:project_campaigns, campaigns)
+           |> assign(:role, project.role)}
       end
     end
   end

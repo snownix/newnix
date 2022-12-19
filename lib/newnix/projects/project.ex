@@ -62,7 +62,7 @@ defmodule Newnix.Projects.Project do
   def user_assoc(project, user, role) do
     project
     |> change()
-    |> put_assoc(:users_projects, [%UserProject{user: user, role: role}])
+    |> put_assoc(:users_projects, [%UserProject{user: user, role: role, status: :active}])
   end
 
   def owner_changeset(project, user) do
@@ -74,7 +74,7 @@ defmodule Newnix.Projects.Project do
       if user_project do
         user_project
       else
-        %UserProject{project: project, user: user, role: :owner}
+        %UserProject{project: project, user: user, role: :owner, status: :active}
       end
 
     users_projects =

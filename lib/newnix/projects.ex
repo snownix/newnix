@@ -112,7 +112,7 @@ defmodule Newnix.Projects do
       from u in User,
         join: up in UserProject,
         on: up.project_id == ^project.id and up.user_id == u.id,
-        preload: [:role]
+        preload: [role: up]
 
     Repo.preload(project, [users: preload_users_role], opts)
   end
