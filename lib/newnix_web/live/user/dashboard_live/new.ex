@@ -30,7 +30,7 @@ defmodule NewnixWeb.Live.User.DashboardLive.New do
         {:noreply,
          socket
          |> put_flash(:info, "Project created #{project.id}")
-         |> redirect(to: Routes.live_path(socket, NewnixWeb.Live.Project.DashboardLive.Index))}
+         |> redirect(to: Routes.project_path(socket, :open, project))}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply,
