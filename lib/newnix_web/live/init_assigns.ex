@@ -33,7 +33,7 @@ defmodule NewnixWeb.InitAssigns do
      |> assign(:form, form)}
   end
 
-  def on_mount(:project, _params, session, socket) do
+  def on_mount(:project, params, session, socket) do
     %{current_user: current_user} = socket.assigns
 
     if is_nil(current_user) do

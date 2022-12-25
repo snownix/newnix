@@ -104,6 +104,18 @@ defmodule NewnixWeb.Router do
         live "/create", Index, :create
         live "/:id/update", Index, :update
       end
+
+      scope "/templates", Live.Project.TemplatesLive do
+        live "/", Index, :index
+        live "/builder", Index, :create
+        live "/builder/:id", Index, :update
+      end
+
+      scope "/integrations", Live.Project.IntegrationsLive do
+        live "/", Index, :index
+        live "/create", Index, :create
+        live "/:id/update", Index, :update
+      end
     end
   end
 

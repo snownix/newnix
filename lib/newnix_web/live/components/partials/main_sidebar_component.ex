@@ -11,7 +11,7 @@ defmodule NewnixWeb.Live.Components.Partials.MainSidebarComponent do
     ~H"""
       <nav
         aria-label="Sidebar"
-        class="hidden md:flex w-20 flex-col md:flex-shrink-0 dark:md:bg-dark-800 md:overflow-y-auto border-r space-y-4 py-4"
+        class="hidden md:flex w-20 flex-col md:flex-shrink-0 md:overflow-y-auto border-r space-y-4 py-4"
       >
         <div class="px-4 flex-1">
           <ul class="space-y-3">
@@ -99,7 +99,7 @@ defmodule NewnixWeb.Live.Components.Partials.MainSidebarComponent do
   def menu_button(assigns) do
     ~H"""
       <.link navigate={@link}
-        class={"w-full h-12 flex-shrink-0 flex bg-gray-100 justify-center items-center  font-medium hover:text-white hover:bg-primary-500 dark:text-white rounded-md dark:bg-dark-900 space-x-4 #{@class} " <> (if @active, do: "bg-primary-500 text-white", else: "text-gray-500")}>
+        class={"w-full h-12 flex-shrink-0 flex bg-gray-100 justify-center items-center  font-medium hover:text-white hover:bg-primary-500 rounded-md space-x-4 #{@class} " <> (if @active, do: "bg-primary-500 text-white", else: "text-gray-500")}>
           <span><%= render_slot(@inner_block) %></span>
       </.link>
     """
@@ -124,7 +124,7 @@ defmodule NewnixWeb.Live.Components.Partials.MainSidebarComponent do
 
   def auth_logout(assigns) do
     ~H"""
-      <.link href="/auth/logout" method="delete" class="w-full h-12 flex-shrink-0 flex bg-gray-100 shadow-sm justify-center items-center text-dark-50 font-medium hover:text-primary-500 hover:bg-gray-100 dark:text-white rounded-md dark:bg-dark-900 space-x-4">
+      <.link href="/auth/logout" method="delete" class="w-full h-12 flex-shrink-0 flex bg-gray-100 shadow-sm justify-center items-center text-dark-50 font-medium hover:text-primary-500 hover:bg-gray-100 rounded-md space-x-4">
         <.ui_icon class="w-6 h-6" icon="logout"/>
       </.link>
     """

@@ -16,24 +16,43 @@ defmodule NewnixWeb.Live.Components.Partials.ProjectSidebarComponent do
         class="hidden md:flex"
       >
         <%= if @project do %>
-          <div class="flex flex-col md:flex-shrink-0 dark:md:bg-dark-800 md:overflow-y-auto border-r w-72 bg-gray-50">
+          <div class="flex flex-col md:flex-shrink-0 md:overflow-y-auto border-r w-72 bg-gray-50">
             <.project_header return_to={Routes.live_path(@socket, NewnixWeb.Live.Project.DashboardLive.Index)} target={@myself} project={@project} />
 
-            <div class="flex-1 px-4 py-3 space-y-8">
+            <div id="project-sidebar" class="sidebar__menu">
               <ul>
-                <.menu_item link={Routes.live_path(@socket, NewnixWeb.Live.Project.DashboardLive.Index)} icon="layers">
+                <.menu_item
+                  link={Routes.live_path(@socket,NewnixWeb.Live.Project.DashboardLive.Index)} icon="layers">
                   Dashboard
                 </.menu_item>
-                <.menu_item :if={can?(@role, :campaign, :list)} link={Routes.project_campaigns_index_path(@socket, :index)} icon="inbox-stack">
+                <.menu_item
+                  :if={can?(@role, :campaign, :list)}
+                  link={Routes.project_campaigns_index_path(@socket, :index)} icon="inbox-stack">
                   Campaigns
                 </.menu_item>
-                <.menu_item :if={can?(@role, :subscriber, :list)} link={Routes.project_subscribers_index_path(@socket, :index)} icon="user-group">
+                <.menu_item
+                  :if={can?(@role, :subscriber, :list)}
+                  link={Routes.project_subscribers_index_path(@socket, :index)} icon="user-group">
                   Subscribers
                 </.menu_item>
-                <.menu_item :if={can?(@role, :form, :list)} link={Routes.project_forms_index_path(@socket, :index)} icon="window">
+                <.menu_item
+                  :if={can?(@role, :form, :list)}
+                  link={Routes.project_forms_index_path(@socket, :index)} icon="window">
                   Forms
                 </.menu_item>
-                <.menu_item :if={can?(@role, :project, :settings)} link={Routes.live_path(@socket, NewnixWeb.Live.Project.SettingsLive.Index)} icon="settings">
+                <.menu_item
+                  :if={can?(@role, :form, :list)}
+                  link={Routes.project_integrations_index_path(@socket, :index)} icon="puzzle">
+                  Integrations
+                </.menu_item>
+                <.menu_item
+                  :if={can?(@role, :form, :list)}
+                  link={Routes.project_templates_index_path(@socket, :index)} icon="brush">
+                  Templates
+                </.menu_item>
+                <.menu_item
+                  :if={can?(@role, :project, :settings)}
+                  link={Routes.live_path(@socket, NewnixWeb.Live.Project.SettingsLive.Index)} icon="settings">
                   Settings
                 </.menu_item>
               </ul>
@@ -53,7 +72,7 @@ defmodule NewnixWeb.Live.Components.Partials.ProjectSidebarComponent do
                   </.campaign_item>
                  </li>
                  <li>
-                  <.campaign_item icon="plus" link={Routes.project_campaigns_index_path(@socket, :create)} class="text-gray-500">
+                  <.campaign_item class="menu__item" icon="plus" link={Routes.project_campaigns_index_path(@socket, :create)} class="text-gray-500">
                     New campaign
                   </.campaign_item>
                  </li>
@@ -73,11 +92,13 @@ defmodule NewnixWeb.Live.Components.Partials.ProjectSidebarComponent do
 
   slot(:inner_block)
   attr :icon, :string, default: ""
+  attr :active, :boolean, default: false
 
   def menu_item(assigns) do
     ~H"""
       <.link navigate={@link}
-        class="w-full h-10 px-4 font-medium flex-shrink-0 inline-flex items-center text-dark-50 hover:text-primary-500 hover:bg-gray-100 dark:text-white rounded-md dark:bg-dark-900 space-x-4">
+        data-link={@link}
+        class={"menu__item"}>
           <span>
             <.ui_icon class="w-6 h-6" icon={@icon}/>
           </span>
@@ -98,7 +119,8 @@ defmodule NewnixWeb.Live.Components.Partials.ProjectSidebarComponent do
 
     ~H"""
       <.link patch={@link}
-        class={"w-full py-1.5 px-2 font-medium flex-shrink-0 inline-flex items-center text-dark-50 hover:text-primary-500 hover:bg-gray-100 dark:text-white rounded-md dark:bg-dark-900 space-x-4 #{@active && "bg-primary-100" ||""} #{@class}"}>
+        data-link={@link}
+        class={"w-full py-1.5 px-2 font-medium flex-shrink-0 inline-flex items-center text-dark-50 rounded-md  space-x-4 #{@active && "bg-gray-200" ||""} #{@class}"}>
           <%= if assigns[:icon] do %>
             <div class={"w-4 h-4 rounded flex-shrink-0 border flex items-center justify-center"}>
               <.ui_icon class="w-full h-full" icon={@icon} />

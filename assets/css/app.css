@@ -75,3 +75,20 @@ body {
 .list_drop__.active .list_icon__ .right {
 	@apply hidden;
 }
+
+/* Sidebar */
+.sidebar__menu {
+	@apply flex-1 px-4 py-3 space-y-8;
+}
+
+.sidebar__menu ul {
+	@apply space-y-0.5;
+}
+.sidebar__menu .menu__item {
+	@apply w-full h-10 px-4 font-medium flex-shrink-0 inline-flex items-center text-dark-50 rounded-md space-x-4;
+}
+
+.sidebar__menu .menu__item:hover,
+.sidebar__menu .menu__item.active {
+	@apply bg-dark-500 bg-opacity-5;
+}
