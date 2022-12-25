@@ -6,10 +6,14 @@ defmodule Newnix.Projects do
   import Ecto.Query
 
   alias Newnix.Repo
+  alias Newnix.Subscribers.Subscriber
   alias Newnix.Accounts.User
+  alias Newnix.Builder.Form
   alias Newnix.Projects.Invite
   alias Newnix.Projects.Project
   alias Newnix.Projects.UserProject
+  alias Newnix.Projects.ProjectToken
+  alias Newnix.Projects.ProjectNotifier
 
   @topic inspect(__MODULE__)
 
@@ -56,7 +60,7 @@ defmodule Newnix.Projects do
     from(
       p in Project,
       join: u in assoc(p, :users),
-      where: u.id == ^user.id,
+      where: u.id == ^user.id and is_nil(p.deleted_at),
       order_by: {:desc, p.inserted_at}
     )
     |> Repo.all()
@@ -66,7 +70,7 @@ defmodule Newnix.Projects do
     from(
       p in Project,
       join: u in assoc(p, :users),
-      where: u.id == ^user.id,
+      where: u.id == ^user.id and is_nil(p.deleted_at),
       select: [:id, :name],
       order_by: {:desc, p.inserted_at}
     )
@@ -93,8 +97,16 @@ defmodule Newnix.Projects do
     Repo.one!(
       from p in Project,
         join: u in assoc(p, :users),
-        where: p.id == ^id and u.id == ^user.id,
-        preload: [:role]
+        where: p.id == ^id and u.id == ^user.id and is_nil(p.deleted_at),
+        preload: [
+          role:
+            ^from(
+              up in UserProject,
+              where:
+                up.user_id == ^user.id and
+                  up.project_id == ^id
+            )
+        ]
     )
   end
 
@@ -133,8 +145,9 @@ defmodule Newnix.Projects do
     query =
       from(
         i in Invite,
-        where: i.email == ^email or i.user_id == ^id,
-        preload: [:project]
+        join: p in assoc(i, :project),
+        where: is_nil(p.deleted_at) and (i.email == ^email or i.user_id == ^id),
+        preload: [project: p]
       )
 
     Repo.all(query)
@@ -158,6 +171,46 @@ defmodule Newnix.Projects do
       from(
         i in Invite,
         where: (i.email == ^email or i.user_id == ^id) and i.status == :pending,
+        select: fragment("count(*)")
+      )
+
+    Repo.one!(query)
+  end
+
+  @doc """
+  Count project forms.
+
+  ## Examples
+
+      iex> count_forms(%User{})
+      5
+
+  """
+  def count_forms(%Project{id: id}) do
+    query =
+      from(
+        r in Form,
+        where: r.project_id == ^id,
+        select: fragment("count(*)")
+      )
+
+    Repo.one!(query)
+  end
+
+  @doc """
+  Count project subscribers.
+
+  ## Examples
+
+      iex> count_subscribers(%User{})
+      5
+
+  """
+  def count_subscribers(%Project{id: id}) do
+    query =
+      from(
+        r in Subscriber,
+        where: r.project_id == ^id,
         select: fragment("count(*)")
       )
 
@@ -215,6 +268,24 @@ defmodule Newnix.Projects do
   """
   def delete_project(%Project{} = project) do
     Repo.delete(project)
+  end
+
+  @doc """
+  Archive a project.
+
+  ## Examples
+
+      iex> safe_delete_project(project)
+      {:ok, %Project{}}
+
+      iex> safe_delete_project(project)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def safe_delete_project(%Project{} = project) do
+    project
+    |> Project.safe_delete_changeset()
+    |> Repo.update()
   end
 
   @doc """
@@ -345,17 +416,24 @@ defmodule Newnix.Projects do
       Invite.answer(invite, answer)
       |> Invite.user_assoc(user)
 
-    Ecto.Multi.new()
-    |> Ecto.Multi.update(:invite, changeset)
-    |> Ecto.Multi.insert(:user_project, fn _ ->
-      %UserProject{}
-      |> UserProject.user_assoc(user)
-      |> UserProject.project_assoc(invite.project)
-      |> UserProject.changeset(%{
-        "role" => invite.role,
-        "status" => :active
-      })
-    end)
+    multitr =
+      Ecto.Multi.new()
+      |> Ecto.Multi.update(:invite, changeset)
+
+    if answer == :accepted do
+      multitr
+      |> Ecto.Multi.insert(:user_project, fn _ ->
+        %UserProject{}
+        |> UserProject.user_assoc(user)
+        |> UserProject.project_assoc(invite.project)
+        |> UserProject.changeset(%{
+          "role" => invite.role,
+          "status" => :active
+        })
+      end)
+    else
+      multitr
+    end
     |> Repo.transaction()
     |> case do
       {:ok, %{invite: invite}} ->
@@ -402,7 +480,7 @@ defmodule Newnix.Projects do
   ## Examples
 
       iex> update_project_user(project_user, %{field: new_value})
-      {:ok, %Project_user{}}
+      {:ok, %UserProject{}}
 
       iex> update_project_user(project_user, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
@@ -415,6 +493,23 @@ defmodule Newnix.Projects do
   end
 
   @doc """
+  Delete a project user.
+
+  ## Examples
+
+      iex> delete_project_user(project_user)
+      {:ok, %UserProject{}}
+
+      iex> delete_project_user(bad_project_user)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_project_user(%UserProject{} = project_user) do
+    project_user
+    |> Repo.delete()
+  end
+
+  @doc """
 
   ## Examples
 
@@ -424,5 +519,86 @@ defmodule Newnix.Projects do
   """
   def change_user(%UserProject{} = user_project, attrs \\ %{}) do
     UserProject.changeset(user_project, attrs)
+  end
+
+  @doc """
+  Gets the project by confirm project token.
+
+  ## Examples
+
+      iex> get_project_by_confirm_project_token("validtoken")
+      %Project{}
+
+      iex> get_project_by_confirm_project_token("invalidtoken")
+      nil
+
+  """
+  def get_project_by_confirm_project_token(user, token) do
+    with {:ok, query} <- ProjectToken.verify_email_token_query(user, token, "delete-confirm"),
+         %Project{} = project <- Repo.one(query) do
+      {:ok, project}
+    else
+      _ -> {:error, :invalid_token}
+    end
+  end
+
+  @doc """
+  Delivers the confirmation email instructions to the given project user.
+
+  ## Examples
+
+      iex> deliver_delete_confirmation(project, user, &Routes.project_confirmation_url(conn, :update, &1), client_agent)
+      {:ok, %{to: ..., body: ...}}
+
+      iex> deliver_delete_confirmation(confirmed_project, &Routes.project_confirmation_url(conn, :update, &1), client_agent)
+      {:error, :already_deleted}
+
+  """
+  def deliver_delete_confirmation(
+        %Project{} = project,
+        %User{} = user,
+        confirmation_url_fun,
+        client_agent
+      )
+      when is_function(confirmation_url_fun, 1) do
+    if project.deleted_at do
+      {:error, :already_deleted}
+    else
+      {encoded_token, project_token} =
+        ProjectToken.build_email_token(project, user, "delete-confirm")
+
+      Repo.insert!(project_token)
+
+      ProjectNotifier.deliver_delete_confirmation(
+        project,
+        user,
+        confirmation_url_fun.(encoded_token),
+        client_agent
+      )
+    end
+  end
+
+  @doc """
+  Delivers the invite email instructions .
+
+  ## Examples
+
+      iex> delivery_invite_instructions(assigns, &Routes.project_confirmation_url(conn, :update, &1))
+      {:ok, %{to: ..., body: ...}}
+
+      iex> delivery_invite_instructions(assigns, &Routes.project_confirmation_url(conn, :update, &1))
+      {:error, :already_deleted}
+
+  """
+  def delivery_invite_instructions(
+        %{
+          invite: invite
+        } = assigns,
+        confirmation_url
+      ) do
+    ProjectNotifier.delivery_invite_instructions(
+      assigns,
+      "#{confirmation_url}?invite=#{invite.id}"
+    )
   end
 end

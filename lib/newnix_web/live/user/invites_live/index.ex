@@ -12,11 +12,11 @@ defmodule NewnixWeb.Live.User.InvitesLive.Index do
   end
 
   def handle_event("accept", %{"id" => id}, socket) do
-    {:noreply, socket |> answer_invite(id, :accept)}
+    {:noreply, socket |> answer_invite(id, :accepted)}
   end
 
   def handle_event("reject", %{"id" => id}, socket) do
-    {:noreply, socket |> answer_invite(id, :reject)}
+    {:noreply, socket |> answer_invite(id, :rejected)}
   end
 
   defp answer_invite(%{assigns: %{current_user: current_user}} = socket, id, answer) do

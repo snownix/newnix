@@ -38,6 +38,8 @@ defmodule Newnix.Projects.Project do
 
     has_many :users_projects, UserProject
 
+    field :deleted_at, :utc_datetime_usec
+
     timestamps()
   end
 
@@ -57,6 +59,11 @@ defmodule Newnix.Projects.Project do
     |> validate_length(:name, max: @maxlen_name)
     |> validate_length(:description, max: @maxlen_description)
     |> validate_length(:website, max: @maxlen_website)
+  end
+
+  def safe_delete_changeset(project) do
+    project
+    |> change(deleted_at: Timex.now())
   end
 
   def user_assoc(project, user, role) do

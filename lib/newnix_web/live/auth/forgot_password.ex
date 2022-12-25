@@ -4,12 +4,10 @@ defmodule NewnixWeb.Live.AuthLive.ForgotPassword do
   alias Newnix.Accounts
 
   def mount(_, _, socket) do
-    params = get_connect_params(socket)
-
     {:ok,
      socket
      |> assign(:page_title, gettext("Forgot Password"))
-     |> assign(:client_agent, parse_client_agent(params))
+     |> assign(:client_agent, parse_client_agent(get_connect_params(socket)))
      |> assign(
        :changeset,
        Accounts.user_email_changeset(%Accounts.User{})
@@ -49,22 +47,5 @@ defmodule NewnixWeb.Live.AuthLive.ForgotPassword do
        )
      )
      |> redirect(to: Routes.auth_login_path(socket, :login))}
-  end
-
-  defp parse_client_agent(%{"agent" => agent}) do
-    %{
-      operation_system: get_operation_system(agent),
-      browser_name: get_browser_name(agent)
-    }
-  end
-
-  defp parse_client_agent(_), do: %{}
-
-  defp get_operation_system(agent) do
-    "#{Browser.device_type(agent)} #{Browser.platform(agent)}"
-  end
-
-  defp get_browser_name(agent) do
-    Browser.name(agent)
   end
 end

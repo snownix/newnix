@@ -21,7 +21,7 @@ defmodule NewnixWeb.ProjectController do
     |> redirect(to: Routes.live_path(conn, NewnixWeb.Live.Project.DashboardLive.Index))
   end
 
-  def leave(conn, _) do
+  def leave(conn, _params) do
     conn
     |> delete_session(:project_id)
     |> redirect(to: Routes.live_path(conn, NewnixWeb.Live.User.DashboardLive.Index))

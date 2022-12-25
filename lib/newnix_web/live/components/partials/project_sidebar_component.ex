@@ -146,7 +146,7 @@ defmodule NewnixWeb.Live.Components.Partials.ProjectSidebarComponent do
             <span class="font-semibold truncate text-ellipsis text-gray-900">
               <%= @user.firstname %>
             </span>
-            <span class="font-normal text-gray-500">
+            <span class="capitalize font-normal text-gray-500">
               <%= @role.role %>
             </span>
           </div>

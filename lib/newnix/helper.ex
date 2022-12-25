@@ -35,4 +35,21 @@ defmodule Newnix.Helper do
          |> Keyword.values()
          |> Enum.any?(&is_nil/1))
   end
+
+  def parse_client_agent(%{"agent" => agent}) do
+    %{
+      operation_system: get_operation_system(agent),
+      browser_name: get_browser_name(agent)
+    }
+  end
+
+  def parse_client_agent(_), do: %{}
+
+  def get_operation_system(agent) do
+    "#{Browser.device_type(agent)} #{Browser.platform(agent)}"
+  end
+
+  def get_browser_name(agent) do
+    Browser.name(agent)
+  end
 end

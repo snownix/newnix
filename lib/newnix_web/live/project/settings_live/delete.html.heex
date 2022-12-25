@@ -1,0 +1,21 @@
+<div class="flex w-full  h-full flex-col items-center justify-center">
+    <div class="flex-col  text-xl space-y-6 max-w-screen-sm">
+        <b class="text-lg font-bold">Delete Confirmation</b>
+            <p>
+                This action deletes <code class="bg-gray-200 px-2 py-1 rounded "><%= @project_delete.name %></code>
+                on <%= Timex.today() %> and everything this project contains.
+            </p>
+
+        <div class="flex-center justify-between">
+            <.ui_button navigate="/" size="small">
+                <.ui_icon icon="close" class="w-5 h-5" />
+                <span>Cancel</span>
+            </.ui_button>
+
+            <.ui_button theme="danger" size="small" phx-click="confirm" phx-disable-with="Deleting project ...">
+                <.ui_icon icon="trash" class="w-5 h-5" />
+                <span>Delete Project</span>
+            </.ui_button>
+        </div>
+    </div>
+</div>

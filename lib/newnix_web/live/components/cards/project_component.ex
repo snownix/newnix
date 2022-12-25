@@ -4,11 +4,8 @@ defmodule NewnixWeb.Live.Components.Cards.ProjectComponent do
   def render(assigns) do
     ~H"""
       <li>
-        <.link navigate={Routes.project_path(@socket, :open, @project.id)} class="flex items-center py-5 px-4 sm:py-6">
+        <.link navigate={Routes.project_path(@socket, :open, @project.id)} class="flex items-center py-5 px-8 sm:py-6">
               <div class="min-w-0 flex-1 flex items-center">
-                  <div class="flex-shrink-0">
-                    <.ui_avatar text="AB" avatar={@project.logo}></.ui_avatar>
-                  </div>
                   <div class="min-w-0 flex-1 px-4 md:grid md:grid-cols-3 md:gap-4">
                     <div class="col-span-2">
                         <p class="font-medium text-primary-500"><%= @project.name %></p>

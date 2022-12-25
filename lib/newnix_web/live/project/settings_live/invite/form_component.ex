@@ -33,7 +33,16 @@ defmodule NewnixWeb.Live.Project.SettingsLive.Invite.FormComponent do
     %{project: project, user: user} = assigns
 
     case Projects.create_invite(project, user, invite_params) do
-      {:ok, _invite} ->
+      {:ok, invite} ->
+        Projects.delivery_invite_instructions(
+          %{
+            invite: invite,
+            sender: user,
+            project: project
+          },
+          Routes.live_path(socket, NewnixWeb.Live.User.InvitesLive.Index)
+        )
+
         {:noreply,
          socket
          |> put_flash(:info, "Member invited successfully")

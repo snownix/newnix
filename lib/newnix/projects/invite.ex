@@ -64,11 +64,11 @@ defmodule Newnix.Projects.Invite do
     |> put_assoc(:user, user)
   end
 
-  def answer(invite, :accept) do
+  def answer(invite, :accepted) do
     invite |> change(%{status: :accepted})
   end
 
-  def answer(invite, :reject) do
+  def answer(invite, :rejected) do
     invite |> change(%{status: :rejected})
   end
 

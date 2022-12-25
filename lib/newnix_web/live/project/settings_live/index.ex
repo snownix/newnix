@@ -7,13 +7,22 @@ defmodule NewnixWeb.Live.Project.SettingsLive.Index do
   alias Newnix.Projects.Invite
 
   def mount(_session, _params, socket) do
-    %{assigns: %{project: project}} = socket = fetch_records(socket)
+    %{assigns: %{project: project} = assigns} = socket = fetch_records(socket)
 
     if connected?(socket), do: Projects.subscribe(project.id)
 
+    stats = %{
+      campaigns: Enum.count(assigns[:project_campaigns]),
+      members: Enum.count(project.users),
+      forms: Projects.count_forms(project),
+      subscribers: Projects.count_subscribers(project)
+    }
+
     {:ok,
      socket
+     |> assign(:client_agent, parse_client_agent(get_connect_params(socket)))
      |> assign(project: project)
+     |> assign(stats: stats)
      |> assign(changeset: Projects.change_project(project))}
   end
 
@@ -79,103 +88,6 @@ defmodule NewnixWeb.Live.Project.SettingsLive.Index do
 
        socket
      end)}
-  end
-
-  attr :user, :map
-  attr :role, :map, default: nil
-  attr :logo, :string, default: nil
-  attr :link, :string, default: ""
-
-  def user_row(assigns) do
-    ~H"""
-      <tr>
-        <td class="py-4 pl-4 pr-3 text-sm sm:pl-6">
-            <div class="flex items-center">
-                <.ui_avatar
-                  avatar={@user.avatar}
-                  text={"#{String.slice(@user.firstname,0,1)}#{String.slice(@user.lastname,0,1)}"}/>
-                <div class="ml-4">
-                    <div class="font-medium text-gray-900">
-                        <%= @user.firstname %> <%= @user.lastname %>
-                    </div>
-                    <div class="text-gray-500">
-                        <%= @user.email %>
-                    </div>
-                </div>
-            </div>
-        </td>
-        <td class="px-3 py-4 text-sm text-gray-500 capitalize"><%= status(@user.role) %></td>
-        <td class="px-3 py-4 text-sm text-gray-500 capitalize">
-          <%= role(@user.role) %>
-        </td>
-        <td class="px-3 py-4 text-sm text-gray-500"><.date_added datetime={@user.inserted_at} /></td>
-        <td>
-          <div class="flex justify-center items-center">
-            <.link
-              :if={can?(@role, :invite, :update)}
-              patch={@link}
-              class="text-indigo-600 hover:text-indigo-900">
-              <.ui_icon icon="cog" />
-            </.link>
-          </div>
-        </td>
-    </tr>
-    """
-  end
-
-  attr :invite, :map
-  attr :role, :map, default: nil
-  attr :logo, :string, default: nil
-
-  def invite_row(assigns) do
-    ~H"""
-      <tr>
-        <td class="py-4 pl-4 pr-3 text-sm sm:pl-6">
-            <div class="flex items-center">
-                <.ui_avatar text={"#{String.slice(@invite.email,0,2)}"}  />
-                <div class="ml-4">
-                    <div class="font-medium text-gray-900">
-                      Invite
-                    </div>
-                    <div class="text-gray-500">
-                        <%= @invite.email %>
-                    </div>
-                </div>
-            </div>
-        </td>
-        <td class="px-3 py-4 text-sm text-gray-500 capitalize"><%= status(@invite.role) %></td>
-        <td class="px-3 py-4 text-sm text-gray-500 capitalize"><%= role(@invite.role) %></td>
-        <td class="px-3 py-4 text-sm text-gray-500"><.date_added datetime={@invite.inserted_at} /></td>
-        <td>
-          <div class="flex justify-center items-center">
-            <.link
-              :if={can?(@role, :invite, :delete)}
-              phx-click="delete-invite"
-              phx-value-id={@invite.id}
-              class="text-indigo-600 hover:text-indigo-900">
-              <.ui_icon icon="trash" />
-            </.link>
-          </div>
-        </td>
-    </tr>
-    """
-  end
-
-  def role(%{role: role}), do: role
-  def role(name), do: name
-
-  def status(%{status: status}), do: status
-  def status(_), do: "unknown"
-
-  def date_added(assigns) do
-    ~H"""
-      <p>
-        <%= Timex.format!(@datetime, "%d-%m-%y", :strftime) %>
-      </p>
-      <p class="text-xs text-grai">
-        <%= Timex.from_now(@datetime) %>
-      </p>
-    """
   end
 
   defp fetch_records(%{assigns: %{project: project}} = socket) do

@@ -6,7 +6,7 @@ defmodule NewnixWeb.Live.Form.FormLive.Index do
   alias Newnix.Subscribers
   alias Newnix.Subscribers.Subscriber
 
-  def mount(_session, _params, socket) do
+  def mount(_params, _session, socket) do
     {:ok, socket |> put_initial_assigns()}
   end
 
