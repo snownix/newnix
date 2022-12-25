@@ -44,6 +44,25 @@ defmodule NewnixWeb.Live.Components.Helper do
     """
   end
 
+  attr :name, :string, required: true
+  attr :form, :string, required: true
+  attr :title, :string, required: true
+  attr :type, :string, default: "text"
+  attr :value, :string, default: nil
+  attr :class, :string, default: ""
+  attr :show_error, :boolean, default: false
+  attr :readonly, :boolean, default: false
+  attr :phx_debounce, :string, default: "blur"
+
+  def ui_basic_input(assigns) do
+    ~H"""
+      <%= text_input @form, @name, title: @title, type: @type, readonly: @readonly, phx_debounce: @phx_debounce, class: "input_basic #{@class}" %>
+      <%= if @show_error do %>
+        <%= error_tag @form , @name %>
+      <% end %>
+    """
+  end
+
   attr :rest, :global, include: ~w(form required value)
   attr :name, :string, required: true
   attr :form, :string, required: true
@@ -131,12 +150,13 @@ defmodule NewnixWeb.Live.Components.Helper do
   end
 
   slot(:inner_block, required: true)
-  attr :rest, :global, include: ~w(form required)
+  attr :rest, :global, include: ~w(form required type disabled)
   attr :theme, :string, default: "simple"
   attr :class, :string, default: ""
   attr :href, :string, default: nil
   attr :navigate, :string, default: nil
   attr :size, :string, default: ""
+  attr :disabled, :boolean, default: false
 
   def ui_button(assigns) do
     ~H"""
@@ -371,6 +391,33 @@ defmodule NewnixWeb.Live.Components.Helper do
   def ui_square_color(assigns) do
     ~H"""
       <div class={"w-4 h-4 rounded flex-shrink-0 #{@class}"} style={"background-color: #{@color};"} {@rest}></div>
+    """
+  end
+
+  slot(:inner_block, required: true)
+  attr :icon, :string, default: nil
+  attr :close, :boolean, default: false
+  attr :class, :string, default: ""
+  attr :theme, :string, default: "info"
+
+  def ui_alert(assigns) do
+    ~H"""
+      <div class={"alert #{@theme}"} role="alert">
+        <.ui_icon :if={@icon} icon={@icon} />
+        <div class={"message #{@class}"}>
+          <%= render_slot(@inner_block) %>
+        </div>
+        <span class="sr-only hidden"><%= @theme %></span>
+        <.alert_close_icon :if={@close} />
+      </div>
+    """
+  end
+
+  def alert_close_icon(assigns) do
+    ~H"""
+    <span class="close" phx-click="lv:clear-flash">
+      <.ui_icon class="" icon="close"/>
+    </span>
     """
   end
 

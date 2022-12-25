@@ -5,7 +5,11 @@
 }
 
 .alert .close {
-	@apply block text-center ml-auto cursor-pointer hover:bg-gray-50 hover:bg-opacity-80 hover:rounded-full p-1;
+	@apply block text-center ml-auto cursor-pointer hover:bg-gray-50 hover:bg-opacity-80 hover:rounded-full p-1 place-self-end;
+}
+
+.alert .message {
+	@apply flex-grow;
 }
 
 .alert .close svg {
@@ -24,7 +28,8 @@
 	@apply text-green-700 bg-green-100 dark:bg-green-200 dark:text-green-800;
 }
 
-.alert.error, .invalid-feedback {
+.alert.error,
+.invalid-feedback {
 	@apply text-red-700 bg-red-100 dark:bg-red-200 dark:text-red-800;
 }
 
@@ -46,7 +51,6 @@
 .phx-loading {
 	cursor: wait;
 }
-
 
 .invalid-feedback {
 	@apply px-2 rounded;
