@@ -6,7 +6,6 @@
 	@apply text-dark-100 font-medium;
 	@apply hover:bg-gray-50;
 }
-
 .button.large {
 	@apply py-4 px-5 w-full;
 }
@@ -49,4 +48,8 @@
 
 .button.danger.inversed {
 	@apply bg-white border-red-300 text-red-500;
+}
+
+.button:disabled {
+	@apply bg-opacity-40 border-opacity-0 cursor-not-allowed;
 }

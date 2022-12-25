@@ -149,3 +149,8 @@ textarea[readonly] {
 .input_group:has(*[readonly]) .ui_lock {
 	@apply absolute right-4 top-6;
 }
+
+.input_basic {
+	@apply py-1 px-2;
+	@apply border border-gray-200 rounded;
+}
