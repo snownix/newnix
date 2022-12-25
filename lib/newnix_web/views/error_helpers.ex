@@ -10,6 +10,8 @@ defmodule NewnixWeb.ErrorHelpers do
   check if form input has errors.
   """
 
+  def tag_has_error(nil, _field), do: false
+
   def tag_has_error(form, field) do
     form.errors
     |> Keyword.get_values(field)
