@@ -46,6 +46,7 @@ defmodule NewnixWeb.Router do
     scope "/", NewnixWeb do
       pipe_through [:browser, :require_authenticated_user, :user]
 
+      get "/project/leave", ProjectController, :leave
       get "/project/open/:id", ProjectController, :open
 
       scope "/", Live.User.DashboardLive do
@@ -71,6 +72,8 @@ defmodule NewnixWeb.Router do
 
         live "/invite", Index, :invite
         live "/user/:id", Index, :user
+
+        live "/delete/:token", Delete, :confirm
       end
 
       scope "/campaigns", Live.Project.CampaignsLive do
