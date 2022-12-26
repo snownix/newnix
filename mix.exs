@@ -82,7 +82,8 @@ defmodule Newnix.MixProject do
       {:faker, "~> 0.17", only: [:dev, :test]},
       {:ecto_psql_extras, "~> 0.6"},
       {:phoenix_swoosh, "~> 1.0"},
-      {:browser, "~> 0.4.4"}
+      {:browser, "~> 0.4.4"},
+      {:hackney, "~> 1.18.0"}
     ]
   end
 

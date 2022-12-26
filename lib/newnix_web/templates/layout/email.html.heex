@@ -19,11 +19,15 @@
       }
 
       a {
-        color: #3869D4;
+        color: #25a7ff;
       }
 
       a img {
         border: none;
+      }
+
+      a.button{
+        color: white;
       }
 
       td {
@@ -110,11 +114,11 @@
       /* Buttons ------------------------------ */
 
       .button {
-        background-color: #3869D4;
-        border-top: 10px solid #3869D4;
-        border-right: 18px solid #3869D4;
-        border-bottom: 10px solid #3869D4;
-        border-left: 18px solid #3869D4;
+        background-color: #25a7ff;
+        border-top: 10px solid #25a7ff;
+        border-right: 18px solid #25a7ff;
+        border-bottom: 10px solid #25a7ff;
+        border-left: 18px solid #25a7ff;
         display: inline-block;
         color: #FFF;
         text-decoration: none;
@@ -437,7 +441,9 @@
   <![endif]-->
   </head>
   <body>
-    <span class="preheader">We received a request to reset your password with this email address. ({{email_address}})</span>
+    <span class="preheader">
+      <%= assigns[:preheader] %>
+    </span>
     <table class="email-wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
       <tr>
         <td align="center">

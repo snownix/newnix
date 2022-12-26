@@ -89,11 +89,16 @@ if config_env() == :prod do
     api_key: System.get_env("MAILGUN_API_KEY"),
     domain: System.get_env("MAILGUN_DOMAIN")
 
+  # Mailing
+  config :newnix, :mailing,
+    noreply: System.get_env("MAIL_NOREPLY", "no-reply@newnix.io"),
+    noreply: System.get_env("MAIL_SUPPORT", "support@newnix.io")
+
   #
   # For this example you need include a HTTP client required by Swoosh API client.
   # Swoosh supports Hackney and Finch out of the box:
   #
-  #     config :swoosh, :api_client, Swoosh.ApiClient.Hackney
+  config :swoosh, :api_client, Swoosh.ApiClient.Hackney
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
 end
