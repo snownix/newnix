@@ -351,6 +351,7 @@ defmodule NewnixWeb.Live.Components.Helper do
 
   slot(:action, required: false)
   attr :title, :string, default: ""
+  attr :description, :string, default: ""
   attr :icon, :string, default: nil
 
   def ui_page_head(assigns) do
