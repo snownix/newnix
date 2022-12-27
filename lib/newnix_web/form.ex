@@ -36,4 +36,12 @@ defmodule NewnixWeb.Form do
       |> halt()
     end
   end
+
+  @doc """
+  """
+  def allow_origin(conn, _opts) do
+    conn
+    |> delete_resp_header("x-frame-options")
+    |> delete_resp_header("content-security-policy")
+  end
 end

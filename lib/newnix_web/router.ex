@@ -28,6 +28,7 @@ defmodule NewnixWeb.Router do
   pipeline :form do
     plug :fetch_form
     plug :required_form
+    plug :allow_origin
 
     plug :put_root_layout, {NewnixWeb.FormView, "root.html"}
     plug :put_layout, {NewnixWeb.FormView, "app.html"}
