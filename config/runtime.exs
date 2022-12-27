@@ -32,6 +32,16 @@ config :ueberauth, Ueberauth.Strategy.Twitter.OAuth,
   consumer_key: System.get_env("TWITTER_CONSUMER_KEY"),
   consumer_secret: System.get_env("TWITTER_CONSUMER_SECRET")
 
+config :newnix, Newnix.Mailer,
+  adapter: Swoosh.Adapters.SMTP,
+  relay: System.get_env("SMTP_HOST", "beta.newnix.io"),
+  username: System.get_env("SMTP_USER", "support"),
+  password: System.get_env("SMTP_PASS"),
+  tls: :always,
+  auth: :always,
+  port: 587,
+  retries: 2
+
 if config_env() == :prod do
   database_url =
     System.get_env("DATABASE_URL") ||
@@ -84,10 +94,10 @@ if config_env() == :prod do
   # Also, you may need to configure the Swoosh API client of your choice if you
   # are not using SMTP. Here is an example of the configuration:
   #
-  config :newnix, Newnix.Mailer,
-    adapter: Swoosh.Adapters.Mailgun,
-    api_key: System.get_env("MAILGUN_API_KEY"),
-    domain: System.get_env("MAILGUN_DOMAIN")
+  # config :newnix, Newnix.Mailer,
+  #   adapter: Swoosh.Adapters.Mailgun,
+  #   api_key: System.get_env("MAILGUN_API_KEY"),
+  #   domain: System.get_env("MAILGUN_DOMAIN")
 
   # Mailing
   config :newnix, :mailing,

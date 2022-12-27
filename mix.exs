@@ -83,7 +83,8 @@ defmodule Newnix.MixProject do
       {:ecto_psql_extras, "~> 0.6"},
       {:phoenix_swoosh, "~> 1.0"},
       {:browser, "~> 0.4.4"},
-      {:hackney, "~> 1.18.0"}
+      {:hackney, "~> 1.18.0"},
+      {:gen_smtp, "~> 1.1"}
     ]
   end
 
