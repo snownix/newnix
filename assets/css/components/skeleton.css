@@ -14,6 +14,11 @@
 	@apply !text-transparent !bg-transparent;
 }
 
+.skeleton [skl],
+.skeleton [skl-full] {
+	@apply border-transparent;
+}
+
 .skeleton *[skl]:before {
 	@apply content-[""];
 	@apply absolute top-1 left-0;
