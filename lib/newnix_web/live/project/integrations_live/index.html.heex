@@ -1,0 +1,21 @@
+<main class="text-dark-50 py-6 space-y-12">
+    <.ui_page_head
+        icon="puzzle"
+        title="Integrations"
+        description="Connect all your mailing tool in one place"
+        >
+        <:action>
+            <.ui_button phx-click="toggle-modal">
+                <.ui_icon icon="plus" />
+                <span>Connect</span>
+            </.ui_button>
+        </:action>
+    </.ui_page_head>
+</main>
+
+<.live_component
+    id="connect-integration"
+    :if={@open_modal}
+    module={NewnixWeb.Live.Project.IntegrationsLive.FormComponent}
+    project={@project}
+    />

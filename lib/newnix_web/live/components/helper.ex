@@ -32,7 +32,7 @@ defmodule NewnixWeb.Live.Components.Helper do
 
   def ui_input(assigns) do
     ~H"""
-      <label class={"input_group #{@class}"} field-error={tag_has_error(@form, @name)} {@rest}
+      <label class={"input_group #{@class} #{filled_class(@icon)}"} field-error={tag_has_error(@form, @name)} {@rest}
         field-fill={is_fill(@form, @name)}>
         <%= text_input @form, @name, type: @type, readonly: @readonly, phx_debounce: @phx_debounce %>
         <.ui_input_label icon={@icon} form={@form} name={@name} title={@title} />
@@ -94,7 +94,7 @@ defmodule NewnixWeb.Live.Components.Helper do
 
   def ui_textarea(assigns) do
     ~H"""
-      <label class={"input_group #{@class}"} field-error={tag_has_error(@form, @name)}
+      <label class={"input_group #{@class} #{filled_class(@icon)}"} field-error={tag_has_error(@form, @name)}
         field-fill={is_fill(@form, @name)} id={@name}>
         <%= textarea @form, @name, readonly: @readonly, phx_debounce: @phx_debounce %>
         <.ui_input_label icon={@icon} form={@form} name={@name} title={@title} />
@@ -162,12 +162,12 @@ defmodule NewnixWeb.Live.Components.Helper do
     ~H"""
       <%= if !is_nil(@href) or !is_nil(@navigate) do %>
         <.link
-          class={"button " <> @theme <> " " <> @size <> " " <> @class} {@rest}
+          class={"button #{@theme} #{@size} #{@class}" |> String.trim()} {@rest}
           patch={@href} navigate={@navigate}>
           <%= render_slot(@inner_block) %>
         </.link>
       <% else %>
-        <button class={"button " <> @theme <> " " <> @size <> " " <> @class} {@rest} >
+        <button class={"button #{@theme} #{@size} #{@class}" |> String.trim()} {@rest} >
           <%= render_slot(@inner_block) %>
         </button>
       <% end %>
@@ -385,6 +385,16 @@ defmodule NewnixWeb.Live.Components.Helper do
     """
   end
 
+  attr :logo, :string, default: ""
+  attr :class, :string, default: "w-24 h-24"
+  attr :rest, :global, include: ~w(skl)
+
+  def ui_logo(assigns) do
+    ~H"""
+    <svg class={"ui_logo #{@class}"} {@rest}><use href={"/images/logos.svg#logo-#{@logo}"}/></svg>
+    """
+  end
+
   attr :class, :string, default: ""
   attr :color, :string, default: "#fff"
   attr :rest, :global, include: ~w(skl)
@@ -400,23 +410,26 @@ defmodule NewnixWeb.Live.Components.Helper do
   attr :close, :boolean, default: false
   attr :class, :string, default: ""
   attr :theme, :string, default: "info"
+  attr :phx_target, :string, default: nil
 
   def ui_alert(assigns) do
     ~H"""
       <div class={"alert #{@theme}"} role="alert">
-        <.ui_icon :if={@icon} icon={@icon} />
+        <.ui_icon :if={@icon} icon={@icon}/>
         <div class={"message #{@class}"}>
           <%= render_slot(@inner_block) %>
         </div>
         <span class="sr-only hidden"><%= @theme %></span>
-        <.alert_close_icon :if={@close} />
+        <.alert_close_icon :if={@close} phx-target={@phx_target}/>
       </div>
     """
   end
 
+  attr :rest, :global, include: ~w(phx-target)
+
   def alert_close_icon(assigns) do
     ~H"""
-    <span class="close" phx-click="lv:clear-flash">
+    <span class="close" phx-click="lv:clear-flash" {@rest}>
       <.ui_icon class="" icon="close"/>
     </span>
     """
@@ -508,6 +521,9 @@ defmodule NewnixWeb.Live.Components.Helper do
 
   def skeleton_class(true), do: "skeleton"
   def skeleton_class(_), do: ""
+
+  def filled_class(nil), do: ""
+  def filled_class(_), do: "filled"
 
   def subscribers_format(0), do: ""
   def subscribers_format(1), do: "Subscriber"

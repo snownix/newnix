@@ -1,0 +1,43 @@
+<div data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 max-w-screne-md w-full overflow-x-hidden overflow-y-auto md:inset-0 h-modal h-full">
+    <div class="relative w-full h-full flex justify-center items-center">
+        <div class="w-full h-full absolute inset-0 bg-gray-500 bg-opacity-50" phx-click="toggle-modal"></div>
+        <!-- Modal content -->
+        <.form :let={f} for={@changeset} phx-change="validate-connect" phx-submit="confirm-connect"
+        class="relative bg-white max-w-screen-sm h-max rounded-lg shadow dark:bg-gray-700 overflow-hidden">
+            <!-- Modal header -->
+            <div class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    Connect tools to <b><%= @project.name %></b>
+                </h3>
+                <button
+                    phx-click="toggle-modal"
+                    type="button"
+                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                    <.ui_icon icon="close" />
+                </button>
+            </div>
+            <!-- Modal body -->
+            <div class="p-6 space-y-6">
+                <p>
+                    Integrate your favorite apps and supercharge your workflow
+                </p>
+                <div class="flex flex-col space-y-2 w-full">
+                    <div>
+                    <.ui_select class="filled" icon="puzzle" form={f} name={:app} title="App" options={@options} />
+                    </div>
+
+                    <div>
+                    <.ui_input form={f} name={:name} icon="tag" title="Connection Name" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="flex items-center justify-end p-6 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600">
+                <.ui_button type="submit" theme="dark" size="small">
+                    <.ui_icon icon="plus" /> <span>Connect</span>
+                </.ui_button>
+            </div>
+        </.form>
+    </div>
+</div>
