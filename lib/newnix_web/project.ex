@@ -37,7 +37,7 @@ defmodule NewnixWeb.Project do
     else
       conn
       |> put_flash(:error, "You must select a project.")
-      |> redirect(to: Routes.live_path(conn, NewnixWeb.Live.User.DashboardLive.Index))
+      |> redirect(to: Routes.user_dashboard_index_path(socket, :index))
       |> halt()
     end
   end

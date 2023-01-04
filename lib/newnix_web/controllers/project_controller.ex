@@ -11,7 +11,7 @@ defmodule NewnixWeb.ProjectController do
     else
       conn
       |> put_flash(:error, gettext("Project not found !"))
-      |> redirect(to: Routes.live_path(conn, NewnixWeb.Live.User.DashboardLive.Index))
+      |> redirect(to: Routes.user_dashboard_index_path(conn, :index))
     end
   end
 
@@ -24,6 +24,6 @@ defmodule NewnixWeb.ProjectController do
   def leave(conn, _params) do
     conn
     |> delete_session(:project_id)
-    |> redirect(to: Routes.live_path(conn, NewnixWeb.Live.User.DashboardLive.Index))
+    |> redirect(to: Routes.user_dashboard_index_path(conn, :index))
   end
 end

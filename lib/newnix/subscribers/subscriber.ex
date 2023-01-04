@@ -8,7 +8,7 @@ defmodule Newnix.Subscribers.Subscriber do
   alias Newnix.Campaigns.CampaignSubscriber
 
   @policies %{
-    list: [:admin, :manager, :user],
+    access: [:admin, :manager, :user],
     create: [:admin, :manager, :user],
     update: [:admin, :manager, :user],
     delete: [:admin, :manager]

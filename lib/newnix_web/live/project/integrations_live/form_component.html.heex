@@ -1,39 +1,117 @@
 <div data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 max-w-screne-md w-full overflow-x-hidden overflow-y-auto md:inset-0 h-modal h-full">
     <div class="relative w-full h-full flex justify-center items-center">
-        <div class="w-full h-full absolute inset-0 bg-gray-500 bg-opacity-50" phx-click="toggle-modal"></div>
+        <.link class="w-full h-full absolute inset-0 bg-gray-500 bg-opacity-50" patch={Routes.project_integrations_index_path(@socket, :index)}
+        ></.link>
         <!-- Modal content -->
-        <.form :let={f} for={@changeset} phx-change="validate-connect" phx-submit="confirm-connect"
-        class="relative bg-white max-w-screen-sm h-max rounded-lg shadow dark:bg-gray-700 overflow-hidden">
+        <.form :let={f} for={@changeset}
+            phx-change="validate"
+            phx-submit="save"
+            phx-target={@myself}
+           class="relative bg-white max-w-screen-lg h-max rounded-lg shadow dark:bg-gray-700 overflow-hidden">
             <!-- Modal header -->
             <div class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
-                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                <h3 class="px-2 pt-2 text-xl font-semibold text-gray-900 dark:text-white">
                     Connect tools to <b><%= @project.name %></b>
                 </h3>
-                <button
-                    phx-click="toggle-modal"
+                <.ui_button
+                    size="xs"
+                    href={Routes.project_integrations_index_path(@socket, :index)}
                     type="button"
                     class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
                     <.ui_icon icon="close" />
-                </button>
+                </.ui_button>
             </div>
             <!-- Modal body -->
-            <div class="p-6 space-y-6">
-                <p>
-                    Integrate your favorite apps and supercharge your workflow
-                </p>
-                <div class="flex flex-col space-y-2 w-full">
-                    <div>
-                    <.ui_select class="filled" icon="puzzle" form={f} name={:app} title="App" options={@options} />
-                    </div>
+            <div class="space-y-6">
+                <.live_component module={NewnixWeb.Live.Components.AlertsComponent} phx_target={@myself} flash={@flash} id="confirm-alerts" />
 
-                    <div>
-                    <.ui_input form={f} name={:name} icon="tag" title="Connection Name" />
+                <div class="px-6">
+                    <p>
+                        Integrate your favorite apps and supercharge your workflow
+                    </p>
+                </div>
+
+                <div class="flex flex-col px-6 space-y-2 w-full">
+                    <div class="flex flex-col space-y-4 lg:flex-row lg:space-x-4 lg:space-y-0">
+                        <.ui_input form={f} name={:name} show_error={true} icon="tag" title="Connection Name" />
+                        <div class="lg:w-1/2">
+                        <.ui_select
+                            form={f}
+                            name={:status}
+                            options={@status_options}
+                            icon="bolt"
+                            title="Status"
+                            class="capitalize" />
+                        </div>
                     </div>
+                </div>
+                <div class="flex overflow-x-auto justify-start p-4 space-x-4 text-gray-500">
+                    <label
+                        :for={{title, name} <- @options}
+                        class="provider__box">
+                        <.ui_logo logo={name} class="w-24 h-24 p-4" />
+                        <span>
+                            <%= radio_button f, :type, name %>
+                        <%= title %></span>
+                    </label>
+                </div>
+                <div  :if={input_value(f, :type)} ></div>
+                <div class="flex flex-col px-6 pb-6 space-y-2 w-full">
+                    <%= inputs_for f, :config, fn ff -> %>
+                        <.ui_input
+                            title="Api Key"
+                            icon="key"
+                            type="password"
+                            form={ff}
+                            :if={input_config_active?(f, :api_key)}
+                            name={:api_key}
+                            class="form-control" />
+                        <.ui_input
+                            title="Api Secret"
+                            icon="lock"
+                            type="password"
+                            form={ff}
+                            :if={input_config_active?(f, :api_secret)}
+                            name={:api_secret}
+                            class="form-control" />
+                        <.ui_input
+                            title="Domain"
+                            icon="globe"
+                            form={ff}
+                            :if={input_config_active?(f, :domain)}
+                            name={:domain}
+                            class="form-control" />
+                        <.ui_input
+                            title="Server id"
+                            icon="circle-stack"
+                            form={ff}
+                            :if={input_config_active?(f, :server_id)}
+                            name={:server_id}
+                            class="form-control" />
+                        <.ui_input
+                            title="Endpoint"
+                            icon="url"
+                            form={ff}
+                            :if={input_config_active?(f, :endpoint)}
+                            name={:endpoint}
+                            class="form-control" />
+                    <% end %>
                 </div>
             </div>
 
             <!-- Modal footer -->
-            <div class="flex items-center justify-end p-6 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600">
+            <div class="flex items-center justify-between p-6 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600">
+                <div>
+                    <.ui_button
+                        :if={@delete}
+                        phx-click="delete"
+                        phx-target={@myself}
+                        phx-value-id={@integration.id}
+                        data={[confirm: "Are you sure?" ]}
+                        type="button" theme="danger" size="small">
+                        <.ui_icon icon="close" /> <span>Delete</span>
+                    </.ui_button>
+                </div>
                 <.ui_button type="submit" theme="dark" size="small">
                     <.ui_icon icon="plus" /> <span>Connect</span>
                 </.ui_button>

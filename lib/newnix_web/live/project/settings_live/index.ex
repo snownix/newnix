@@ -11,19 +11,20 @@ defmodule NewnixWeb.Live.Project.SettingsLive.Index do
 
     if connected?(socket), do: Projects.subscribe(project.id)
 
-    stats = %{
-      campaigns: Enum.count(assigns[:project_campaigns]),
-      members: Enum.count(project.users),
-      forms: Projects.count_forms(project),
-      subscribers: Projects.count_subscribers(project)
-    }
+    can_mount!(socket, :project, :settings, fn socket ->
+      stats = %{
+        campaigns: Enum.count(assigns[:project_campaigns]),
+        members: Enum.count(project.users),
+        forms: Projects.count_forms(project),
+        subscribers: Projects.count_subscribers(project)
+      }
 
-    {:ok,
-     socket
-     |> assign(:client_agent, parse_client_agent(get_connect_params(socket)))
-     |> assign(project: project)
-     |> assign(stats: stats)
-     |> assign(changeset: Projects.change_project(project))}
+      socket
+      |> assign(:client_agent, parse_client_agent(get_connect_params(socket)))
+      |> assign(project: project)
+      |> assign(stats: stats)
+      |> assign(changeset: Projects.change_project(project))
+    end)
   end
 
   def handle_info({Projects, [_name, _event], _result}, socket) do

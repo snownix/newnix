@@ -6,7 +6,9 @@ defmodule NewnixWeb.Live.Project.CampaignsLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, socket |> put_initial_assigns() |> update_records()}
+    can_mount!(socket, :campaign, :access, fn next_socket ->
+      next_socket |> put_initial_assigns()
+    end)
   end
 
   defp put_initial_assigns(socket) do
@@ -26,6 +28,7 @@ defmodule NewnixWeb.Live.Project.CampaignsLive.Index do
     })
     |> fetch_records()
     |> put_initial_paginator()
+    |> update_records()
   end
 
   defp put_initial_paginator(socket) do

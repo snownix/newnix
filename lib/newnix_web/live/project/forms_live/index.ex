@@ -18,7 +18,9 @@ defmodule NewnixWeb.Live.Project.FormsLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, socket |> put_initial_assigns()}
+    can_mount!(socket, :form, :access, fn next_socket ->
+      next_socket |> put_initial_assigns()
+    end)
   end
 
   @impl true

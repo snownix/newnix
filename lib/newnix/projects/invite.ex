@@ -15,7 +15,7 @@ defmodule Newnix.Projects.Invite do
   def maxlen_email(), do: @maxlen_email
 
   @policies %{
-    list: [:admin, :manager, :user],
+    access: [:admin, :manager, :user],
     create: [:admin],
     update: [:admin],
     delete: [:admin]
@@ -54,14 +54,14 @@ defmodule Newnix.Projects.Invite do
     |> validate_available_email()
   end
 
-  def sender_assoc(changeset, sender) do
-    changeset
-    |> put_assoc(:sender, sender)
-  end
-
   def user_assoc(changeset, user) do
     changeset
     |> put_assoc(:user, user)
+  end
+
+  def sender_assoc(changeset, sender) do
+    changeset
+    |> put_assoc(:sender, sender)
   end
 
   def answer(invite, :accepted) do

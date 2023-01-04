@@ -1,21 +1,71 @@
-<main class="text-dark-50 py-6 space-y-12">
+<main class="flex flex-1 h-full max-h-screen flex-col pt-6 space-y-8">
     <.ui_page_head
         icon="puzzle"
         title="Integrations"
         description="Connect all your mailing tool in one place"
         >
         <:action>
-            <.ui_button phx-click="toggle-modal">
+            <.ui_button href={Routes.project_integrations_index_path(@socket, :create)}>
                 <.ui_icon icon="plus" />
                 <span>Connect</span>
             </.ui_button>
         </:action>
     </.ui_page_head>
+
+    <%= if @empty_integrations do %>
+        <div class="flex items-center justify-center h-full">
+            <.live_component id="empty-connections" module={NewnixWeb.Live.Components.Cards.EmptyStateComponent}
+            title="Connection" icon="puzzle" href={Routes.project_integrations_index_path(@socket, :create)} />
+        </div>
+    <% else %>
+        <section class={"flex flex-wrap px-6 #{skeleton_class(@loading)}"}>
+            <div
+                :for={group <- @integrations}
+                :if={!Enum.empty?(group.items)}
+                x-data="{ open: false }"
+                class="w-full lg:w-1/2 2xl:w-1/3 pb-4 px-2">
+                <div class="border border-gray-200 flex flex-col space-y-4 rounded-lg py-6">
+                    <div class="flex space-x-4 items-center px-6">
+                        <div class="inline-flex bg-gray-50 rounded-lg" skl-full skl-rounded>
+                            <.ui_logo logo={group.name} class="w-16 h-16 p-4" />
+                        </div>
+                        <div class="flex flex-col justify-between">
+                            <span class="font-semibold text-lg" skl>
+                                <%= group.type %>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="px-6">
+                        <ul class="space-y-2">
+                            <li :for={integration <- group.items}
+                                class="flex items-center justify-between px-3 py-2 border border-gray-100 rounded">
+                                <div class="flex-center font-semibold">
+                                    <div class={"w-3 h-3 rounded-full #{integration_status(integration.status)}"}></div>
+                                    <span><%= integration.name%></span>
+                                </div>
+                                <.link patch={Routes.project_integrations_index_path(@socket, :update, integration)}>
+                                    <.ui_icon icon="cog"/>
+                                </.link>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    <% end %>
 </main>
 
-<.live_component
-    id="connect-integration"
-    :if={@open_modal}
-    module={NewnixWeb.Live.Project.IntegrationsLive.FormComponent}
-    project={@project}
+<%= if @live_action in [:create, :update] do %>
+    <.live_component
+        id="connect-integration"
+        return_to={Routes.project_integrations_index_path(@socket, :index)}
+        module={NewnixWeb.Live.Project.IntegrationsLive.FormComponent}
+        integration={@integration}
+        project={@project}
+        current_user={@current_user}
+        action={@live_action}
+        delete={@live_action === :update}
+        role={@role}
     />
+<% end %>

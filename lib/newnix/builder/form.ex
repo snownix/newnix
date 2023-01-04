@@ -6,7 +6,7 @@ defmodule Newnix.Builder.Form do
   alias Newnix.Projects.Project
 
   @policies %{
-    list: [:admin, :manager, :user],
+    access: [:admin, :manager, :user],
     create: [:admin, :manager, :user],
     update: [:admin, :manager, :user],
     delete: [:admin, :manager]

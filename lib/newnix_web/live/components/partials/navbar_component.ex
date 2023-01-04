@@ -11,7 +11,7 @@ defmodule NewnixWeb.Live.Components.Partials.NavbarComponent do
                 <h1 class="font-bold text-lg">Newnix<span class="text-primary-500">.io</span></h1>
             </div>
             <div class="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
-              <.menu_item link={Routes.live_path(@socket, NewnixWeb.Live.User.DashboardLive.Index)}>
+              <.menu_item link={Routes.user_dashboard_index_path(@socket, :index)}>
                 Projects
               </.menu_item>
             </div>

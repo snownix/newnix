@@ -1,11 +1,12 @@
 defmodule Newnix.Policies do
-  import Phoenix.LiveView, only: [put_flash: 3]
+  import Phoenix.LiveView, only: [put_flash: 3, redirect: 2]
 
   alias Newnix.Builder.Form
   alias Newnix.Projects.Invite
   alias Newnix.Projects.Project
   alias Newnix.Campaigns.Campaign
   alias Newnix.Subscribers.Subscriber
+  alias Newnix.Projects.Integration
 
   def roles() do
     [:admin, :manager, :user]
@@ -17,6 +18,7 @@ defmodule Newnix.Policies do
       %{collection: :campaign, actions: Campaign.policies()},
       %{collection: :subscriber, actions: Subscriber.policies()},
       %{collection: :invite, actions: Invite.policies()},
+      %{collection: :integration, actions: Integration.policies()},
       %{collection: :project, actions: Project.policies()}
     ]
   end
@@ -55,6 +57,10 @@ defmodule Newnix.Policies do
     can_do?(role, Subscriber.policies(), action)
   end
 
+  def can?(role, :integration, action) do
+    can_do?(role, Integration.policies(), action)
+  end
+
   def can?(_, _, _), do: false
 
   def can_do?(:owner, _collection, _actions), do: true
@@ -75,5 +81,16 @@ defmodule Newnix.Policies do
     else
       put_flash(socket, :error, "You dont have permission")
     end
+  end
+
+  def can_mount!(socket, collection, action, callback) do
+    {:ok,
+     if can?(socket, collection, action) do
+       callback.(socket)
+     else
+       socket
+       |> put_flash(:error, "You dont have permission")
+       |> redirect(to: "/")
+     end}
   end
 end

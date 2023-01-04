@@ -19,7 +19,7 @@ defmodule NewnixWeb.Live.Components.Helper do
     """
   end
 
-  attr :rest, :global, include: ~w(form required value)
+  attr :rest, :global
   attr :name, :string, required: true
   attr :form, :string, required: true
   attr :title, :string, required: true
@@ -63,7 +63,7 @@ defmodule NewnixWeb.Live.Components.Helper do
     """
   end
 
-  attr :rest, :global, include: ~w(form required value)
+  attr :rest, :global
   attr :name, :string, required: true
   attr :form, :string, required: true
   attr :title, :string, required: true
@@ -82,7 +82,7 @@ defmodule NewnixWeb.Live.Components.Helper do
     """
   end
 
-  attr :rest, :global, include: ~w(form required value)
+  attr :rest, :global
   attr :name, :string, required: true
   attr :form, :string, required: true
   attr :title, :string, required: true
@@ -105,7 +105,7 @@ defmodule NewnixWeb.Live.Components.Helper do
     """
   end
 
-  attr :rest, :global, include: ~w(form required value)
+  attr :rest, :global
   attr :name, :string, required: true
   attr :form, :string, required: true
   attr :title, :string, required: true
@@ -134,7 +134,7 @@ defmodule NewnixWeb.Live.Components.Helper do
   attr :class, :string, default: ""
   attr :options, :map, default: []
   attr :show_error, :boolean, default: false
-  attr :rest, :global, include: ~w(form required value)
+  attr :rest, :global
 
   def ui_select(assigns) do
     ~H"""
@@ -150,13 +150,12 @@ defmodule NewnixWeb.Live.Components.Helper do
   end
 
   slot(:inner_block, required: true)
-  attr :rest, :global, include: ~w(form required type disabled)
+  attr :rest, :global
   attr :theme, :string, default: "simple"
   attr :class, :string, default: ""
   attr :href, :string, default: nil
   attr :navigate, :string, default: nil
   attr :size, :string, default: ""
-  attr :disabled, :boolean, default: false
 
   def ui_button(assigns) do
     ~H"""
@@ -176,7 +175,7 @@ defmodule NewnixWeb.Live.Components.Helper do
 
   attr :avatar, :string, default: nil
   attr :text, :string, default: ""
-  attr :rest, :global, include: ~w(skl)
+  attr :rest, :global
 
   def ui_avatar(assigns) do
     ~H"""
@@ -192,7 +191,7 @@ defmodule NewnixWeb.Live.Components.Helper do
 
   attr :time, :string
   attr :class, :string, default: ""
-  attr :rest, :global, include: ~w(skl)
+  attr :rest, :global
 
   def ui_datetime_display(%{time: time} = assigns) do
     if is_nil(time) do
@@ -211,7 +210,7 @@ defmodule NewnixWeb.Live.Components.Helper do
 
   attr :time, :string
   attr :class, :string, default: ""
-  attr :rest, :global, include: ~w(skl)
+  attr :rest, :global
 
   def ui_time_ago(%{time: time} = assigns) do
     if is_nil(time) do
@@ -377,7 +376,7 @@ defmodule NewnixWeb.Live.Components.Helper do
 
   attr :icon, :string, default: ""
   attr :class, :string, default: ""
-  attr :rest, :global, include: ~w(skl)
+  attr :rest, :global
 
   def ui_icon(assigns) do
     ~H"""
@@ -387,7 +386,7 @@ defmodule NewnixWeb.Live.Components.Helper do
 
   attr :logo, :string, default: ""
   attr :class, :string, default: "w-24 h-24"
-  attr :rest, :global, include: ~w(skl)
+  attr :rest, :global
 
   def ui_logo(assigns) do
     ~H"""
@@ -397,7 +396,7 @@ defmodule NewnixWeb.Live.Components.Helper do
 
   attr :class, :string, default: ""
   attr :color, :string, default: "#fff"
-  attr :rest, :global, include: ~w(skl)
+  attr :rest, :global
 
   def ui_square_color(assigns) do
     ~H"""
@@ -425,7 +424,7 @@ defmodule NewnixWeb.Live.Components.Helper do
     """
   end
 
-  attr :rest, :global, include: ~w(phx-target)
+  attr :rest, :global
 
   def alert_close_icon(assigns) do
     ~H"""
@@ -524,6 +523,12 @@ defmodule NewnixWeb.Live.Components.Helper do
 
   def filled_class(nil), do: ""
   def filled_class(_), do: "filled"
+
+  def integration_status(:error), do: "bg-red-500"
+  def integration_status(:active), do: "bg-green-500"
+  def integration_status(:inactive), do: "bg-gray-500"
+  def integration_status(:failed), do: "bg-yellow-500"
+  def integration_status(_), do: "bg-black"
 
   def subscribers_format(0), do: ""
   def subscribers_format(1), do: "Subscriber"

@@ -1,18 +1,11 @@
 defmodule Newnix.Providers do
-  @providers [
-    {:mailjet, "Mailjet"},
-    {:postmark, "Postmark"},
-    {:sparkpost, "SparkPost"},
-    {:mailchimp, "Mailchimp"},
-    {:mailgun, "Mailgun"},
-    {:sendgrid, "SendGrid"},
-    {:sendinblue, "SendinBlue"},
-    {:mailpace, "MailPace"},
-    {:socketlabs, "SocketLabs"},
-    {:gmail, "Gmail"}
-  ]
+  alias Newnix.Projects.Integration.Config
 
   def get_active_prodivders() do
-    @providers
+    Config.get_providers()
+  end
+
+  def input_config_required?(provider, field_name) do
+    field_name in Config.get_provider_fields(provider)
   end
 end

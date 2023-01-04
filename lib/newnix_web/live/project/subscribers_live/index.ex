@@ -7,7 +7,9 @@ defmodule NewnixWeb.Live.Project.SubscribersLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, socket |> put_initial_assigns() |> update_info()}
+    can_mount!(socket, :subscriber, :access, fn next_socket ->
+      next_socket |> put_initial_assigns()
+    end)
   end
 
   defp put_initial_assigns(socket) do
@@ -31,6 +33,7 @@ defmodule NewnixWeb.Live.Project.SubscribersLive.Index do
     })
     # Paginator
     |> put_initial_paginator()
+    |> update_info()
   end
 
   defp put_initial_paginator(socket) do

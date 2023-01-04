@@ -51,11 +51,11 @@ defmodule NewnixWeb.Router do
       get "/project/open/:id", ProjectController, :open
 
       scope "/", Live.User.DashboardLive do
-        live "/", Index
-        live "/create", New
+        live "/", Index, :index
+        live "/create", New, :new
       end
 
-      live "/invites", Live.User.InvitesLive.Index
+      live "/invites", Live.User.InvitesLive.Index, :index
     end
   end
 
@@ -65,10 +65,10 @@ defmodule NewnixWeb.Router do
     scope "/project", NewnixWeb do
       pipe_through [:browser, :require_authenticated_user, :project]
 
-      live "/", Live.Project.DashboardLive.Index
+      live "/", Live.Project.DashboardLive.Index, :index
 
       scope "/settings", Live.Project.SettingsLive do
-        live "/", Index
+        live "/", Index, :index
         live "/roles", Index, :roles
 
         live "/invite", Index, :invite
@@ -104,6 +104,12 @@ defmodule NewnixWeb.Router do
 
         live "/create", Index, :create
         live "/:id/update", Index, :update
+      end
+
+      scope "/workflows", Live.Project.WorkflowsLive do
+        live "/", Index, :index
+        live "/builder", Index, :create
+        live "/builder/:id", Index, :update
       end
 
       scope "/templates", Live.Project.TemplatesLive do

@@ -92,3 +92,22 @@ body {
 .sidebar__menu .menu__item.active {
 	@apply bg-dark-500 bg-opacity-5;
 }
+
+/**
+Provider */
+.provider__box {
+	@apply flex flex-col m-1 space-y-4 items-center py-3 px-6 rounded-xl border-2 border-gray-200  cursor-pointer;
+}
+
+.provider__box .ui_icon {
+	@apply w-28;
+}
+
+.provider__box:hover,
+.provider__box:has(input[checked]) {
+	@apply bg-primary-50 border-primary-500;
+}
+
+.provider__box input {
+	@apply hidden;
+}

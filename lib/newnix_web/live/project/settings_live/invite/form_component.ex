@@ -40,7 +40,7 @@ defmodule NewnixWeb.Live.Project.SettingsLive.Invite.FormComponent do
             sender: user,
             project: project
           },
-          Routes.live_path(socket, NewnixWeb.Live.User.InvitesLive.Index)
+          Routes.user_invites_index_path(socket, :index)
         )
 
         {:noreply,

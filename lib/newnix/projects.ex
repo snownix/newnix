@@ -14,6 +14,7 @@ defmodule Newnix.Projects do
   alias Newnix.Projects.UserProject
   alias Newnix.Projects.ProjectToken
   alias Newnix.Projects.ProjectNotifier
+  alias Newnix.Projects.Integration
 
   @topic inspect(__MODULE__)
 
@@ -148,6 +149,29 @@ defmodule Newnix.Projects do
         join: p in assoc(i, :project),
         where: is_nil(p.deleted_at) and (i.email == ^email or i.user_id == ^id),
         preload: [project: p]
+      )
+
+    Repo.all(query)
+  end
+
+  @doc """
+  list integrations .
+
+  ## Examples
+
+      iex> list_integrations(%Projet{})
+      [%{}, %{}]
+
+      iex> list_integrations(%User{})
+      [%Invite{}, ...]
+
+  """
+  def list_integrations(%Project{id: id} = _projecct) do
+    query =
+      from(
+        i in Integration,
+        join: p in assoc(i, :project),
+        where: p.id == ^id
       )
 
     Repo.all(query)
@@ -600,5 +624,96 @@ defmodule Newnix.Projects do
       assigns,
       "#{confirmation_url}?invite=#{invite.id}"
     )
+  end
+
+  @doc """
+
+  ## Examples
+
+      iex> change_integration(integration)
+      %Ecto.Changeset{data: %Integration{}}
+
+  """
+  def change_integration(%Integration{} = integration, attrs \\ %{}) do
+    Integration.changeset(integration, attrs)
+  end
+
+  @doc """
+  Gets a single integration.
+
+  Raises `Ecto.NoResultsError` if the integration does not exist.
+
+  ## Examples
+
+      iex> get_integration!(project, "xxxxx-xxxx-xxxx-xxxxx")
+      %integration{}
+
+      iex> get_integration!(project, "xxxxx-xxxx-xxxx-xxxxx")
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_integration!(%Project{id: project_id}, id) do
+    query =
+      from c in Integration,
+        where: c.id == ^id and c.project_id == ^project_id
+
+    Repo.one!(query)
+  end
+
+  @doc """
+  Creates a integration.
+
+  ## Examples
+
+      iex> create_integration(project, sender, %{field: value})
+      {:ok, %Integration{}}
+
+      iex> create_integration(project, sender, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_integration(project = %Project{}, user = %User{}, attrs \\ %{}) do
+    %Integration{}
+    |> Integration.changeset(attrs)
+    |> Integration.project_assoc(project)
+    |> Integration.user_assoc(user)
+    |> Repo.insert()
+    |> notify_subscribers([:integration, :created])
+  end
+
+  @doc """
+  Updates a integration.
+
+  ## Examples
+
+      iex> update_integration(integration, %{field: new_value})
+      {:ok, %Integration{}}
+
+      iex> update_integration(integration, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_integration(%Integration{} = integration, attrs) do
+    integration
+    |> Integration.changeset(attrs)
+    |> Repo.update()
+    |> notify_subscribers([:integration, :updated])
+  end
+
+  @doc """
+  Deletes a integration.
+
+  ## Examples
+
+      iex> delete_integration(integration)
+      {:ok, %Integration{}}
+
+      iex> delete_integration(integration)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_integration(%Integration{} = integration) do
+    Repo.delete(integration)
+    |> notify_subscribers([:integration, :deleted])
   end
 end

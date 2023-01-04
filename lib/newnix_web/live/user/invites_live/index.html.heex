@@ -5,7 +5,7 @@
         description="recevied invitations to join projects."
         icon="user-plus">
         <:action>
-            <.ui_button theme="primary" size="small" href={Routes.live_path(@socket, NewnixWeb.Live.User.DashboardLive.New)}>
+            <.ui_button theme="primary" size="small" href={Routes.user_dashboard_new_path(@socket, :new)}>
             <.ui_icon icon="plus"/>
             <span><%= gettext "New Project" %></span>
             </.ui_button>
@@ -20,7 +20,7 @@
             id="invite-empty-state"
             button={false}
             icon="user-plus"
-            href={Routes.live_path(@socket, NewnixWeb.Live.User.DashboardLive.New)} />
+            href={Routes.user_dashboard_new_path(@socket, :new)} />
         </div>
     <% else %>
         <main>

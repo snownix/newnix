@@ -130,6 +130,11 @@
     fill="none">
     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
   </symbol>
+  <symbol id="icon-chevron-up-down" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+    fill="none">
+    <path stroke-linecap="round" stroke-linejoin="round"
+      d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+  </symbol>
   <symbol id="icon-asc" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none">
     <path stroke-linecap="round" stroke-linejoin="round"
       d="M3 4.5h14.25M3 9h9.75M3 13.5h5.25m5.25-.75L17.25 9m0 0L21 12.75M17.25 9v12" />
@@ -224,5 +229,27 @@
   <symbol id="icon-cube" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none">
     <path stroke-linecap="round" stroke-linejoin="round"
       d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+  </symbol>
+  <symbol id="icon-key" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none">
+    <path stroke-linecap="round" stroke-linejoin="round"
+      d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />
+  </symbol>
+  <symbol id="icon-url" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none">
+    <path stroke-linecap="round" stroke-linejoin="round"
+      d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
+  </symbol>
+  <symbol id="icon-circle-stack" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+    fill="none">
+    <path stroke-linecap="round" stroke-linejoin="round"
+      d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
+  </symbol>
+  <symbol id="icon-globe" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+    fill="none">
+    <path stroke-linecap="round" stroke-linejoin="round"
+      d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
+  </symbol>
+  <symbol id="icon-chip" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none">
+    <path stroke-linecap="round" stroke-linejoin="round"
+      d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z" />
   </symbol>
 </svg>

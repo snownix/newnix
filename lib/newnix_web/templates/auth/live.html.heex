@@ -9,8 +9,8 @@
     <section class="sidebar__ hidden xl:block relative bg-gray-100 flex-1 h-full">
         <div class="absolute top-14 left-24 pr-8 2xl:top-30 max-w-screen-md flex flex-col space-y-4">
             <p class="text-xl 2xl:text-2xl font-semibold text-dark-300">
-                Newnix is the best place to create newsletter forms. We've been super impressed by the quality of
-                service.
+                <%= gettext "Newnix is the best place to create newsletter forms." %><br />
+                <%= gettext "We were very impressed with the quality of the service." %>
             </p>
 
             <div class="space-y-1">
@@ -24,8 +24,8 @@
                 </div>
             </div>
         </div>
-        <div class="max-w-screen-xl absolute -bottom-8 left-24 top-64 -right-64">
-            <img class="object-fit rounded-xl 2xl:rounded-3xl border-4 border-dark-50 border-opacity-100" loading="lazy"
+        <div class="absolute -bottom-8 left-24 top-64 -right-64">
+            <img loading="lazy" class="w-full object-fit rounded-xl 2xl:rounded-3xl border-2 border-dark-50 border-opacity-5" loading="lazy"
                 src={Routes.static_path(@socket, "/images/previews/auth.webp" )} alt="">
         </div>
     </section>

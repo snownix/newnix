@@ -18,6 +18,7 @@ defmodule NewnixWeb.InitAssigns do
     {:cont,
      socket
      |> assign_locale(session, params)
+     |> assign(:sidebar_open, true)
      |> assign(:sidebar, :user)
      |> assign(:current_user, user)
      |> assign(:count_invites, Projects.count_invites(user))
@@ -33,7 +34,7 @@ defmodule NewnixWeb.InitAssigns do
      |> assign(:form, form)}
   end
 
-  def on_mount(:project, params, session, socket) do
+  def on_mount(:project, _params, session, socket) do
     %{current_user: current_user} = socket.assigns
 
     if is_nil(current_user) do
@@ -48,6 +49,7 @@ defmodule NewnixWeb.InitAssigns do
 
           {:cont,
            socket
+           |> assign(:sidebar_open, false)
            |> assign(:sidebar, :project)
            |> assign(:page_title, project.name)
            |> assign(:project, project)

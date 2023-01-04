@@ -1,14 +1,6 @@
 <div class="h-full flex flex-col flex-1">
   <div class="min-h-0 flex-1 flex overflow-hidden">
     <!-- Sidebar -->
-    <.live_component
-      id="sidebar"
-      sidebar={@sidebar}
-      project={@project}
-      projects={@projects}
-      count_invites={@count_invites}
-      module={NewnixWeb.Live.Components.Partials.MainSidebarComponent}
-       />
 
     <.live_component
       id="sidebar"
@@ -18,8 +10,11 @@
       project={@project}
       campaign={assigns[:campaign]}
       projects={@projects}
-      campaigns={@project_campaigns}
-      module={NewnixWeb.Live.Components.Partials.ProjectSidebarComponent}
+      project_campaigns={@project_campaigns}
+      current_user={@current_user}
+      count_invites={@count_invites}
+      sidebar_open={@sidebar_open}
+      module={NewnixWeb.Live.Components.Partials.SidebarsComponent}
        />
 
     <div class="flex flex-1 flex-col">
