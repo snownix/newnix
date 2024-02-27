@@ -34,3 +34,6 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
 - [ ] socketlabs: api_key, server_id
 
 `mix phx.gen.schema Project.Integration project_integrations name:string type:enum:mailjet:mailgun:sendgrid:sendinblue:mandrill:postmark:dyn:mailpace:smtp2go:gmail:sparkpost:socketlabs status:enum:active:inactive:error:limited project_id:references:projects user_id:references:users`
+
+
+![Alt](https://repobeats.axiom.co/api/embed/6f2cadfc80aafc821c1221ce1a9335e93213feb8.svg "Repobeats analytics image")
